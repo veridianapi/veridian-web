@@ -20,7 +20,7 @@ export default function TermsPage() {
       <p>
         These Terms of Service (&ldquo;Terms&rdquo;) govern your access to and use of the Veridian
         platform, APIs, and related services (collectively, the &ldquo;Services&rdquo;) provided
-        by Veridian Technologies, Inc. (&ldquo;Veridian,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By
+        by Veridian (&ldquo;Veridian,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By
         accessing or using our Services, you agree to be bound by these Terms.
       </p>
 
@@ -199,8 +199,7 @@ export default function TermsPage() {
       <Section title="14. Contact">
         <p>
           For questions about these Terms, contact us at legal@veridian.io or by
-          mail at Veridian Technologies, Inc., 228 Park Ave S, PMB 70145, New
-          York, NY 10003.
+          mail at Veridian, 228 Park Ave S, PMB 70145, New York, NY 10003.
         </p>
       </Section>
     </LegalLayout>
