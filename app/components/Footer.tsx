@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-6 border-t border-gray-200 text-xs text-gray-400">
-          © {new Date().getFullYear()} Veridian Technologies, Inc. All rights reserved.
+          © {new Date().getFullYear()} Veridian. All rights reserved.
         </div>
       </div>
     </footer>
