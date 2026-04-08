@@ -1,9 +1,26 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand: #1d9e75;
+  --color-brand-dark: #158a63;
+  --color-bg: #050a09;
+  --color-card: #0c1410;
+  --color-surface: #111a15;
+}
+
 :root {
-  --brand: #0f6e56;
-  --brand-dark: #0a5240;
-  --brand-light: #e6f4f0;
+  --brand: #1d9e75;
+  --brand-dark: #158a63;
+  --brand-glow: rgba(29, 158, 117, 0.15);
+  --brand-glow-strong: rgba(29, 158, 117, 0.3);
+  --bg: #050a09;
+  --card: #0c1410;
+  --surface: #111a15;
+  --border: rgba(29, 158, 117, 0.12);
+  --border-hover: rgba(29, 158, 117, 0.3);
+  --text-primary: #e8f5ef;
+  --text-muted: rgba(232, 245, 239, 0.45);
+  --text-subtle: rgba(232, 245, 239, 0.25);
   --font-inter: "Inter", sans-serif;
 }
 
@@ -12,10 +29,81 @@
 }
 
 body {
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text-primary);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: rgba(29, 158, 117, 0.25);
+  color: #e8f5ef;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(29, 158, 117, 0.25);
+  border-radius: 10px;
+}
+
+/* Glow utilities */
+.glow-brand {
+  box-shadow: 0 0 40px rgba(29, 158, 117, 0.15), 0 0 80px rgba(29, 158, 117, 0.05);
+}
+.glow-brand-strong {
+  box-shadow: 0 0 0 1px rgba(29, 158, 117, 0.4), 0 0 30px rgba(29, 158, 117, 0.2), 0 0 60px rgba(29, 158, 117, 0.08);
+}
+.glow-text {
+  text-shadow: 0 0 40px rgba(29, 158, 117, 0.5);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #1d9e75 0%, #4ecdc4 50%, #a8e6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(12, 20, 16, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Mesh gradient background for hero */
+.hero-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(29, 158, 117, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 60%, rgba(29, 158, 117, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 30% 20% at 10% 80%, rgba(29, 158, 117, 0.04) 0%, transparent 50%);
+}
+
+/* Subtle dot grid */
+.dot-grid {
+  background-image: radial-gradient(rgba(29, 158, 117, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* CTA section glow */
+.cta-glow {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(29, 158, 117, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 20% 50%, rgba(29, 158, 117, 0.08) 0%, transparent 50%);
+}
+
+/* Code block */
+.code-block {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
 }

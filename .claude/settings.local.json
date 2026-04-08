@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const fm = require\\('c:/Users/ME/veridian-web/node_modules/framer-motion'\\); console.log\\(Object.keys\\(fm\\).filter\\(k => ['motion', 'useInView', 'useScroll', 'AnimatePresence', 'useMotionValue', 'useTransform', 'useSpring', 'LazyMotion', 'domAnimation'].includes\\(k\\)\\)\\)\")",
+      "Bash(ls c:/Users/ME/veridian-web/*.config.* c:/Users/ME/veridian-web/tailwind.config.*)",
+      "Bash(cat c:/Users/ME/veridian-web/postcss.config.*)",
+      "Bash(pnpm build:*)"
+    ]
+  }
+}
