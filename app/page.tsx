@@ -2,6 +2,9 @@ import Link from "next/link";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
+const DASHBOARD_LOGIN = "https://veridian-api-dashboard.vercel.app/login";
+const DOCS_URL = "https://api-production-b0c5.up.railway.app/docs";
+
 const features = [
   {
     icon: "🪪",
@@ -41,7 +44,7 @@ const features = [
   },
 ];
 
-const plans = [
+const plans: { name: string; price: string; description: string; features: string[]; cta: string; ctaHref: string; highlighted: boolean }[] = [
   {
     name: "Starter",
     price: "$199",
@@ -54,6 +57,7 @@ const plans = [
       "Email support",
     ],
     cta: "Start free trial",
+    ctaHref: DASHBOARD_LOGIN,
     highlighted: false,
   },
   {
@@ -69,6 +73,7 @@ const plans = [
       "Priority email support",
     ],
     cta: "Start free trial",
+    ctaHref: DASHBOARD_LOGIN,
     highlighted: true,
   },
   {
@@ -84,6 +89,7 @@ const plans = [
       "Custom rule configuration",
     ],
     cta: "Contact sales",
+    ctaHref: DASHBOARD_LOGIN,
     highlighted: false,
   },
 ];
@@ -120,9 +126,11 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="#"
+                href={DASHBOARD_LOGIN}
                 className="inline-flex items-center justify-center gap-2 text-white font-medium px-6 py-3 rounded-lg transition-colors"
                 style={{ backgroundColor: "var(--brand)" }}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Start building free
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -130,8 +138,10 @@ export default function Home() {
                 </svg>
               </Link>
               <Link
-                href="#"
+                href={DOCS_URL}
                 className="inline-flex items-center justify-center gap-2 text-gray-700 font-medium px-6 py-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 View API docs
               </Link>
@@ -304,13 +314,15 @@ const verification = await client.kyc.create({
                   ))}
                 </ul>
                 <Link
-                  href="#"
+                  href={plan.ctaHref}
                   className={`block text-center text-sm font-medium px-4 py-2.5 rounded-lg transition-colors ${
                     plan.highlighted
                       ? "text-white"
                       : "border border-gray-200 text-gray-700 hover:border-gray-300"
                   }`}
                   style={plan.highlighted ? { backgroundColor: "var(--brand)" } : {}}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {plan.cta}
                 </Link>
@@ -319,7 +331,7 @@ const verification = await client.kyc.create({
           </div>
           <p className="text-center text-sm text-gray-400 mt-8">
             Need more than 2,500 verifications/month?{" "}
-            <Link href="#" className="underline underline-offset-2" style={{ color: "var(--brand)" }}>
+            <Link href={DASHBOARD_LOGIN} className="underline underline-offset-2" style={{ color: "var(--brand)" }} target="_blank" rel="noopener noreferrer">
               Talk to us about custom volume pricing.
             </Link>
           </p>
@@ -340,17 +352,21 @@ const verification = await client.kyc.create({
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="#"
+                href={DASHBOARD_LOGIN}
                 className="inline-flex items-center justify-center gap-2 bg-white font-medium px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors"
                 style={{ color: "var(--brand)" }}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Start free trial
               </Link>
               <Link
-                href="#"
+                href={DOCS_URL}
                 className="inline-flex items-center justify-center gap-2 text-white font-medium px-6 py-3 rounded-lg border border-white/30 hover:border-white/50 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Schedule a demo
+                View API docs
               </Link>
             </div>
           </div>

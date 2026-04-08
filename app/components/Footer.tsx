@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+const DASHBOARD_URL = "https://veridian-api-dashboard.vercel.app";
+const DOCS_URL = "https://api-production-b0c5.up.railway.app/docs";
+const STATUS_URL = "https://api-production-b0c5.up.railway.app";
+
 export default function Footer() {
   return (
     <footer className="border-t border-gray-100 bg-gray-50">
@@ -19,8 +23,8 @@ export default function Footer() {
               <ul className="space-y-2 text-gray-500">
                 <li><Link href="/#features" className="hover:text-gray-900 transition-colors">Features</Link></li>
                 <li><Link href="/#pricing" className="hover:text-gray-900 transition-colors">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-gray-900 transition-colors">Docs</Link></li>
-                <li><Link href="#" className="hover:text-gray-900 transition-colors">Status</Link></li>
+                <li><Link href={DOCS_URL} className="hover:text-gray-900 transition-colors" target="_blank" rel="noopener noreferrer">Docs</Link></li>
+                <li><Link href={DASHBOARD_URL} className="hover:text-gray-900 transition-colors" target="_blank" rel="noopener noreferrer">Dashboard</Link></li>
               </ul>
             </div>
             <div>
@@ -33,8 +37,17 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-12 pt-6 border-t border-gray-200 text-xs text-gray-400">
-          © {new Date().getFullYear()} Veridian. All rights reserved.
+        <div className="mt-12 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-gray-400">
+          <span>© {new Date().getFullYear()} Veridian. All rights reserved.</span>
+          <Link
+            href={STATUS_URL}
+            className="inline-flex items-center gap-1.5 hover:text-gray-600 transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            All systems operational
+          </Link>
         </div>
       </div>
     </footer>
