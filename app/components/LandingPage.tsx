@@ -539,7 +539,7 @@ function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Start free — 50 verifications
+                Start free
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -1198,7 +1198,7 @@ function FinalCTASection() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Start free — no card needed
+            Start verifying identities in 15 minutes
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

@@ -66,15 +66,6 @@ export default function Nav() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href={LOGIN_URL}
-              className="text-sm transition-colors hover:text-[#e8f5ef]"
-              style={{ color: 'var(--text-muted)' }}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Sign in
-            </Link>
-            <Link
-              href={LOGIN_URL}
               className="text-sm font-semibold px-4 py-2 rounded-lg transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
               target="_blank"
@@ -142,16 +133,6 @@ export default function Nav() {
                 </Link>
               ))}
               <div className="pt-2 flex flex-col gap-3 border-t" style={{ borderColor: 'var(--border)' }}>
-                <Link
-                  href={LOGIN_URL}
-                  className="text-center py-2.5 rounded-lg text-sm font-medium transition-colors"
-                  style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Sign in
-                </Link>
                 <Link
                   href={LOGIN_URL}
                   className="text-center py-2.5 rounded-lg text-sm font-semibold"
