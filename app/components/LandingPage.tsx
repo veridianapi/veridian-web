@@ -293,7 +293,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
   if (!mounted) {
     return (
       <div
-        className={`rounded-2xl overflow-hidden ${className}`}
+        className={`rounded-2xl overflow-hidden w-full ${className}`}
         style={{
           background: '#0d1117',
           border: '1px solid rgba(29, 158, 117, 0.2)',
@@ -343,12 +343,12 @@ function CodeWindow({ className = '' }: { className?: string }) {
         </div>
         <div style={{ height: '1px', backgroundColor: 'rgba(29,158,117,0.1)' }} />
         <div className="relative overflow-hidden" style={{ minHeight: '240px' }}>
-          <pre className="p-5 text-sm leading-7 overflow-x-auto code-block" style={{ color: '#c9e8d9', margin: 0 }}>
+          <pre className="p-3 sm:p-5 text-xs sm:text-sm leading-6 sm:leading-7 overflow-x-auto code-block" style={{ color: '#c9e8d9', margin: 0 }}>
             <CurlCode />
           </pre>
         </div>
         <div
-          className="flex items-center gap-2.5 px-5 py-2.5 text-xs code-block"
+          className="flex items-center gap-2.5 px-3 sm:px-5 py-2.5 text-xs code-block"
           style={{
             backgroundColor: 'rgba(29, 158, 117, 0.05)',
             borderTop: '1px solid rgba(29, 158, 117, 0.1)',
@@ -449,7 +449,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: 'easeInOut' }}
-            className="p-5 text-sm leading-7 overflow-x-auto code-block"
+            className="p-3 sm:p-5 text-xs sm:text-sm leading-6 sm:leading-7 overflow-x-auto code-block"
             style={{ color: '#c9e8d9', margin: 0 }}
           >
             {TAB_CONTENT[activeTab]}
@@ -481,8 +481,8 @@ function HeroSection() {
       {/* Dot grid background */}
       <div className="absolute inset-0 dot-grid opacity-30" />
 
-      <div className="relative max-w-6xl mx-auto px-6 py-32 w-full">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-32 w-full">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left: text */}
           <motion.div
             variants={staggerContainer}
@@ -511,7 +511,7 @@ function HeroSection() {
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-5xl md:text-6xl lg:text-6xl font-bold tracking-tight leading-[1.05] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold tracking-tight leading-[1.05] mb-6 break-words"
               style={{ color: '#e8f5ef' }}
             >
               Compliance infrastructure{' '}
@@ -523,7 +523,7 @@ function HeroSection() {
             {/* Subheadline */}
             <motion.p
               variants={fadeUp}
-              className="text-lg leading-relaxed mb-10 max-w-lg"
+              className="text-lg leading-relaxed mb-10 max-w-lg break-words"
               style={{ color: 'var(--text-muted)' }}
             >
               KYC, sanctions screening, and AML in one API.
@@ -570,6 +570,7 @@ function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             suppressHydrationWarning
+            className="overflow-x-hidden min-w-0"
           >
             <CodeWindow />
           </motion.div>
