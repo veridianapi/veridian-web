@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
-import PaddleCheckout from "./components/PaddleCheckout";
 
 export default function Home() {
   return (
@@ -12,9 +10,6 @@ export default function Home() {
         <LandingPage />
       </main>
       <Footer />
-      <Suspense>
-        <PaddleCheckout />
-      </Suspense>
     </>
   );
 }
