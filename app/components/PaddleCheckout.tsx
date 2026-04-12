@@ -9,16 +9,28 @@ export default function PaddleCheckout() {
     const txn = searchParams.get('_ptxn')
     if (!txn) return
 
-    const paddle = (window as any).Paddle
-    if (!paddle) return
+    let cancelled = false
 
-    paddle.Setup({
-      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
-    })
+    function openCheckout() {
+      if (cancelled) return
+      const paddle = (window as any).Paddle
+      if (!paddle) {
+        setTimeout(openCheckout, 200)
+        return
+      }
 
-    paddle.Checkout.open({
-      transactionId: txn
-    })
+      paddle.Setup({
+        token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
+      })
+
+      paddle.Checkout.open({
+        transactionId: txn
+      })
+    }
+
+    openCheckout()
+
+    return () => { cancelled = true }
   }, [searchParams])
 
   return null
