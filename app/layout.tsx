@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        <script src="https://cdn.paddle.com/paddle/v2/paddle.js" />
+      </head>
       <body className="min-h-full flex flex-col" style={{ backgroundColor: '#050a09', color: '#e8f5ef' }}>
         {children}
       </body>
