@@ -13,13 +13,16 @@ export default function CheckoutClient() {
       return
     }
 
-    const script = document.createElement('script')
-    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js'
-    script.onload = () => {
+    let cancelled = false
+
+    function tryOpen() {
+      if (cancelled) return
       const paddle = (window as any).Paddle
-      paddle.Setup({
-        token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
-      })
+      if (!paddle) {
+        setTimeout(tryOpen, 200)
+        return
+      }
+      paddle.Initialize({ token: 'live_00da1847a1dbb42c19cc02c72b9' })
       paddle.Checkout.open({
         transactionId: txn,
         settings: {
@@ -29,8 +32,14 @@ export default function CheckoutClient() {
       })
       setStatus('Opening checkout...')
     }
+
+    const script = document.createElement('script')
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js'
+    script.onload = tryOpen
     document.head.appendChild(script)
-  }, [])
+
+    return () => { cancelled = true }
+  }, [searchParams])
 
   return (
     <div style={{
