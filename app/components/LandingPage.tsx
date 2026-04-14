@@ -66,7 +66,7 @@ const TABS: { id: TabId; label: string }[] = [
 
 // Plain strings for the copy button
 const CODE_TEXT: Record<TabId, string> = {
-  curl: `curl -X POST https://api-production-b0c5.up.railway.app/v1/verifications \\
+  curl: `curl -X POST https://api.veridianapi.com/v1/verifications \\
   -H "Authorization: Bearer your_api_key" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -117,7 +117,7 @@ function CurlCode() {
     <code>
       <span style={{ color: k }}>curl</span>
       <span style={{ color: p }}> -X POST </span>
-      <span style={{ color: s }}>https://api-production-b0c5.up.railway.app/v1/verifications</span>
+      <span style={{ color: s }}>https://api.veridianapi.com/v1/verifications</span>
       <span style={{ color: c }}> \</span>{'\n'}
       {'  '}
       <span style={{ color: k }}>-H</span>

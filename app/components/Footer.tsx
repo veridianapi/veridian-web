@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const DOCS_URL = "/docs";
-const STATUS_URL = "https://api-production-b0c5.up.railway.app/health";
+const STATUS_URL = "https://api.veridianapi.com/health";
 
 export default function Footer() {
   return (

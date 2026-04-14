@@ -22,7 +22,7 @@ export default function CheckoutClient() {
         setTimeout(tryOpen, 200)
         return
       }
-      paddle.Initialize({ token: 'live_00da1847a1dbb42c19cc02c72b9' })
+      paddle.Initialize({ token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN! })
       paddle.Checkout.open({
         transactionId: txn,
         settings: {
