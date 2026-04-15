@@ -312,7 +312,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
                 key={tab.id}
                 className="relative px-4 py-2 text-xs font-medium rounded-t-lg"
                 style={{
-                  color: tab.id === 'curl' ? '#e8f5ef' : 'rgba(232,245,239,0.35)',
+                  color: tab.id === 'curl' ? '#f0f4f3' : 'rgba(232,245,239,0.35)',
                   backgroundColor: tab.id === 'curl' ? '#0d1117' : 'transparent',
                 }}
               >
@@ -390,7 +390,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
               onClick={() => setActiveTab(tab.id)}
               className="relative px-4 py-2 text-xs font-medium rounded-t-lg transition-colors"
               style={{
-                color: activeTab === tab.id ? '#e8f5ef' : 'rgba(232,245,239,0.35)',
+                color: activeTab === tab.id ? '#f0f4f3' : 'rgba(232,245,239,0.35)',
                 backgroundColor: activeTab === tab.id ? '#0d1117' : 'transparent',
               }}
             >
@@ -511,8 +511,8 @@ function HeroSection() {
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold tracking-tight leading-[1.05] mb-6 break-words"
-              style={{ color: '#e8f5ef' }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-semibold tracking-tight leading-[1.05] mb-6 break-words"
+              style={{ color: '#f0f4f3' }}
             >
               Compliance infrastructure{' '}
               <span className="gradient-text glow-text">
@@ -524,7 +524,7 @@ function HeroSection() {
             <motion.p
               variants={fadeUp}
               className="text-lg leading-relaxed mb-10 max-w-lg break-words"
-              style={{ color: 'var(--text-muted)' }}
+              style={{ color: '#a3b3ae' }}
             >
               KYC, sanctions screening, and AML in one API.
               Transparent pricing. No $150K contracts.
@@ -534,7 +534,7 @@ function HeroSection() {
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 mb-8">
               <Link
                 href={DASHBOARD_LOGIN}
-                className="inline-flex items-center justify-center gap-2 font-semibold px-6 py-3.5 rounded-xl transition-all text-sm"
+                className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
                 style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -546,10 +546,10 @@ function HeroSection() {
               </Link>
               <Link
                 href={DOCS_URL}
-                className="inline-flex items-center justify-center gap-2 font-medium px-6 py-3.5 rounded-xl transition-all text-sm"
+                className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
                 style={{
                   border: '1px solid rgba(29, 158, 117, 0.2)',
-                  color: 'var(--text-muted)',
+                  color: '#a3b3ae',
                 }}
               >
                 View docs
@@ -559,7 +559,7 @@ function HeroSection() {
               </Link>
             </motion.div>
 
-            <motion.p variants={fadeUp} className="text-xs" style={{ color: 'var(--text-subtle)' }}>
+            <motion.p variants={fadeUp} className="text-xs" style={{ color: '#5a7268' }}>
               Free trial · No credit card · 5-minute integration
             </motion.p>
           </motion.div>
@@ -589,34 +589,15 @@ function HeroSection() {
 // ─── Social Proof Bar ─────────────────────────────────────────────────────────
 
 function SocialProofBar() {
-  const companies = ['Meridian Pay', 'Volt Finance', 'Axia Bank', 'Crestline FX', 'Nomad Card', 'Aether Lending'];
   return (
     <section
       className="py-12"
-      style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
+      style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
     >
-      <div className="max-w-6xl mx-auto px-6">
-        <p className="text-xs font-medium uppercase tracking-widest text-center mb-8" style={{ color: 'var(--text-subtle)' }}>
-          Trusted by fintech teams building the future
+      <div className="max-w-6xl mx-auto px-6 text-center">
+        <p className="text-sm" style={{ color: '#a3b3ae' }}>
+          Trusted by compliance teams at forward-thinking fintechs
         </p>
-        <motion.div
-          className="flex flex-wrap items-center justify-center gap-10"
-          variants={staggerFast}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
-          {companies.map((name) => (
-            <motion.span
-              key={name}
-              variants={fadeIn}
-              className="text-sm font-semibold tracking-tight"
-              style={{ color: 'rgba(232, 245, 239, 0.18)' }}
-            >
-              {name}
-            </motion.span>
-          ))}
-        </motion.div>
       </div>
     </section>
   );
@@ -647,10 +628,10 @@ function BentoCard({
       }}
       className={`rounded-2xl p-6 relative overflow-hidden ${className}`}
       style={{
-        backgroundColor: 'var(--card)',
+        backgroundColor: '#111916',
         border: highlighted
           ? '1px solid rgba(29, 158, 117, 0.3)'
-          : '1px solid var(--border)',
+          : '1px solid rgba(255,255,255,0.08)',
         boxShadow: highlighted
           ? '0 0 0 1px rgba(29, 158, 117, 0.2), 0 0 30px rgba(29, 158, 117, 0.08)'
           : undefined,
@@ -698,15 +679,15 @@ function BentoFeaturesSection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
-          style={{ color: '#e8f5ef' }}
+          className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
+          style={{ color: '#f0f4f3' }}
         >
           One API. Full compliance coverage.
         </motion.h2>
         <motion.p
           variants={fadeUp}
           className="text-lg max-w-xl mx-auto"
-          style={{ color: 'var(--text-muted)' }}
+          style={{ color: '#a3b3ae' }}
         >
           Everything your compliance team needs, without stitching together five vendors.
         </motion.p>
@@ -728,10 +709,10 @@ function BentoFeaturesSection() {
               <path d="M10 7.5h4M10 9h3M10 10.5h4" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
             </svg>
           </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#e8f5ef' }}>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>
             Identity verification in 2 seconds
           </h3>
-          <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: '#a3b3ae' }}>
             Document scanning, liveness detection, and database cross-checks across 195+ countries.
             Passport, driver&apos;s license, national ID — all supported.
           </p>
@@ -759,9 +740,9 @@ function BentoFeaturesSection() {
               <path d="M6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </CardIcon>
-          <div className="text-3xl font-bold mb-1" style={{ color: '#e8f5ef' }}>99.9%</div>
+          <div className="text-3xl font-semibold mb-1" style={{ color: '#f0f4f3' }}>99.9%</div>
           <div className="text-sm font-medium mb-2" style={{ color: 'var(--brand)' }}>Uptime SLA</div>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
             Guaranteed availability on Scale plan. Redundant infra across multiple regions.
           </p>
         </BentoCard>
@@ -774,9 +755,9 @@ function BentoFeaturesSection() {
               <path d="M9 5v4l2.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </CardIcon>
-          <div className="text-3xl font-bold mb-1" style={{ color: '#e8f5ef' }}>18,698</div>
+          <div className="text-3xl font-semibold mb-1" style={{ color: '#f0f4f3' }}>18,698</div>
           <div className="text-sm font-medium mb-2" style={{ color: 'var(--brand)' }}>OFAC sanctions records</div>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
             OFAC, UN, EU, and 50+ global watchlists. Updated daily. Included on every plan.
           </p>
         </BentoCard>
@@ -789,8 +770,8 @@ function BentoFeaturesSection() {
               <path d="M10.5 4l-3 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#e8f5ef' }}>Developer-first API</h3>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>Developer-first API</h3>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: '#a3b3ae' }}>
             REST API with clear docs. SDKs for Node, Python, and Go.
             Idempotency keys, webhooks, and a full sandbox environment.
           </p>
@@ -820,8 +801,8 @@ function BentoFeaturesSection() {
               <circle cx="9" cy="9" r="3.5" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </CardIcon>
-          <h3 className="text-lg font-semibold mb-2" style={{ color: '#e8f5ef' }}>Transparent pricing</h3>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <h3 className="text-lg font-semibold mb-2" style={{ color: '#f0f4f3' }}>Transparent pricing</h3>
+          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
             No setup fees. No per-seat pricing. No $150K enterprise contracts. See exactly what you pay.
           </p>
         </BentoCard>
@@ -833,8 +814,8 @@ function BentoFeaturesSection() {
               <path d="M2 9h14M9 2c-2 2-3 4-3 7s1 5 3 7M9 2c2 2 3 4 3 7s-1 5-3 7" stroke="currentColor" strokeWidth="1.25" />
             </svg>
           </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#e8f5ef' }}>Global document coverage</h3>
-          <p className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>Global document coverage</h3>
+          <p className="text-sm leading-relaxed mb-5" style={{ color: '#a3b3ae' }}>
             195+ countries. Passports, driver&apos;s licenses, national IDs, and residence permits.
             Automatic document classification — no configuration needed.
           </p>
@@ -882,7 +863,7 @@ function HowItWorksSection() {
       id="how-it-works"
       className="py-28 scroll-mt-16"
       style={{
-        background: 'linear-gradient(to bottom, #050a09, var(--surface) 50%, #050a09)',
+        background: 'linear-gradient(to bottom, #050a09, #0a0f0e 50%, #050a09)',
       }}
     >
       <div className="max-w-6xl mx-auto px-6">
@@ -898,15 +879,15 @@ function HowItWorksSection() {
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
-            style={{ color: '#e8f5ef' }}
+            className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
+            style={{ color: '#f0f4f3' }}
           >
             Integrate in 15 minutes
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="text-lg max-w-lg mx-auto"
-            style={{ color: 'var(--text-muted)' }}
+            style={{ color: '#a3b3ae' }}
           >
             From zero to live KYC verifications in an afternoon.
           </motion.p>
@@ -925,26 +906,26 @@ function HowItWorksSection() {
             style={{
               left: '16.67%',
               right: '16.67%',
-              background: 'linear-gradient(to right, transparent, var(--border), var(--border), transparent)',
+              background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08), rgba(255,255,255,0.08), transparent)',
             }}
           />
 
           {steps.map((step) => (
             <motion.div key={step.number} variants={fadeUp} className="relative">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 font-mono font-bold text-xl"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 font-mono font-semibold text-xl"
                 style={{
-                  backgroundColor: 'var(--card)',
-                  border: '1px solid var(--border)',
+                  backgroundColor: '#111916',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   color: 'var(--brand)',
                 }}
               >
                 {step.number}
               </div>
-              <h3 className="text-xl font-semibold mb-3" style={{ color: '#e8f5ef' }}>
+              <h3 className="text-xl font-semibold mb-3" style={{ color: '#f0f4f3' }}>
                 {step.title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
                 {step.description}
               </p>
             </motion.div>
@@ -1026,15 +1007,15 @@ function PricingSection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
-          style={{ color: '#e8f5ef' }}
+          className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
+          style={{ color: '#f0f4f3' }}
         >
           Simple, transparent pricing
         </motion.h2>
         <motion.p
           variants={fadeUp}
           className="text-lg max-w-md mx-auto"
-          style={{ color: 'var(--text-muted)' }}
+          style={{ color: '#a3b3ae' }}
         >
           No setup fees. No per-seat pricing. Cancel anytime.
         </motion.p>
@@ -1054,10 +1035,10 @@ function PricingSection() {
             whileHover={{ y: -4 }}
             className="relative rounded-2xl p-8 flex flex-col"
             style={{
-              backgroundColor: plan.highlighted ? 'rgba(29, 158, 117, 0.05)' : 'var(--card)',
+              backgroundColor: plan.highlighted ? 'rgba(29, 158, 117, 0.05)' : '#111916',
               border: plan.highlighted
                 ? '1px solid rgba(29, 158, 117, 0.4)'
-                : '1px solid var(--border)',
+                : '1px solid rgba(255,255,255,0.08)',
               boxShadow: plan.highlighted
                 ? '0 0 0 1px rgba(29, 158, 117, 0.15), 0 0 50px rgba(29, 158, 117, 0.1)'
                 : undefined,
@@ -1067,7 +1048,7 @@ function PricingSection() {
             {plan.highlighted && (
               <>
                 <div
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1.5 rounded-full"
+                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1.5 rounded-full"
                   style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
                 >
                   Most popular
@@ -1087,19 +1068,19 @@ function PricingSection() {
                   {plan.name}
                 </div>
                 <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-bold tracking-tight" style={{ color: '#e8f5ef' }}>
+                  <span className="text-5xl font-semibold tracking-tight" style={{ color: '#f0f4f3' }}>
                     {plan.price}
                   </span>
-                  <span className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>/mo</span>
+                  <span className="text-sm mb-2" style={{ color: '#a3b3ae' }}>/mo</span>
                 </div>
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-sm" style={{ color: '#a3b3ae' }}>
                   {plan.description}
                 </p>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feat) => (
-                  <li key={feat} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--text-muted)' }}>
+                  <li key={feat} className="flex items-start gap-2.5 text-sm" style={{ color: '#a3b3ae' }}>
                     <CheckIcon />
                     {feat}
                   </li>
@@ -1108,13 +1089,13 @@ function PricingSection() {
 
               <Link
                 href={DASHBOARD_LOGIN}
-                className="block text-center text-sm font-semibold px-5 py-3 rounded-xl transition-all"
+                className="flex items-center justify-center text-[13px] font-medium px-5 h-11 sm:h-9 rounded-lg transition-all"
                 style={
                   plan.highlighted
                     ? { backgroundColor: 'var(--brand)', color: '#050a09' }
                     : {
-                        border: '1px solid var(--border)',
-                        color: 'var(--text-muted)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        color: '#a3b3ae',
                       }
                 }
                 target="_blank"
@@ -1133,7 +1114,7 @@ function PricingSection() {
         whileInView="show"
         viewport={{ once: true }}
         className="text-center text-sm mt-8"
-        style={{ color: 'var(--text-subtle)' }}
+        style={{ color: '#5a7268' }}
       >
         Need more than 2,500 verifications/month?{' '}
         <Link
@@ -1156,7 +1137,7 @@ function FinalCTASection() {
   return (
     <section
       className="relative py-32 overflow-hidden cta-glow"
-      style={{ borderTop: '1px solid var(--border)' }}
+      style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
     >
       {/* Dot grid */}
       <div className="absolute inset-0 dot-grid opacity-20" />
@@ -1173,8 +1154,8 @@ function FinalCTASection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-bold tracking-tight mb-6"
-          style={{ color: '#e8f5ef' }}
+          className="text-4xl md:text-5xl font-semibold tracking-tight mb-6"
+          style={{ color: '#f0f4f3' }}
         >
           Start verifying identities
           <br />
@@ -1183,7 +1164,7 @@ function FinalCTASection() {
         <motion.p
           variants={fadeUp}
           className="text-lg mb-10 max-w-md mx-auto"
-          style={{ color: 'var(--text-muted)' }}
+          style={{ color: '#a3b3ae' }}
         >
           Your first 50 verifications are free. No credit card required. Cancel anytime.
         </motion.p>
@@ -1193,7 +1174,7 @@ function FinalCTASection() {
         >
           <Link
             href={DASHBOARD_LOGIN}
-            className="inline-flex items-center justify-center gap-2 font-semibold px-8 py-4 rounded-xl text-sm transition-all"
+            className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
             style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
             target="_blank"
             rel="noopener noreferrer"
@@ -1205,8 +1186,8 @@ function FinalCTASection() {
           </Link>
           <Link
             href={DOCS_URL}
-            className="inline-flex items-center justify-center gap-2 font-medium px-8 py-4 rounded-xl text-sm transition-all"
-            style={{ border: '1px solid var(--border)', color: 'var(--text-muted)' }}
+            className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
+            style={{ border: '1px solid rgba(255,255,255,0.08)', color: '#a3b3ae' }}
           >
             Read the docs
           </Link>
