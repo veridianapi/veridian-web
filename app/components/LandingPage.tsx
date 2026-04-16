@@ -571,7 +571,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-start flex-wrap mt-10"
+              className="grid grid-cols-2 gap-6 sm:flex sm:flex-row sm:flex-nowrap sm:items-stretch sm:gap-0 mt-10"
             >
               {[
                 { value: '18,698', label: 'OFAC sanctions records' },
@@ -599,7 +599,7 @@ function HeroSection() {
                 return [
                   <div
                     key={`div-${i}`}
-                    className="self-stretch w-px mx-6"
+                    className="hidden sm:block self-stretch w-px mx-6"
                     style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
                   />,
                   el,
