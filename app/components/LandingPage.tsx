@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import LiveDemo from './LiveDemo';
+import DashboardPreview from './DashboardPreview';
 
 const DASHBOARD_LOGIN = "https://veridian-api-dashboard.vercel.app/login";
 const DOCS_URL = "/docs";
@@ -840,133 +841,6 @@ function BentoFeaturesSection() {
   );
 }
 
-// ─── Product Demo ─────────────────────────────────────────────────────────────
-
-type DemoTab = 'overview' | 'verifications' | 'detail';
-
-const DEMO_TABS: { id: DemoTab; label: string }[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'verifications', label: 'Verifications' },
-  { id: 'detail', label: 'Detail view' },
-];
-
-const DEMO_IMAGES: Record<DemoTab, string> = {
-  overview: '/screenshots/dashboard-overview.png',
-  verifications: '/screenshots/dashboard-verifications.png',
-  detail: '/screenshots/dashboard-detail.png',
-};
-
-function ProductDemoSection() {
-  const [activeTab, setActiveTab] = useState<DemoTab>('overview');
-
-  return (
-    <section id="product" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      {/* Header */}
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-10"
-      >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Dashboard</SectionLabel>
-        </motion.div>
-        <motion.h2
-          variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-4"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
-        >
-          See exactly what your compliance team sees
-        </motion.h2>
-        <motion.p
-          variants={fadeUp}
-          className="text-lg max-w-xl mx-auto"
-          style={{ color: '#a3b3ae' }}
-        >
-          Real-time verification results, risk scores, and sanctions checks — all in one dashboard.
-        </motion.p>
-      </motion.div>
-
-      {/* Browser chrome + screenshot */}
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-40px' }}
-        style={{
-          background: '#0d1211',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-        }}
-      >
-        {/* Title bar: macOS dots + tabs */}
-        <div
-          className="flex items-center px-4 pt-3 pb-0"
-          style={{ backgroundColor: '#161b22' }}
-        >
-          {/* macOS dots */}
-          <div className="flex items-center gap-1.5 mr-5">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f57' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#febc2e' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--brand)' }} />
-          </div>
-
-          {/* Tabs */}
-          <div className="flex items-end">
-            {DEMO_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className="relative px-4 py-2 text-xs font-medium transition-colors rounded-t-lg"
-                style={{
-                  color: activeTab === tab.id ? '#f0f4f3' : '#5a7268',
-                  backgroundColor: activeTab === tab.id ? '#0d1211' : 'transparent',
-                }}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="demo-tab-underline"
-                    className="absolute bottom-0 left-0 right-0"
-                    style={{ height: '2px', backgroundColor: '#1d9e75' }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.06)' }} />
-
-        {/* Screenshot */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-          >
-            <Image
-              src={DEMO_IMAGES[activeTab]}
-              width={1400}
-              height={900}
-              alt="Veridian dashboard screenshot"
-              className="w-full"
-              style={{ display: 'block' }}
-            />
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-    </section>
-  );
-}
-
 // ─── How It Works ─────────────────────────────────────────────────────────────
 
 function HowItWorksSection() {
@@ -1335,7 +1209,8 @@ export default function LandingPage() {
       <HeroSection />
       <SocialProofBar />
       <BentoFeaturesSection />
-      <ProductDemoSection />
+      <LiveDemo />
+      <DashboardPreview />
       <HowItWorksSection />
       <PricingSection />
       <FinalCTASection />
