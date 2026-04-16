@@ -34,11 +34,12 @@ const staggerFast = {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-6 px-3 py-1.5 rounded-full"
+      className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase mb-6 px-3 py-1.5 rounded-full"
       style={{
         color: 'var(--brand)',
         backgroundColor: 'rgba(29, 158, 117, 0.08)',
         border: '1px solid rgba(29, 158, 117, 0.15)',
+        letterSpacing: '0.08em',
       }}
     >
       {children}
@@ -343,7 +344,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
         </div>
         <div style={{ height: '1px', backgroundColor: 'rgba(29,158,117,0.1)' }} />
         <div className="relative overflow-hidden" style={{ minHeight: '240px' }}>
-          <pre className="p-3 sm:p-5 text-xs sm:text-sm leading-6 sm:leading-7 overflow-x-auto code-block" style={{ color: '#c9e8d9', margin: 0 }}>
+          <pre className="p-3 sm:p-5 text-xs sm:text-sm leading-[1.8] overflow-x-auto code-block" style={{ color: '#c9e8d9', margin: 0 }}>
             <CurlCode />
           </pre>
         </div>
@@ -449,7 +450,7 @@ function CodeWindow({ className = '' }: { className?: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: 'easeInOut' }}
-            className="p-3 sm:p-5 text-xs sm:text-sm leading-6 sm:leading-7 overflow-x-auto code-block"
+            className="p-3 sm:p-5 text-xs sm:text-sm leading-[1.8] overflow-x-auto code-block"
             style={{ color: '#c9e8d9', margin: 0 }}
           >
             {TAB_CONTENT[activeTab]}
@@ -511,8 +512,8 @@ function HeroSection() {
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-semibold tracking-tight leading-[1.05] mb-6 break-words"
-              style={{ color: '#f0f4f3' }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-light leading-[1.05] mb-6 break-words"
+              style={{ color: '#f0f4f3', letterSpacing: '-1.4px' }}
             >
               Compliance infrastructure{' '}
               <span className="gradient-text glow-text">
@@ -523,7 +524,7 @@ function HeroSection() {
             {/* Subheadline */}
             <motion.p
               variants={fadeUp}
-              className="text-lg leading-relaxed mb-10 max-w-lg break-words"
+              className="text-lg font-light leading-[1.6] mb-10 max-w-lg break-words"
               style={{ color: '#a3b3ae' }}
             >
               KYC, sanctions screening, and AML in one API.
@@ -594,7 +595,8 @@ function SocialProofBar() {
       className="py-12"
       style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
     >
-      <div className="max-w-6xl mx-auto px-6 text-center">
+      <div className="max-w-6xl mx-auto px-6 text-center flex flex-col items-center">
+        <SectionLabel>Trusted by</SectionLabel>
         <p className="text-sm" style={{ color: '#a3b3ae' }}>
           Trusted by compliance teams at forward-thinking fintechs
         </p>
@@ -666,7 +668,7 @@ function CardIcon({ children }: { children: React.ReactNode }) {
 
 function BentoFeaturesSection() {
   return (
-    <section id="features" className="max-w-6xl mx-auto px-6 py-28 scroll-mt-16">
+    <section id="features" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -679,8 +681,8 @@ function BentoFeaturesSection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
-          style={{ color: '#f0f4f3' }}
+          className="text-4xl md:text-5xl font-semibold mb-4"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
         >
           One API. Full compliance coverage.
         </motion.h2>
@@ -861,7 +863,7 @@ function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="py-28 scroll-mt-16"
+      className="py-24 scroll-mt-16"
       style={{
         background: 'linear-gradient(to bottom, #050a09, #0a0f0e 50%, #050a09)',
       }}
@@ -879,8 +881,8 @@ function HowItWorksSection() {
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
-            style={{ color: '#f0f4f3' }}
+            className="text-4xl md:text-5xl font-semibold mb-4"
+            style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
           >
             Integrate in 15 minutes
           </motion.h2>
@@ -902,7 +904,7 @@ function HowItWorksSection() {
         >
           {/* Connector line (desktop) */}
           <div
-            className="absolute top-8 h-px hidden md:block"
+            className="absolute top-10 h-px hidden md:block"
             style={{
               left: '16.67%',
               right: '16.67%',
@@ -913,7 +915,7 @@ function HowItWorksSection() {
           {steps.map((step) => (
             <motion.div key={step.number} variants={fadeUp} className="relative">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 font-mono font-semibold text-xl"
+                className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 font-mono font-light text-5xl"
                 style={{
                   backgroundColor: '#111916',
                   border: '1px solid rgba(255,255,255,0.08)',
@@ -994,7 +996,7 @@ const plans: {
 
 function PricingSection() {
   return (
-    <section id="pricing" className="max-w-6xl mx-auto px-6 py-28 scroll-mt-16">
+    <section id="pricing" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -1007,8 +1009,8 @@ function PricingSection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold tracking-tight mb-4"
-          style={{ color: '#f0f4f3' }}
+          className="text-4xl md:text-5xl font-semibold mb-4"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
         >
           Simple, transparent pricing
         </motion.h2>
@@ -1040,8 +1042,8 @@ function PricingSection() {
                 ? '1px solid rgba(29, 158, 117, 0.4)'
                 : '1px solid rgba(255,255,255,0.08)',
               boxShadow: plan.highlighted
-                ? '0 0 0 1px rgba(29, 158, 117, 0.15), 0 0 50px rgba(29, 158, 117, 0.1)'
-                : undefined,
+                ? '0 0 0 1px rgba(29, 158, 117, 0.15), 0 0 50px rgba(29, 158, 117, 0.1), 0 30px 45px -30px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.2)'
+                : '0 30px 45px -30px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.2)',
               backdropFilter: 'blur(12px)',
             }}
           >
@@ -1136,7 +1138,7 @@ function PricingSection() {
 function FinalCTASection() {
   return (
     <section
-      className="relative py-32 overflow-hidden cta-glow"
+      className="relative py-24 overflow-hidden cta-glow"
       style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
     >
       {/* Dot grid */}
@@ -1154,8 +1156,8 @@ function FinalCTASection() {
         </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold tracking-tight mb-6"
-          style={{ color: '#f0f4f3' }}
+          className="text-4xl md:text-5xl font-semibold mb-6"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
         >
           Start verifying identities
           <br />
