@@ -542,7 +542,7 @@ function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Start free
+                Get API key free
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -565,6 +565,47 @@ function HeroSection() {
             <motion.p variants={fadeUp} className="text-xs" style={{ color: '#5a7268' }}>
               Free trial · No credit card · 5-minute integration
             </motion.p>
+
+            {/* Stats bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="flex items-start flex-wrap mt-10"
+            >
+              {[
+                { value: '18,698', label: 'OFAC sanctions records' },
+                { value: '99.9%',  label: 'Uptime SLA' },
+                { value: '< 2s',   label: 'Verification time' },
+                { value: '$199',   label: 'Starting price' },
+              ].flatMap((stat, i) => {
+                const el = (
+                  <div key={stat.label} className="flex flex-col">
+                    <span
+                      className="text-2xl font-semibold leading-none"
+                      style={{ color: '#f0f4f3', fontVariantNumeric: 'tabular-nums' }}
+                    >
+                      {stat.value}
+                    </span>
+                    <span
+                      className="text-[11px] font-medium uppercase mt-1.5"
+                      style={{ color: '#5a7268', letterSpacing: '0.06em' }}
+                    >
+                      {stat.label}
+                    </span>
+                  </div>
+                );
+                if (i === 0) return [el];
+                return [
+                  <div
+                    key={`div-${i}`}
+                    className="self-stretch w-px mx-6"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
+                  />,
+                  el,
+                ];
+              })}
+            </motion.div>
           </motion.div>
 
           {/* Right: code window */}
@@ -1135,6 +1176,155 @@ function PricingSection() {
   );
 }
 
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+
+const FAQ_ITEMS = [
+  {
+    question: 'How long does a verification take?',
+    answer:
+      'Under 2 seconds for most documents. OCR extraction, face matching, and sanctions screening all happen in parallel.',
+  },
+  {
+    question: 'Which documents do you support?',
+    answer:
+      'Passports, driving licences, and national IDs from 195+ countries. Document type is auto-detected — no configuration needed.',
+  },
+  {
+    question: 'How does sanctions screening work?',
+    answer:
+      'We screen against 18,698 OFAC SDN records using fuzzy matching to catch name variations and transliterations.',
+  },
+  {
+    question: 'Is there a free trial?',
+    answer:
+      'Yes — 14 days free, no credit card required. You get full API access from day one. Cancel anytime.',
+  },
+  {
+    question: 'How do I get my API key?',
+    answer:
+      'Sign up at the dashboard, go to API Keys, and create a key in 30 seconds. No approval process, no sales call.',
+  },
+  {
+    question: 'What happens if I exceed my verification limit?',
+    answer:
+      'The API returns a 429 error with a clear message. Upgrade your plan from the dashboard in one click.',
+  },
+];
+
+function FAQItem({
+  question,
+  answer,
+  last,
+}: {
+  question: string;
+  answer: string;
+  last: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{ borderBottom: last ? 'none' : '1px solid rgba(255,255,255,0.06)' }}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left"
+      >
+        <span className="text-sm font-medium" style={{ color: '#f0f4f3' }}>
+          {question}
+        </span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          style={{
+            flexShrink: 0,
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 200ms ease',
+          }}
+        >
+          <path
+            d="M4 6l4 4 4-4"
+            stroke="#5a7268"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="answer"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <p
+              className="px-6 pb-5 text-sm leading-relaxed"
+              style={{ color: '#a3b3ae' }}
+            >
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function FAQSection() {
+  return (
+    <section id="faq" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
+      {/* Header */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-80px' }}
+        className="text-center mb-12"
+      >
+        <motion.div variants={fadeUp}>
+          <SectionLabel>FAQ</SectionLabel>
+        </motion.div>
+        <motion.h2
+          variants={fadeUp}
+          className="text-4xl md:text-5xl font-semibold mb-4"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+        >
+          Common questions
+        </motion.h2>
+      </motion.div>
+
+      {/* Accordion card */}
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-40px' }}
+        className="max-w-3xl mx-auto"
+        style={{
+          backgroundColor: '#111916',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '12px',
+          overflow: 'hidden',
+        }}
+      >
+        {FAQ_ITEMS.map((item, i) => (
+          <FAQItem
+            key={item.question}
+            question={item.question}
+            answer={item.answer}
+            last={i === FAQ_ITEMS.length - 1}
+          />
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
 // ─── Final CTA ────────────────────────────────────────────────────────────────
 
 function FinalCTASection() {
@@ -1213,6 +1403,7 @@ export default function LandingPage() {
       <DashboardPreview />
       <HowItWorksSection />
       <PricingSection />
+      <FAQSection />
       <FinalCTASection />
     </>
   );
