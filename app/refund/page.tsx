@@ -18,7 +18,7 @@ export default function RefundPage() {
           className="underline underline-offset-2"
           style={{ color: "var(--brand)" }}
         >
-          support@veridian.dev
+          support@veridianapi.com
         </a>
         .
       </p>

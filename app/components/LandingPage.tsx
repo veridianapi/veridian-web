@@ -7,6 +7,7 @@ import LiveDemo from './LiveDemo';
 import DashboardPreview from './DashboardPreview';
 
 const DASHBOARD_LOGIN = "https://veridian-api-dashboard.vercel.app/login";
+const BILLING_URL = "https://veridian-api-dashboard.vercel.app/login?next=/dashboard/billing";
 const DOCS_URL = "/docs";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
@@ -964,7 +965,7 @@ const plans: {
       'Email support',
     ],
     cta: 'Start free trial',
-    ctaHref: DASHBOARD_LOGIN,
+    ctaHref: BILLING_URL,
     highlighted: false,
   },
   {
@@ -980,7 +981,7 @@ const plans: {
       'Priority support',
     ],
     cta: 'Start free trial',
-    ctaHref: DASHBOARD_LOGIN,
+    ctaHref: BILLING_URL,
     highlighted: true,
   },
   {
