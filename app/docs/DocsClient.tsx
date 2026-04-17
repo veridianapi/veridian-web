@@ -37,6 +37,7 @@ const SIDEBAR_GROUPS = [
     group: 'Guides',
     items: [
       { id: 'webhooks', label: 'Webhooks' },
+      { id: 'hosted-flow', label: 'Hosted verification flow' },
       { id: 'error-handling', label: 'Error handling' },
     ],
   },
@@ -945,6 +946,81 @@ async def handle_webhook(request: Request):
   );
 }
 
+function SectionHostedFlow() {
+  return (
+    <div>
+      <SectionHeading id="hosted-flow" title="Hosted verification flow" />
+      <P>
+        Instead of building your own document capture UI, use Veridian&apos;s hosted flow.
+        Create a session and send the URL to your user — they complete the full KYC
+        flow on a Veridian-hosted page. No frontend code required.
+      </P>
+
+      <H3>Step 1 — Create a session</H3>
+      <P>
+        POST to <InlineCode>/v1/sessions</InlineCode> with a <InlineCode>redirect_url</InlineCode>.
+        After the user completes verification, they are redirected to that URL.
+      </P>
+      <CodeBlock
+        language="bash"
+        filename="create-session.sh"
+        code={`curl -X POST https://api.veridianapi.com/v1/sessions \\
+  -H "Authorization: Bearer your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "redirect_url": "https://yourapp.com/verification-complete"
+  }'`}
+      />
+      <CodeBlock
+        language="json"
+        filename="response.json"
+        code={`{
+  "session_id": "ses_a1b2c3d4",
+  "url": "https://verify.veridianapi.com/s/abc123",
+  "expires_at": "2026-04-18T00:00:00Z"
+}`}
+      />
+
+      <H3>Step 2 — Send the URL to your user</H3>
+      <P>
+        Deliver the <InlineCode>url</InlineCode> to your user via SMS, email, or in-app.
+        The session link expires after 24 hours — generate a fresh one if it lapses.
+      </P>
+      <Callout type="tip">
+        Sessions are single-use. Once the user completes or abandons the flow,
+        the URL becomes invalid. Generate a new session if the user needs to retry.
+      </Callout>
+
+      <H3>Step 3 — User completes verification</H3>
+      <P>
+        The user opens the link on any device, uploads their document and selfie,
+        and completes liveness detection. Veridian handles camera access, image
+        quality checks, and all UI — nothing to build or maintain.
+      </P>
+
+      <H3>Step 4 — Receive the webhook</H3>
+      <P>
+        When verification finishes, Veridian sends a <InlineCode>verification.completed</InlineCode>{' '}
+        webhook to your configured endpoint with the full result.
+      </P>
+      <CodeBlock
+        language="json"
+        code={`{
+  "event": "verification.completed",
+  "verification_id": "ver_a1b2c3d4",
+  "status": "approved",
+  "risk_score": 12
+}`}
+      />
+      <Callout type="info">
+        See the <a href="#webhooks" style={{ color: 'var(--brand)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Webhooks</a> section
+        for signature verification and retry behavior.
+      </Callout>
+      <Divider />
+    </div>
+  );
+}
+
 function SectionErrorHandling() {
   return (
     <div>
@@ -1191,6 +1267,7 @@ export default function DocsClient() {
           <SectionSDKTypeScript />
           <SectionSDKPython />
           <SectionWebhooks />
+          <SectionHostedFlow />
           <SectionErrorHandling />
 
           {/* Footer */}
