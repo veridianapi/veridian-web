@@ -8,7 +8,12 @@ export const metadata: Metadata = {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-xl font-semibold text-gray-900 mb-3">{title}</h2>
+      <h2
+        className="text-xl font-semibold mb-3"
+        style={{ color: '#f0f4f3' }}
+      >
+        {title}
+      </h2>
       <div className="space-y-3">{children}</div>
     </section>
   );
@@ -72,7 +77,7 @@ export default function TermsPage() {
           You agree to use the Services only for lawful purposes and in
           accordance with these Terms. You must not:
         </p>
-        <ul className="list-disc list-inside space-y-1 text-gray-600">
+        <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
           <li>Use the Services to violate any applicable law or regulation</li>
           <li>Submit fraudulent, inaccurate, or fabricated identity information</li>
           <li>Attempt to circumvent rate limits, access controls, or security measures</li>

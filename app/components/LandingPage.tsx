@@ -564,49 +564,6 @@ function HeroSection() {
               Free trial · No credit card · 5-minute integration
             </motion.p>
 
-            {/* Stats bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-row items-center justify-center mt-10"
-            >
-              {[
-                { value: '18,698', label: 'OFAC sanctions records', color: '#1d9e75' },
-                { value: '99.9%',  label: 'Uptime SLA',             color: '#f0f4f3' },
-                { value: '< 2s',   label: 'Verification time',      color: '#f0f4f3' },
-              ].flatMap((stat, i) => {
-                const el = (
-                  <div
-                    key={stat.label}
-                    className="flex flex-col"
-                    style={{ padding: '0 32px' }}
-                  >
-                    <span
-                      className="text-4xl font-semibold leading-none"
-                      style={{ color: stat.color, fontVariantNumeric: 'tabular-nums' }}
-                    >
-                      {stat.value}
-                    </span>
-                    <span
-                      className="text-[11px] font-medium uppercase mt-1.5 tracking-widest"
-                      style={{ color: '#5a7268' }}
-                    >
-                      {stat.label}
-                    </span>
-                  </div>
-                );
-                if (i === 0) return [el];
-                return [
-                  <div
-                    key={`div-${i}`}
-                    className="w-px shrink-0"
-                    style={{ height: '32px', backgroundColor: 'rgba(255,255,255,0.10)' }}
-                  />,
-                  el,
-                ];
-              })}
-            </motion.div>
           </motion.div>
 
           {/* Right: code window */}
@@ -984,12 +941,15 @@ function HowItWorksSection() {
 
 // ─── Pricing Section ──────────────────────────────────────────────────────────
 
+const SALES_EMAIL = 'mailto:support@veridianapi.com';
+
 const plans: {
   name: string;
   price: string;
   description: string;
   features: string[];
   cta: string;
+  ctaHref: string;
   highlighted: boolean;
 }[] = [
   {
@@ -1004,6 +964,7 @@ const plans: {
       'Email support',
     ],
     cta: 'Start free trial',
+    ctaHref: DASHBOARD_LOGIN,
     highlighted: false,
   },
   {
@@ -1019,6 +980,7 @@ const plans: {
       'Priority support',
     ],
     cta: 'Start free trial',
+    ctaHref: DASHBOARD_LOGIN,
     highlighted: true,
   },
   {
@@ -1034,6 +996,7 @@ const plans: {
       'Custom rule configuration',
     ],
     cta: 'Contact sales',
+    ctaHref: SALES_EMAIL,
     highlighted: false,
   },
 ];
@@ -1134,7 +1097,7 @@ function PricingSection() {
               </ul>
 
               <Link
-                href={DASHBOARD_LOGIN}
+                href={plan.ctaHref}
                 className="flex items-center justify-center text-[13px] font-medium px-5 h-11 sm:h-9 rounded-lg transition-all"
                 style={
                   plan.highlighted
@@ -1162,7 +1125,7 @@ function PricingSection() {
       >
         Need more than 2,500 verifications/month?{' '}
         <Link
-          href={DASHBOARD_LOGIN}
+          href={SALES_EMAIL}
           className="underline underline-offset-4 transition-colors"
           style={{ color: 'var(--brand)' }}
         >

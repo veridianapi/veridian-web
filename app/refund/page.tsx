@@ -14,7 +14,7 @@ export default function RefundPage() {
       <p>
         To request a refund, contact us at{" "}
         <a
-          href="mailto:support@veridian.dev"
+          href="mailto:support@veridianapi.com"
           className="underline underline-offset-2"
           style={{ color: "var(--brand)" }}
         >

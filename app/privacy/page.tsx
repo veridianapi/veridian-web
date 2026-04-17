@@ -8,7 +8,12 @@ export const metadata: Metadata = {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-xl font-semibold text-gray-900 mb-3">{title}</h2>
+      <h2
+        className="text-xl font-semibold mb-3"
+        style={{ color: '#f0f4f3' }}
+      >
+        {title}
+      </h2>
       <div className="space-y-3">{children}</div>
     </section>
   );
@@ -41,27 +46,27 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="2. Information We Collect">
-        <p><strong className="text-gray-800">Account and billing information:</strong> When you register, we collect
+        <p><strong style={{ color: '#f0f4f3' }}>Account and billing information:</strong> When you register, we collect
           your name, email address, company name, billing address, and payment
           method details. Payment card data is handled by our PCI-compliant
           payment processor and is not stored by Veridian.</p>
-        <p><strong className="text-gray-800">API usage data:</strong> We collect logs of API requests and responses,
+        <p><strong style={{ color: '#f0f4f3' }}>API usage data:</strong> We collect logs of API requests and responses,
           including timestamps, endpoint paths, status codes, latency, and IP
           addresses. This data is used for billing, debugging, and security
           monitoring.</p>
-        <p><strong className="text-gray-800">End-user verification data:</strong> When customers submit individuals&apos;
+        <p><strong style={{ color: '#f0f4f3' }}>End-user verification data:</strong> When customers submit individuals&apos;
           data for KYC or sanctions screening, this may include names, dates of
           birth, government ID images, addresses, and biometric liveness data.
           This data is processed strictly to deliver the verification result and
           is not used for any other purpose.</p>
-        <p><strong className="text-gray-800">Website analytics:</strong> We collect anonymized usage data on our
+        <p><strong style={{ color: '#f0f4f3' }}>Website analytics:</strong> We collect anonymized usage data on our
           marketing website using privacy-preserving analytics tools. We do not
           use tracking cookies that require GDPR consent banners.</p>
       </Section>
 
       <Section title="3. How We Use Information">
         <p>We use the information we collect to:</p>
-        <ul className="list-disc list-inside space-y-1 text-gray-600">
+        <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
           <li>Provide, operate, and improve the Services</li>
           <li>Process transactions and send billing-related communications</li>
           <li>Respond to support requests and troubleshoot issues</li>
@@ -78,11 +83,11 @@ export default function PrivacyPage() {
 
       <Section title="4. Legal Basis for Processing (GDPR)">
         <p>For individuals in the European Economic Area, UK, or Switzerland, our legal bases for processing personal data are:</p>
-        <ul className="list-disc list-inside space-y-1 text-gray-600">
-          <li><strong className="text-gray-800">Contract performance:</strong> Processing necessary to provide the Services you have contracted for</li>
-          <li><strong className="text-gray-800">Legitimate interests:</strong> Security monitoring, fraud prevention, and service improvement</li>
-          <li><strong className="text-gray-800">Legal obligation:</strong> Compliance with applicable laws and regulatory requirements</li>
-          <li><strong className="text-gray-800">Consent:</strong> For marketing communications (withdrawable at any time)</li>
+        <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
+          <li><strong style={{ color: '#f0f4f3' }}>Contract performance:</strong> Processing necessary to provide the Services you have contracted for</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Legitimate interests:</strong> Security monitoring, fraud prevention, and service improvement</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Legal obligation:</strong> Compliance with applicable laws and regulatory requirements</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Consent:</strong> For marketing communications (withdrawable at any time)</li>
         </ul>
       </Section>
 
@@ -90,11 +95,11 @@ export default function PrivacyPage() {
         <p>
           We share personal data only in the following circumstances:
         </p>
-        <ul className="list-disc list-inside space-y-1 text-gray-600">
-          <li><strong className="text-gray-800">Sub-processors:</strong> We use vetted third-party service providers for cloud infrastructure, document verification, biometric processing, and sanctions database access. A current list of sub-processors is available at veridian.io/sub-processors.</li>
-          <li><strong className="text-gray-800">Legal requirements:</strong> When required by applicable law, court order, or government authority</li>
-          <li><strong className="text-gray-800">Business transfers:</strong> In connection with a merger, acquisition, or sale of assets, with appropriate data protection obligations</li>
-          <li><strong className="text-gray-800">With your consent:</strong> For any other purpose with your explicit authorization</li>
+        <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
+          <li><strong style={{ color: '#f0f4f3' }}>Sub-processors:</strong> We use vetted third-party service providers for cloud infrastructure, document verification, biometric processing, and sanctions database access. A current list of sub-processors is available at veridian.io/sub-processors.</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Legal requirements:</strong> When required by applicable law, court order, or government authority</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Business transfers:</strong> In connection with a merger, acquisition, or sale of assets, with appropriate data protection obligations</li>
+          <li><strong style={{ color: '#f0f4f3' }}>With your consent:</strong> For any other purpose with your explicit authorization</li>
         </ul>
       </Section>
 
@@ -141,7 +146,7 @@ export default function PrivacyPage() {
 
       <Section title="9. Your Rights">
         <p>Depending on your jurisdiction, you may have the right to:</p>
-        <ul className="list-disc list-inside space-y-1 text-gray-600">
+        <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
           <li>Access the personal data we hold about you</li>
           <li>Correct inaccurate or incomplete data</li>
           <li>Request deletion of your personal data</li>
