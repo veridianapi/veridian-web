@@ -69,8 +69,6 @@ export default function Nav() {
               href={LOGIN_URL}
               className="text-sm font-semibold px-4 py-2 rounded-lg transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               Get started
             </Link>
@@ -138,8 +136,6 @@ export default function Nav() {
                   href={LOGIN_URL}
                   className="text-center py-2.5 rounded-lg text-sm font-semibold"
                   style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   onClick={() => setMobileOpen(false)}
                 >
                   Get started

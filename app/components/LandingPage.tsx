@@ -539,8 +539,6 @@ function HeroSection() {
                 href={DASHBOARD_LOGIN}
                 className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
                 style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Get API key free
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -571,25 +569,28 @@ function HeroSection() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-2 gap-6 sm:flex sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-0 mt-10"
+              className="flex flex-row items-center justify-center mt-10"
             >
               {[
                 { value: '18,698', label: 'OFAC sanctions records', color: '#1d9e75' },
                 { value: '99.9%',  label: 'Uptime SLA',             color: '#f0f4f3' },
                 { value: '< 2s',   label: 'Verification time',      color: '#f0f4f3' },
-                { value: '$199',   label: 'Starting price',          color: '#1d9e75' },
               ].flatMap((stat, i) => {
                 const el = (
-                  <div key={stat.label} className="flex flex-col min-w-[120px]">
+                  <div
+                    key={stat.label}
+                    className="flex flex-col"
+                    style={{ padding: '0 32px' }}
+                  >
                     <span
-                      className="text-3xl font-semibold leading-none"
+                      className="text-4xl font-semibold leading-none"
                       style={{ color: stat.color, fontVariantNumeric: 'tabular-nums' }}
                     >
                       {stat.value}
                     </span>
                     <span
-                      className="text-[11px] font-medium uppercase mt-1.5"
-                      style={{ color: '#5a7268', letterSpacing: '0.06em' }}
+                      className="text-[11px] font-medium uppercase mt-1.5 tracking-widest"
+                      style={{ color: '#5a7268' }}
                     >
                       {stat.label}
                     </span>
@@ -599,8 +600,8 @@ function HeroSection() {
                 return [
                   <div
                     key={`div-${i}`}
-                    className="hidden sm:block w-px h-10 mx-6 shrink-0"
-                    style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
+                    className="w-px shrink-0"
+                    style={{ height: '32px', backgroundColor: 'rgba(255,255,255,0.10)' }}
                   />,
                   el,
                 ];
@@ -1143,8 +1144,6 @@ function PricingSection() {
                         color: '#a3b3ae',
                       }
                 }
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 {plan.cta}
               </Link>
@@ -1166,8 +1165,6 @@ function PricingSection() {
           href={DASHBOARD_LOGIN}
           className="underline underline-offset-4 transition-colors"
           style={{ color: 'var(--brand)' }}
-          target="_blank"
-          rel="noopener noreferrer"
         >
           Talk to us about custom volume pricing.
         </Link>
@@ -1490,8 +1487,6 @@ function FinalCTASection() {
             href={DASHBOARD_LOGIN}
             className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
             style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             Start verifying identities in 15 minutes
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

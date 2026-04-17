@@ -80,8 +80,6 @@ export default function Footer() {
           <Link
             href={STATUS_URL}
             className="inline-flex items-center gap-2 transition-colors hover:text-[#e8f5ef]"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
             Operational
