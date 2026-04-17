@@ -956,9 +956,9 @@ const plans: {
   {
     name: 'Starter',
     price: '$199',
-    description: 'For early-stage fintechs getting compliant.',
+    description: 'Up to 500 verifications/month',
     features: [
-      '200 verifications/month',
+      '500 verifications/month',
       'KYC identity verification',
       'Sanctions screening (OFAC, UN, EU)',
       'REST API + sandbox',
@@ -971,9 +971,9 @@ const plans: {
   {
     name: 'Growth',
     price: '$499',
-    description: 'For scaling products with deeper compliance needs.',
+    description: 'Up to 2,000 verifications/month',
     features: [
-      '500 verifications/month',
+      '2,000 verifications/month',
       'Everything in Starter',
       'KYB business verification',
       'Adverse media monitoring',
@@ -987,9 +987,9 @@ const plans: {
   {
     name: 'Scale',
     price: '$999',
-    description: 'For high-volume teams with strict SLA requirements.',
+    description: 'Up to 10,000 verifications/month',
     features: [
-      '2,500 verifications/month',
+      '10,000 verifications/month',
       'Everything in Growth',
       'Transaction monitoring',
       '99.9% uptime SLA',
@@ -1124,7 +1124,7 @@ function PricingSection() {
         className="text-center text-sm mt-8"
         style={{ color: '#5a7268' }}
       >
-        Need more than 2,500 verifications/month?{' '}
+        Need more than 10,000 verifications/month?{' '}
         <Link
           href={SALES_EMAIL}
           className="underline underline-offset-4 transition-colors"
