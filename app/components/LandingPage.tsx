@@ -6,8 +6,8 @@ import Link from 'next/link';
 import LiveDemo from './LiveDemo';
 import DashboardPreview from './DashboardPreview';
 
-const DASHBOARD_LOGIN = "https://veridian-api-dashboard.vercel.app/login";
-const BILLING_URL = "https://veridian-api-dashboard.vercel.app/login?next=/dashboard/billing";
+const DASHBOARD_LOGIN = "https://app.veridianapi.com/login";
+const BILLING_URL = "https://app.veridianapi.com/login?next=/dashboard/billing";
 const DOCS_URL = "/docs";
 
 // ─── Animation variants ───────────────────────────────────────────────────────

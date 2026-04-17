@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const LOGIN_URL = "https://veridian-api-dashboard.vercel.app/login";
+const LOGIN_URL = "https://app.veridianapi.com/login";
 
 const NAV_LINKS = [
   { label: 'Features', href: '#features', external: false },

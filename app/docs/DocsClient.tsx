@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 const BASE_URL = 'https://api-production-b0c5.up.railway.app';
-const DASHBOARD_LOGIN = 'https://veridian-api-dashboard.vercel.app/login';
+const DASHBOARD_LOGIN = 'https://app.veridianapi.com/login';
 
 // ─── Sidebar data ─────────────────────────────────────────────────────────────
 
