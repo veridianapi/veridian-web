@@ -797,7 +797,7 @@ function BentoFeaturesSection() {
           </div>
         </BentoCard>
 
-        {/* Row 3: Pricing + Global */}
+        {/* Row 3: Pricing + Global + Hosted flow */}
         <BentoCard delay={0.2}>
           <CardIcon>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -835,6 +835,32 @@ function BentoFeaturesSection() {
             </div>
             <span className="text-xs font-semibold" style={{ color: 'var(--brand)' }}>195+</span>
           </div>
+        </BentoCard>
+
+        <BentoCard delay={0.3}>
+          <div className="flex items-start justify-between mb-4">
+            <CardIcon>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M7.5 10.5a4 4 0 0 0 5.657 0l2-2a4 4 0 0 0-5.657-5.657l-1 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M10.5 7.5a4 4 0 0 0-5.657 0l-2 2a4 4 0 0 0 5.657 5.657l1-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </CardIcon>
+            <span
+              className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full"
+              style={{
+                backgroundColor: 'rgba(29, 158, 117, 0.12)',
+                border: '1px solid rgba(29, 158, 117, 0.25)',
+                color: '#1d9e75',
+                letterSpacing: '0.06em',
+              }}
+            >
+              New
+            </span>
+          </div>
+          <h3 className="text-lg font-semibold mb-2" style={{ color: '#f0f4f3' }}>Hosted verification flow</h3>
+          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
+            Send users a link. They upload their document and selfie on our hosted page. No UI to build.
+          </p>
         </BentoCard>
       </motion.div>
     </section>
