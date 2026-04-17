@@ -571,19 +571,19 @@ function HeroSection() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-2 gap-6 sm:flex sm:flex-row sm:flex-nowrap sm:items-stretch sm:gap-0 mt-10"
+              className="grid grid-cols-2 gap-6 sm:flex sm:flex-row sm:flex-nowrap sm:items-center sm:justify-center sm:gap-0 mt-10"
             >
               {[
-                { value: '18,698', label: 'OFAC sanctions records' },
-                { value: '99.9%',  label: 'Uptime SLA' },
-                { value: '< 2s',   label: 'Verification time' },
-                { value: '$199',   label: 'Starting price' },
+                { value: '18,698', label: 'OFAC sanctions records', color: '#1d9e75' },
+                { value: '99.9%',  label: 'Uptime SLA',             color: '#f0f4f3' },
+                { value: '< 2s',   label: 'Verification time',      color: '#f0f4f3' },
+                { value: '$199',   label: 'Starting price',          color: '#1d9e75' },
               ].flatMap((stat, i) => {
                 const el = (
-                  <div key={stat.label} className="flex flex-col">
+                  <div key={stat.label} className="flex flex-col min-w-[120px]">
                     <span
-                      className="text-2xl font-semibold leading-none"
-                      style={{ color: '#f0f4f3', fontVariantNumeric: 'tabular-nums' }}
+                      className="text-3xl font-semibold leading-none"
+                      style={{ color: stat.color, fontVariantNumeric: 'tabular-nums' }}
                     >
                       {stat.value}
                     </span>
@@ -599,7 +599,7 @@ function HeroSection() {
                 return [
                   <div
                     key={`div-${i}`}
-                    className="hidden sm:block self-stretch w-px mx-6"
+                    className="hidden sm:block w-px h-10 mx-6 shrink-0"
                     style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
                   />,
                   el,
@@ -1275,6 +1275,126 @@ function FAQItem({
   );
 }
 
+// ─── Security Section ─────────────────────────────────────────────────────────
+
+const SECURITY_CARDS = [
+  {
+    title: 'SHA-256 API key hashing',
+    description: 'API keys are hashed before storage. Even in a breach, your credentials cannot be recovered or replayed.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="4" y="9" width="12" height="9" rx="2" stroke="#1d9e75" strokeWidth="1.5" />
+        <path d="M7 9V6a3 3 0 0 1 6 0v3" stroke="#1d9e75" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    title: 'OFAC sanctions screening',
+    description: '18,000+ sanctions records checked on every verification against OFAC, EU, and UN watchlists in real time.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2L3 5.5v5c0 4 3.1 7.3 7 8 3.9-.7 7-4 7-8v-5L10 2Z" stroke="#1d9e75" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    title: 'GDPR ready',
+    description: 'Data minimisation, right-to-erasure endpoints, and EU data residency options built in from day one.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="7.5" stroke="#1d9e75" strokeWidth="1.5" />
+        <path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#1d9e75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    title: 'SOC 2 in progress',
+    description: 'Audit underway with an accredited assessor. Controls cover availability, confidentiality, and processing integrity.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2l1.8 3.6 4 .6-2.9 2.8.7 4L10 11l-3.6 1.9.7-4L4.2 6.2l4-.6L10 2Z" stroke="#1d9e75" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+];
+
+function SecuritySection() {
+  return (
+    <section id="security" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
+      {/* Header */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-80px' }}
+        className="text-center mb-12"
+      >
+        <motion.div variants={fadeUp}>
+          <SectionLabel>Security</SectionLabel>
+        </motion.div>
+        <motion.h2
+          variants={fadeUp}
+          className="text-4xl md:text-5xl font-semibold mb-4"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+        >
+          Enterprise-grade security
+        </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          className="text-lg max-w-xl mx-auto"
+          style={{ color: '#a3b3ae' }}
+        >
+          Built for regulated industries from day one.
+        </motion.p>
+      </motion.div>
+
+      {/* Cards grid */}
+      <motion.div
+        variants={staggerFast}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-40px' }}
+        className="grid sm:grid-cols-2 gap-4"
+      >
+        {SECURITY_CARDS.map((card) => (
+          <motion.div
+            key={card.title}
+            variants={fadeUp}
+            style={{
+              backgroundColor: '#111916',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '12px',
+              padding: '24px',
+            }}
+          >
+            {/* Icon */}
+            <div
+              className="flex items-center justify-center mb-4"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(29, 158, 117, 0.15)',
+              }}
+            >
+              {card.icon}
+            </div>
+            <h3
+              className="text-base font-semibold mb-2"
+              style={{ color: '#f0f4f3' }}
+            >
+              {card.title}
+            </h3>
+            <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
+              {card.description}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
 function FAQSection() {
   return (
     <section id="faq" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
@@ -1403,6 +1523,7 @@ export default function LandingPage() {
       <DashboardPreview />
       <HowItWorksSection />
       <PricingSection />
+      <SecuritySection />
       <FAQSection />
       <FinalCTASection />
     </>
