@@ -477,162 +477,167 @@ function CodeWindow({ className = '' }: { className?: string }) {
   );
 }
 
-// ─── Hero Dashboard Visual ────────────────────────────────────────────────────
+// ─── Hero Console Visual ──────────────────────────────────────────────────────
 
-type VerifStatus = 'Approved' | 'Review' | 'Rejected';
-
-const HERO_ROWS: { name: string; document: string; status: VerifStatus; risk: number }[] = [
-  { name: 'Sarah Chen',     document: 'passport',        status: 'Approved', risk: 12 },
-  { name: 'James Okafor',   document: 'driving_licence', status: 'Review',   risk: 45 },
-  { name: 'Maria Santos',   document: 'passport',        status: 'Approved', risk: 9  },
-  { name: 'Unknown Person', document: 'national_id',     status: 'Rejected', risk: 82 },
-  { name: 'Aiko Tanaka',    document: 'passport',        status: 'Approved', risk: 12 },
+const STREAM_ROWS = [
+  { t: '14:32:08', ev: 'identity.verified',    country: 'DE · Berlin',    risk: '0.08', status: 'ok',   label: 'PASS'   },
+  { t: '14:32:06', ev: 'transaction.screened', country: 'US · New York',  risk: '0.12', status: 'ok',   label: 'PASS'   },
+  { t: '14:32:04', ev: 'sanction.hit.ofac',    country: 'CY · Limassol',  risk: '0.94', status: 'err',  label: 'BLOCK'  },
+  { t: '14:32:01', ev: 'kyb.ubo.verified',     country: 'GB · London',    risk: '0.21', status: 'ok',   label: 'PASS'   },
+  { t: '14:31:58', ev: 'pep.match.review',     country: 'AE · Dubai',     risk: '0.61', status: 'warn', label: 'REVIEW' },
+  { t: '14:31:55', ev: 'transaction.screened', country: 'SG · Central',   risk: '0.09', status: 'ok',   label: 'PASS'   },
+  { t: '14:31:52', ev: 'identity.verified',    country: 'FR · Paris',     risk: '0.14', status: 'ok',   label: 'PASS'   },
+  { t: '14:31:49', ev: 'kyc.document.ocr',     country: 'BR · São Paulo', risk: '0.18', status: 'ok',   label: 'PASS'   },
 ];
 
-const STATUS_STYLES: Record<VerifStatus, { color: string; bg: string }> = {
-  Approved: { color: '#16a34a', bg: 'rgba(22,163,74,0.12)'   },
-  Review:   { color: '#d97706', bg: 'rgba(217,119,6,0.12)'   },
-  Rejected: { color: '#dc2626', bg: 'rgba(220,38,38,0.12)'   },
-};
+const QUEUE_HEIGHTS = [6,8,5,9,12,7,10,14,8,6,9,11,7,5,8,10,13,9,6,8,11,7,9,12];
 
-function riskColor(r: number) {
-  return r < 30 ? '#16a34a' : r < 70 ? '#d97706' : '#dc2626';
+function statusPillStyle(status: string): React.CSSProperties {
+  if (status === 'err')  return { background: 'rgba(220,38,38,0.15)',  color: '#f87171', border: '1px solid rgba(220,38,38,0.3)',  padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
+  if (status === 'warn') return { background: 'rgba(217,119,6,0.15)',  color: '#fbbf24', border: '1px solid rgba(217,119,6,0.3)',  padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
+  return                        { background: 'rgba(29,158,117,0.15)', color: '#1d9e75', border: '1px solid rgba(29,158,117,0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
 }
 
-function HeroDashboard() {
+function HeroConsole() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
   return (
     <div style={{
-      border: '1px solid rgba(255,255,255,0.08)',
-      borderRadius: '16px',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: '14px',
       overflow: 'hidden',
-      boxShadow: '0 0 0 1px rgba(29,158,117,0.1), 0 40px 80px -20px rgba(0,0,0,0.6)',
+      boxShadow: '0 0 0 1px rgba(29,158,117,0.08), 0 40px 80px -20px rgba(0,0,0,0.7)',
+      background: '#080e0c',
     }}>
-      {/* Browser chrome */}
+      {/* Header */}
       <div style={{
-        height: '36px',
-        background: '#0d1211',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        height: '38px',
+        background: '#0b1211',
+        borderBottom: '1px solid rgba(240,244,243,0.06)',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 12px',
-        gap: '8px',
+        justifyContent: 'space-between',
+        padding: '0 14px',
         flexShrink: 0,
       }}>
-        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#1d9e75' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff5f57' }} />
+            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#febc2e' }} />
+            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#1d9e75' }} />
+          </div>
+          <span style={{ ...mono, fontSize: '11px', color: '#5a7268' }}>veridian / live · acme-payments</span>
         </div>
-        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: '11px', color: '#5a7268' }}>
-          app.veridianapi.com/dashboard
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', ...mono, fontSize: '11px', color: '#5a7268' }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#1d9e75', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+          streaming · eu-central-1
         </div>
       </div>
 
-      {/* Dashboard body */}
-      <div style={{ display: 'flex', background: '#0a0f0e', height: '420px' }}>
-        {/* Sidebar */}
-        <div style={{
-          width: '200px',
-          flexShrink: 0,
-          background: '#050a09',
-          borderRight: '1px solid rgba(255,255,255,0.06)',
-          padding: '16px 12px',
-        }}>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4f3', marginBottom: '24px', paddingLeft: '8px' }}>
-            <span style={{ color: '#1d9e75' }}>V</span>eridian
+      {/* Body */}
+      <div style={{ display: 'flex', height: '340px' }}>
+        {/* Main stream */}
+        <div style={{ flex: 1, overflowY: 'hidden', padding: '0' }}>
+          {/* Column headers */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '72px 1fr 120px 72px 64px',
+            gap: '0',
+            padding: '8px 16px',
+            borderBottom: '1px solid rgba(240,244,243,0.05)',
+          }}>
+            {['TIME', 'EVENT', 'LOCATION', 'RISK', ''].map((h, i) => (
+              <span key={i} style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.1em', fontWeight: 600 }}>{h}</span>
+            ))}
           </div>
-          {[
-            { label: 'Overview',      active: true  },
-            { label: 'Verifications', active: false },
-            { label: 'API Keys',      active: false },
-            { label: 'Billing',       active: false },
-          ].map((item) => (
+          {STREAM_ROWS.map((r, i) => (
             <div
-              key={item.label}
+              key={i}
               style={{
-                height: '32px',
-                display: 'flex',
+                display: 'grid',
+                gridTemplateColumns: '72px 1fr 120px 72px 64px',
+                gap: '0',
+                padding: '7px 16px',
+                borderBottom: '1px solid rgba(240,244,243,0.03)',
                 alignItems: 'center',
-                paddingLeft: item.active ? '6px' : '8px',
-                borderRadius: '6px',
-                marginBottom: '2px',
-                fontSize: '13px',
-                fontWeight: 500,
-                color: item.active ? '#1d9e75' : '#5a7268',
-                backgroundColor: item.active ? 'rgba(29,158,117,0.10)' : 'transparent',
-                borderLeft: item.active ? '2px solid #1d9e75' : '2px solid transparent',
+                background: i % 2 === 0 ? 'transparent' : 'rgba(240,244,243,0.01)',
               }}
             >
-              {item.label}
+              <span style={{ ...mono, fontSize: '11px', color: '#3d544e' }}>{r.t}</span>
+              <span style={{ ...mono, fontSize: '11px', color: r.status === 'err' ? '#f87171' : r.status === 'warn' ? '#fbbf24' : '#7ecf97' }}>{r.ev}</span>
+              <span style={{ ...mono, fontSize: '11px', color: '#5a7268' }}>{r.country}</span>
+              <span style={{ ...mono, fontSize: '11px', color: r.status === 'err' ? '#f87171' : r.status === 'warn' ? '#fbbf24' : '#a3b3ae' }}>risk {r.risk}</span>
+              <span style={statusPillStyle(r.status)}>{r.label}</span>
             </div>
           ))}
         </div>
 
-        {/* Main content */}
-        <div style={{ flex: 1, padding: '20px 24px', overflowY: 'auto', minWidth: 0 }}>
-          <div style={{ fontSize: '16px', fontWeight: 500, color: '#f0f4f3', marginBottom: '16px' }}>Overview</div>
-
-          {/* Metric cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '10px', marginBottom: '20px' }}>
-            {[
-              { label: 'TOTAL',    value: '1,247' },
-              { label: 'APPROVED', value: '1,089' },
-              { label: 'REVIEW',   value: '98'    },
-              { label: 'REJECTED', value: '60'    },
-            ].map((card) => (
-              <div key={card.label} style={{
-                background: '#111916',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '8px',
-                padding: '12px',
-              }}>
-                <div style={{ fontSize: '20px', fontWeight: 600, color: '#f0f4f3', fontVariantNumeric: 'tabular-nums' }}>{card.value}</div>
-                <div style={{ fontSize: '10px', fontWeight: 500, color: '#5a7268', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '4px' }}>{card.label}</div>
-              </div>
-            ))}
+        {/* Right sidebar metrics */}
+        <div style={{
+          width: '160px',
+          flexShrink: 0,
+          borderLeft: '1px solid rgba(240,244,243,0.06)',
+          padding: '14px 12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '18px',
+        }}>
+          {/* Events/sec */}
+          <div>
+            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>Events / sec</div>
+            <div style={{ fontSize: '20px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
+              2,143<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400, marginLeft: '2px' }}>rps</span>
+            </div>
+            {/* Sparkline */}
+            <svg viewBox="0 0 120 32" preserveAspectRatio="none" style={{ width: '100%', height: '28px', marginTop: '6px' }}>
+              <defs>
+                <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stopColor="#1d9e75" stopOpacity="0.4" />
+                  <stop offset="1" stopColor="#1d9e75" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,15 L70,10 L80,13 L90,7 L100,10 L110,4 L120,6" stroke="#1d9e75" strokeWidth="1" fill="none" />
+              <path d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,15 L70,10 L80,13 L90,7 L100,10 L110,4 L120,6 L120,32 L0,32 Z" fill="url(#sg)" />
+            </svg>
           </div>
-
-          {/* Table label */}
-          <div style={{ fontSize: '11px', fontWeight: 500, color: '#5a7268', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
-            Recent Verifications
+          {/* P50/P99 */}
+          <div>
+            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>P50 · p99 latency</div>
+            <div style={{ fontSize: '16px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
+              47<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400 }}> / 112 ms</span>
+            </div>
           </div>
-
-          {/* Table */}
-          <div style={{ background: '#111916', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-              <thead>
-                <tr>
-                  {['Name', 'Document', 'Status', 'Risk'].map((col) => (
-                    <th key={col} style={{
-                      padding: '8px 12px', textAlign: 'left',
-                      fontSize: '10px', fontWeight: 500, color: '#5a7268',
-                      textTransform: 'uppercase', letterSpacing: '0.06em',
-                      borderBottom: '1px solid rgba(255,255,255,0.06)',
-                    }}>{col}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {HERO_ROWS.map((row, i) => (
-                  <tr key={i} style={{ borderBottom: i < HERO_ROWS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-                    <td style={{ padding: '8px 12px', color: '#f0f4f3', fontWeight: 500, whiteSpace: 'nowrap' }}>{row.name}</td>
-                    <td style={{ padding: '8px 12px', color: '#5a7268', fontFamily: 'monospace', fontSize: '11px', whiteSpace: 'nowrap' }}>{row.document}</td>
-                    <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center',
-                        padding: '2px 6px', borderRadius: '9999px',
-                        fontSize: '10px', fontWeight: 500,
-                        color: STATUS_STYLES[row.status].color,
-                        backgroundColor: STATUS_STYLES[row.status].bg,
-                      }}>{row.status}</span>
-                    </td>
-                    <td style={{ padding: '8px 12px', color: riskColor(row.risk), fontFamily: 'monospace', fontSize: '11px', fontVariantNumeric: 'tabular-nums' }}>{row.risk}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Block rate */}
+          <div>
+            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>Block rate · 24h</div>
+            <div style={{ fontSize: '16px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
+              0.41<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400 }}>%</span>
+            </div>
+          </div>
+          {/* Queue depth bars */}
+          <div>
+            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '6px' }}>Queue depth</div>
+            <div style={{ display: 'flex', gap: '2px', alignItems: 'flex-end', height: '28px' }}>
+              {QUEUE_HEIGHTS.map((h, i) => (
+                <div key={i} style={{ flex: 1, height: h * 2, background: '#1d9e75', opacity: 0.3 + h / 20, borderRadius: '1px' }} />
+              ))}
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        padding: '8px 16px',
+        borderTop: '1px solid rgba(240,244,243,0.06)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        ...mono,
+        fontSize: '10px',
+        color: '#3d544e',
+        background: '#0b1211',
+      }}>
+        <span>wss://api.veridianapi.com/v1/stream</span>
+        <span>0 dropped · 184,204,108 delivered · lag 3ms</span>
       </div>
     </div>
   );
@@ -751,7 +756,7 @@ function HeroSection() {
             18,698 OFAC records · &lt;2s response · 14-day free trial
           </motion.p>
 
-          {/* Hero dashboard visual */}
+          {/* Hero console stream visual */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -760,7 +765,7 @@ function HeroSection() {
             className="w-full"
             style={{ marginTop: '64px' }}
           >
-            <HeroDashboard />
+            <HeroConsole />
           </motion.div>
         </motion.div>
       </div>
@@ -777,6 +782,7 @@ function HeroSection() {
 // ─── Simple Integration Section ───────────────────────────────────────────────
 
 function SimpleIntegrationSection() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
   return (
     <section className="max-w-6xl mx-auto px-6 py-24">
       <motion.div
@@ -784,18 +790,30 @@ function SimpleIntegrationSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-12"
+        style={{ marginBottom: '48px' }}
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Integration</SectionLabel>
-        </motion.div>
-        <motion.h2
+        <motion.div
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+            gap: '40px',
+            alignItems: 'start',
+          }}
         >
-          Integrate in minutes, not weeks.
-        </motion.h2>
+          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
+            S / 03 — API
+          </div>
+          <div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '14px' }}>
+              Five endpoints.{' '}
+              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>Every compliance decision your fintech will ever make.</em>
+            </h2>
+            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
+              Typed SDKs in six languages. Webhooks with exactly-once delivery. Sandbox environments that mirror production risk scoring.
+            </p>
+          </div>
+        </motion.div>
       </motion.div>
       <motion.div
         variants={fadeUp}
@@ -811,9 +829,61 @@ function SimpleIntegrationSection() {
   );
 }
 
-// ─── Social Proof Bar ─────────────────────────────────────────────────────────
+// ─── Trust Strip ─────────────────────────────────────────────────────────────
 
-// SocialProofBar removed — no logos available
+const CAPABILITY_ITEMS = [
+  { label: 'KYC · 195+ countries' },
+  { label: 'OFAC & UN sanctions' },
+  { label: 'AML transaction monitoring' },
+  { label: 'Immutable audit logs' },
+  { label: 'GDPR-ready workflows' },
+  { label: 'SHA-256 hashed API keys' },
+];
+
+function TrustStrip() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
+  return (
+    <div
+      style={{
+        borderTop: '1px solid rgba(240,244,243,0.06)',
+        borderBottom: '1px solid rgba(240,244,243,0.06)',
+        padding: '28px 24px',
+      }}
+    >
+      <div
+        className="max-w-6xl mx-auto"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '40px',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ fontSize: '12px', color: '#5a7268', lineHeight: 1.5, flexShrink: 0 }}>
+          Built for regulated fintech workflows.
+        </div>
+        <div style={{ display: 'flex', gap: '0', flexWrap: 'wrap', alignItems: 'center' }}>
+          {CAPABILITY_ITEMS.map((item, i) => (
+            <div
+              key={item.label}
+              style={{
+                ...mono,
+                fontSize: '11px',
+                color: 'rgba(240,244,243,0.30)',
+                letterSpacing: '0.02em',
+                padding: '4px 16px',
+                borderLeft: i > 0 ? '1px solid rgba(240,244,243,0.06)' : 'none',
+              }}
+            >
+              {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Bento Grid ───────────────────────────────────────────────────────────────
 
@@ -884,25 +954,48 @@ function BentoFeaturesSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-16"
+        style={{ marginBottom: '64px' }}
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Features</SectionLabel>
+        <motion.div
+          variants={fadeUp}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+            gap: '40px',
+            alignItems: 'start',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
+              fontSize: '11px',
+              color: '#5a7268',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              paddingTop: '6px',
+            }}
+          >
+            S / 05 — Capabilities
+          </div>
+          <div>
+            <h2
+              style={{
+                fontSize: 'clamp(32px, 4vw, 52px)',
+                fontWeight: 400,
+                letterSpacing: '-0.035em',
+                color: '#f0f4f3',
+                lineHeight: 1.1,
+                marginBottom: '16px',
+              }}
+            >
+              Every regulatory primitive,{' '}
+              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>composable and individually priced.</em>
+            </h2>
+            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '560px' }}>
+              Use the full stack or a single endpoint. Swap in Veridian&apos;s rules engine without touching your existing KYC vendor. We&apos;re infrastructure, not a walled garden.
+            </p>
+          </div>
         </motion.div>
-        <motion.h2
-          variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-4"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
-        >
-          Everything compliance requires. Nothing it doesn&apos;t.
-        </motion.h2>
-        <motion.p
-          variants={fadeUp}
-          className="text-lg max-w-xl mx-auto"
-          style={{ color: '#a3b3ae' }}
-        >
-          Built for fintech teams done stitching together five vendors.
-        </motion.p>
       </motion.div>
 
       <motion.div
@@ -1110,25 +1203,48 @@ function HowItWorksSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-80px' }}
-          className="text-center mb-20"
+          style={{ marginBottom: '64px' }}
         >
-          <motion.div variants={fadeUp}>
-            <SectionLabel>How it works</SectionLabel>
+          <motion.div
+            variants={fadeUp}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+              gap: '40px',
+              alignItems: 'start',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
+                fontSize: '11px',
+                color: '#5a7268',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                paddingTop: '6px',
+              }}
+            >
+              S / 02 — Setup
+            </div>
+            <div>
+              <h2
+                style={{
+                  fontSize: 'clamp(32px, 4vw, 52px)',
+                  fontWeight: 400,
+                  letterSpacing: '-0.035em',
+                  color: '#f0f4f3',
+                  lineHeight: 1.1,
+                  marginBottom: '16px',
+                }}
+              >
+                Production API keys in ninety seconds.{' '}
+                <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>First live decision before your coffee goes cold.</em>
+              </h2>
+              <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
+                From zero to live KYC verifications in an afternoon.
+              </p>
+            </div>
           </motion.div>
-          <motion.h2
-            variants={fadeUp}
-            className="text-4xl md:text-5xl font-semibold mb-4"
-            style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
-          >
-            Integrate in 15 minutes
-          </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            className="text-lg max-w-lg mx-auto"
-            style={{ color: '#a3b3ae' }}
-          >
-            From zero to live KYC verifications in an afternoon.
-          </motion.p>
         </motion.div>
 
         <motion.div
@@ -1237,6 +1353,7 @@ const plans: {
 ];
 
 function PricingSection() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
   return (
     <section id="pricing" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
       <motion.div
@@ -1244,32 +1361,31 @@ function PricingSection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-16"
+        style={{ marginBottom: '64px' }}
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Pricing</SectionLabel>
+        <motion.div
+          variants={fadeUp}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+            gap: '40px',
+            alignItems: 'start',
+          }}
+        >
+          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
+            S / 07 — Pricing
+          </div>
+          <div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '16px' }}>
+              Simple, transparent pricing.{' '}
+              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>No per-seat fees. No implementation minimums.</em>
+            </h2>
+            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
+              No setup fees. No contracts. Cancel anytime.{' '}
+              <em style={{ color: '#5a7268' }}>Persona starts at $50K/yr. We start at $199/mo.</em>
+            </p>
+          </div>
         </motion.div>
-        <motion.h2
-          variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-4"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
-        >
-          Simple, transparent pricing
-        </motion.h2>
-        <motion.p
-          variants={fadeUp}
-          className="text-lg max-w-md mx-auto mb-3"
-          style={{ color: '#a3b3ae' }}
-        >
-          No setup fees. No per-seat pricing. Cancel anytime.
-        </motion.p>
-        <motion.p
-          variants={fadeUp}
-          className="text-sm italic"
-          style={{ color: '#a3b3ae' }}
-        >
-          Persona starts at $50K/yr. We start at $199/mo.
-        </motion.p>
       </motion.div>
 
       <motion.div
@@ -1530,104 +1646,160 @@ const SECURITY_CARDS = [
   },
 ];
 
+const SECURITY_ARCH = [
+  { n: '01', t: 'Tenant-isolated key management', d: 'Per-tenant KMS with hardware-backed key derivation. Keys never leave the enclave. BYOK supported for regulated environments.', m: 'AWS KMS · HSM FIPS 140-3' },
+  { n: '02', t: 'Zero-retention processing paths', d: 'PII is hashed at the edge. Document images are destroyed after decisioning unless explicitly retained under a documented lawful basis.', m: 'GDPR Art. 5 · 17 · 32' },
+  { n: '03', t: 'Immutable, regulator-grade audit', d: 'Every API call is hash-chained and anchored hourly. Tamper evidence is provable to an external auditor — no cooperation from us required.', m: 'SOC 2 · CC7 · CC8' },
+  { n: '04', t: 'Regionalised data residency', d: 'Pin tenants to EU, US, UK, SG, or AU. Cross-border transfer is opt-in per endpoint, not per account.', m: 'SCC · IDTA · Privacy Shield' },
+  { n: '05', t: 'Red-team tested, continuously', d: 'Quarterly external pen tests. Bug bounty with a seven-figure pool. Our detection logic is audited against real-world fraud rings.', m: 'Trail of Bits · HackerOne' },
+];
+
+const CERTS = [
+  { badge: 'SOC 2',            name: 'Type II audit in progress',    status: 'In progress', color: '#d97706' },
+  { badge: 'GDPR',             name: 'Data minimisation · DPA ready', status: 'Ready',       color: '#1d9e75' },
+  { badge: 'SHA-256',          name: 'Hashed API key storage',       status: 'Active',      color: '#1d9e75' },
+  { badge: 'OFAC',             name: 'Sanctions screening · 18K+',   status: 'Active',      color: '#1d9e75' },
+  { badge: 'Audit logs',       name: 'Immutable decision trail',     status: 'Active',      color: '#1d9e75' },
+  { badge: 'Secure processing', name: 'Document images destroyed post-decision', status: 'Active', color: '#1d9e75' },
+];
+
 function SecuritySection() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
   return (
     <section id="security" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      {/* Header */}
+      {/* Section head */}
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-12"
+        style={{ marginBottom: '64px' }}
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Security</SectionLabel>
+        <motion.div
+          variants={fadeUp}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+            gap: '40px',
+            alignItems: 'start',
+          }}
+        >
+          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
+            S / 06 — Security
+          </div>
+          <div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '16px' }}>
+              Designed for the team{' '}
+              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>whose name is on the filing.</em>
+            </h2>
+            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '500px' }}>
+              We build like your regulator is sitting in the next room. Because eventually, they will be.
+            </p>
+          </div>
         </motion.div>
-        <motion.h2
-          variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-4"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
-        >
-          Enterprise-grade security
-        </motion.h2>
-        <motion.p
-          variants={fadeUp}
-          className="text-lg max-w-xl mx-auto"
-          style={{ color: '#a3b3ae' }}
-        >
-          Built for regulated industries from day one.
-        </motion.p>
       </motion.div>
 
-      {/* Cards grid */}
+      {/* Two-col layout: certifications + architecture */}
       <motion.div
-        variants={staggerFast}
+        variants={staggerContainer}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-40px' }}
-        className="grid sm:grid-cols-2 gap-4"
+        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}
+        className="grid-cols-1 md:grid-cols-2"
       >
-        {SECURITY_CARDS.map((card) => (
-          <motion.div
-            key={card.title}
-            variants={fadeUp}
-            style={{
-              backgroundColor: '#111916',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '12px',
-              padding: '24px',
-            }}
-          >
-            {/* Icon */}
-            <div
-              className="flex items-center justify-center mb-4"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '10px',
-                backgroundColor: 'rgba(29, 158, 117, 0.15)',
-              }}
-            >
-              {card.icon}
-            </div>
-            <h3
-              className="text-base font-semibold mb-2"
-              style={{ color: '#f0f4f3' }}
-            >
-              {card.title}
-            </h3>
-            <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-              {card.description}
+        {/* Certifications */}
+        <motion.div variants={fadeUp}>
+          <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px' }}>Certifications</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '28px' }}>
+            {CERTS.map((c) => (
+              <div
+                key={c.badge}
+                style={{
+                  background: '#0e1614',
+                  border: '1px solid rgba(240,244,243,0.06)',
+                  borderRadius: '8px',
+                  padding: '14px 16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                }}
+              >
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0f4f3' }}>{c.badge}</span>
+                <span style={{ ...mono, fontSize: '10px', color: '#5a7268' }}>{c.name}</span>
+                <span style={{ ...mono, fontSize: '10px', color: c.color, marginTop: '4px' }}>{c.status}</span>
+              </div>
+            ))}
+          </div>
+          {/* Security contact callout */}
+          <div style={{ padding: '20px', border: '1px solid rgba(240,244,243,0.06)', borderRadius: '8px', background: '#0e1614' }}>
+            <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Security questions</div>
+            <p style={{ fontSize: '13px', color: '#a3b3ae', lineHeight: 1.55, marginBottom: '14px' }}>
+              Security questionnaires and sub-processor details available on request. No sales call required.
             </p>
-          </motion.div>
-        ))}
+            <a href="mailto:support@veridianapi.com" style={{ fontSize: '13px', color: '#1d9e75' }}>support@veridianapi.com →</a>
+          </div>
+        </motion.div>
+
+        {/* Architecture items */}
+        <motion.div variants={fadeUp}>
+          <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px' }}>Architecture</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {SECURITY_ARCH.map((it, i) => (
+              <div
+                key={it.n}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '32px 1fr',
+                  gap: '16px',
+                  padding: '18px 0',
+                  borderBottom: i < SECURITY_ARCH.length - 1 ? '1px solid rgba(240,244,243,0.06)' : 'none',
+                }}
+              >
+                <span style={{ ...mono, fontSize: '11px', color: '#3d544e', paddingTop: '2px' }}>{it.n}</span>
+                <div>
+                  <h5 style={{ fontSize: '14px', fontWeight: 500, color: '#f0f4f3', marginBottom: '6px' }}>{it.t}</h5>
+                  <p style={{ fontSize: '12px', color: '#5a7268', lineHeight: 1.55, marginBottom: '6px' }}>{it.d}</p>
+                  <span style={{ ...mono, fontSize: '10px', color: '#3d544e' }}>{it.m}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   );
 }
 
 function FAQSection() {
+  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
   return (
     <section id="faq" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      {/* Header */}
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="text-center mb-12"
+        style={{ marginBottom: '56px' }}
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>FAQ</SectionLabel>
-        </motion.div>
-        <motion.h2
+        <motion.div
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-4"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
+            gap: '40px',
+            alignItems: 'start',
+          }}
         >
-          Common questions
-        </motion.h2>
+          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
+            S / 09 — FAQ
+          </div>
+          <div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1 }}>
+              Common questions
+            </h2>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Accordion card */}
@@ -1662,31 +1834,55 @@ function FAQSection() {
 function FinalCTASection() {
   return (
     <section
-      className="relative py-24 overflow-hidden cta-glow"
-      style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+      className="relative overflow-hidden"
+      style={{
+        borderTop: '1px solid rgba(240,244,243,0.06)',
+        background: [
+          'radial-gradient(ellipse 70% 60% at 50% 100%, rgba(29,158,117,0.12) 0%, transparent 70%)',
+          '#050a09',
+        ].join(', '),
+        padding: '96px 24px',
+      }}
     >
-      {/* Dot grid */}
-      <div className="absolute inset-0 dot-grid opacity-20" />
-
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="relative max-w-2xl mx-auto px-6 text-center"
+        className="relative max-w-2xl mx-auto text-center"
       >
+        <motion.div
+          variants={fadeUp}
+          style={{
+            fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
+            fontSize: '11px',
+            color: '#5a7268',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            marginBottom: '32px',
+          }}
+        >
+          S / 08 — Start
+        </motion.div>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl md:text-5xl font-semibold mb-6"
-          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+          style={{
+            fontSize: 'clamp(36px, 5vw, 64px)',
+            fontWeight: 400,
+            letterSpacing: '-0.035em',
+            color: '#f0f4f3',
+            lineHeight: 1.05,
+            marginBottom: '24px',
+          }}
         >
-          Built by a developer,{' '}
-          <span className="gradient-text">for developers.</span>
+          Ship the hard parts{' '}
+          <br />
+          <em style={{ color: '#1d9e75', fontStyle: 'italic' }}>of fintech</em>{' '}
+          in an afternoon.
         </motion.h2>
         <motion.p
           variants={fadeUp}
-          className="text-lg mb-4 max-w-xl mx-auto"
-          style={{ color: '#a3b3ae', lineHeight: '1.7' }}
+          style={{ fontSize: '16px', color: '#a3b3ae', lineHeight: 1.65, maxWidth: '480px', margin: '0 auto 12px' }}
         >
           I built Veridian because fintech founders were paying $50K/yr for KYC when the
           technology costs a fraction of that. Try it free for 14 days. If it doesn&apos;t
@@ -1694,15 +1890,10 @@ function FinalCTASection() {
         </motion.p>
         <motion.p
           variants={fadeUp}
-          className="text-sm italic mb-10"
-          style={{ color: '#a3b3ae' }}
+          style={{ fontSize: '13px', fontStyle: 'italic', color: '#5a7268', marginBottom: '40px' }}
         >
           — Kidanemariam, Founder ·{' '}
-          <a
-            href="mailto:hello@veridianapi.com"
-            className="transition-colors hover:text-[#f0f4f3]"
-            style={{ color: '#a3b3ae' }}
-          >
+          <a href="mailto:hello@veridianapi.com" style={{ color: '#5a7268' }}>
             hello@veridianapi.com
           </a>
         </motion.p>
@@ -1712,18 +1903,29 @@ function FinalCTASection() {
         >
           <Link
             href={BILLING_URL}
-            className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
-            style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
+            className="inline-flex items-center justify-center gap-2 font-medium transition-all hover:opacity-90"
+            style={{ height: '44px', padding: '0 28px', backgroundColor: '#1d9e75', color: '#050a09', borderRadius: '8px', fontSize: '14px', fontWeight: 500 }}
           >
-            Start your free trial →
+            Start building →
           </Link>
           <Link
-            href={DOCS_URL}
-            className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
-            style={{ border: '1px solid rgba(255,255,255,0.08)', color: '#a3b3ae' }}
+            href={`mailto:support@veridianapi.com`}
+            className="inline-flex items-center justify-center gap-2 font-medium transition-all"
+            style={{ height: '44px', padding: '0 28px', border: '1px solid rgba(240,244,243,0.08)', color: '#a3b3ae', borderRadius: '8px', fontSize: '14px' }}
           >
-            Read the docs
+            Talk to sales
           </Link>
+        </motion.div>
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-wrap items-center justify-center gap-6 mt-8"
+          style={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '12px', color: '#5a7268' }}
+        >
+          <span>No credit card</span>
+          <span>·</span>
+          <span>14-day free trial</span>
+          <span>·</span>
+          <span>Operational monitoring from day one</span>
         </motion.div>
       </motion.div>
     </section>
@@ -1789,6 +1991,7 @@ export default function LandingPage() {
     <>
       <AnnouncementBar />
       <HeroSection />
+      <TrustStrip />
       <SimpleIntegrationSection />
       <LiveDemo />
       <BentoFeaturesSection />
