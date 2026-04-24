@@ -494,48 +494,35 @@ function HeroSection() {
             animate="show"
             suppressHydrationWarning
           >
-            {/* Badge */}
-            <motion.div variants={fadeUp}>
-              <div
-                className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full mb-8"
-                style={{
-                  border: '1px solid rgba(29, 158, 117, 0.3)',
-                  color: 'var(--brand)',
-                  backgroundColor: 'rgba(29, 158, 117, 0.06)',
-                }}
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full animate-pulse"
-                  style={{ backgroundColor: 'var(--brand)' }}
-                />
-                SOC 2 Type II in progress · GDPR-ready
-              </div>
-            </motion.div>
-
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-light leading-[1.05] mb-6 break-words"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-semibold leading-[1.05] mb-6 break-words"
               style={{ color: '#f0f4f3', letterSpacing: '-1.4px' }}
             >
-              Compliance infrastructure{' '}
+              KYC without the{' '}
               <span className="gradient-text glow-text">
-                for modern fintechs
+                $50K contract.
               </span>
             </motion.h1>
 
             {/* Subheadline */}
             <motion.p
               variants={fadeUp}
-              className="text-lg font-light leading-[1.6] mb-10 max-w-lg break-words"
+              className="text-lg font-light leading-[1.6] mb-8 max-w-lg break-words"
               style={{ color: '#a3b3ae' }}
             >
-              KYC, sanctions screening, and AML in one API.
-              Transparent pricing. No $150K contracts.
+              Veridian is the developer-first compliance API. Identity verification,
+              sanctions screening, and AML in one REST call. Transparent pricing from $199/mo.
+            </motion.p>
+
+            {/* Trust signals */}
+            <motion.p variants={fadeUp} className="text-[13px] mb-10" style={{ color: '#5a7268' }}>
+              18,698 OFAC records · Results in &lt;2s · 14-day free trial
             </motion.p>
 
             {/* CTAs */}
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 mb-8">
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
               <Link
                 href={DASHBOARD_LOGIN}
                 className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
@@ -560,10 +547,6 @@ function HeroSection() {
                 </svg>
               </Link>
             </motion.div>
-
-            <motion.p variants={fadeUp} className="text-xs" style={{ color: '#5a7268' }}>
-              Free trial · No credit card · 5-minute integration
-            </motion.p>
 
           </motion.div>
 
@@ -591,21 +574,7 @@ function HeroSection() {
 
 // ─── Social Proof Bar ─────────────────────────────────────────────────────────
 
-function SocialProofBar() {
-  return (
-    <section
-      className="py-12"
-      style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-    >
-      <div className="max-w-6xl mx-auto px-6 text-center flex flex-col items-center">
-        <SectionLabel>Trusted by</SectionLabel>
-        <p className="text-sm" style={{ color: '#a3b3ae' }}>
-          Trusted by compliance teams at forward-thinking fintechs
-        </p>
-      </div>
-    </section>
-  );
-}
+// SocialProofBar removed — no logos available
 
 // ─── Bento Grid ───────────────────────────────────────────────────────────────
 
@@ -686,14 +655,14 @@ function BentoFeaturesSection() {
           className="text-4xl md:text-5xl font-semibold mb-4"
           style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
         >
-          One API. Full compliance coverage.
+          Everything compliance requires. Nothing it doesn&apos;t.
         </motion.h2>
         <motion.p
           variants={fadeUp}
           className="text-lg max-w-xl mx-auto"
           style={{ color: '#a3b3ae' }}
         >
-          Everything your compliance team needs, without stitching together five vendors.
+          Built for fintech teams done stitching together five vendors.
         </motion.p>
       </motion.div>
 
@@ -1050,10 +1019,17 @@ function PricingSection() {
         </motion.h2>
         <motion.p
           variants={fadeUp}
-          className="text-lg max-w-md mx-auto"
+          className="text-lg max-w-md mx-auto mb-3"
           style={{ color: '#a3b3ae' }}
         >
           No setup fees. No per-seat pricing. Cancel anytime.
+        </motion.p>
+        <motion.p
+          variants={fadeUp}
+          className="text-sm italic"
+          style={{ color: '#a3b3ae' }}
+        >
+          Persona starts at $50K/yr. We start at $199/mo.
         </motion.p>
       </motion.div>
 
@@ -1195,6 +1171,16 @@ const FAQ_ITEMS = [
     question: 'What happens if I exceed my verification limit?',
     answer:
       'The API returns a 429 error with a clear message. Upgrade your plan from the dashboard in one click.',
+  },
+  {
+    question: 'How does Veridian compare to Persona?',
+    answer:
+      'Persona charges $50K+ per year with custom contracts. Veridian starts at $199/mo, self-serve, 14-day free trial. Same core technology — OCR, face matching, sanctions screening.',
+  },
+  {
+    question: 'Where is data stored?',
+    answer:
+      'Document images are processed in eu-west-1 (Ireland) and deleted after verification. We never store raw document images.',
   },
 ];
 
@@ -1448,40 +1434,49 @@ function FinalCTASection() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-80px' }}
-        className="relative max-w-3xl mx-auto px-6 text-center"
+        className="relative max-w-2xl mx-auto px-6 text-center"
       >
-        <motion.div variants={fadeUp}>
-          <SectionLabel>Get started today</SectionLabel>
-        </motion.div>
         <motion.h2
           variants={fadeUp}
           className="text-4xl md:text-5xl font-semibold mb-6"
           style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
         >
-          Start verifying identities
-          <br />
-          <span className="gradient-text">in 15 minutes</span>
+          Built by a developer,{' '}
+          <span className="gradient-text">for developers.</span>
         </motion.h2>
         <motion.p
           variants={fadeUp}
-          className="text-lg mb-10 max-w-md mx-auto"
+          className="text-lg mb-4 max-w-xl mx-auto"
+          style={{ color: '#a3b3ae', lineHeight: '1.7' }}
+        >
+          I built Veridian because fintech founders were paying $50K/yr for KYC when the
+          technology costs a fraction of that. Try it free for 14 days. If it doesn&apos;t
+          work, email me directly.
+        </motion.p>
+        <motion.p
+          variants={fadeUp}
+          className="text-sm italic mb-10"
           style={{ color: '#a3b3ae' }}
         >
-          Your first 50 verifications are free. No credit card required. Cancel anytime.
+          — Kidanemariam, Founder ·{' '}
+          <a
+            href="mailto:hello@veridianapi.com"
+            className="transition-colors hover:text-[#f0f4f3]"
+            style={{ color: '#a3b3ae' }}
+          >
+            hello@veridianapi.com
+          </a>
         </motion.p>
         <motion.div
           variants={fadeUp}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link
-            href={DASHBOARD_LOGIN}
+            href={BILLING_URL}
             className="inline-flex items-center justify-center gap-2 font-medium px-8 h-11 sm:h-9 rounded-lg text-[13px] transition-all"
             style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
           >
-            Start verifying identities in 15 minutes
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            Start your free trial →
           </Link>
           <Link
             href={DOCS_URL}
@@ -1496,15 +1491,67 @@ function FinalCTASection() {
   );
 }
 
+// ─── Announcement Bar ─────────────────────────────────────────────────────────
+
+function AnnouncementBar() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('ann-hosted-flow-dismissed') === '1') {
+        setVisible(false);
+      }
+    }
+  }, []);
+
+  const dismiss = () => {
+    setVisible(false);
+    localStorage.setItem('ann-hosted-flow-dismissed', '1');
+  };
+
+  if (!visible) return null;
+
+  return (
+    <div
+      className="flex items-center justify-center gap-2 px-4 py-2.5 text-[13px] relative"
+      style={{
+        backgroundColor: 'rgba(29,158,117,0.10)',
+        borderBottom: '1px solid rgba(29,158,117,0.20)',
+      }}
+    >
+      <span style={{ color: '#a3b3ae' }}>
+        🚀 New: Hosted verification flow — no UI to build
+      </span>
+      <a
+        href="https://verify.veridianapi.com"
+        className="font-medium underline underline-offset-2 transition-colors hover:text-[#f0f4f3]"
+        style={{ color: '#1d9e75' }}
+      >
+        Try it →
+      </a>
+      <button
+        onClick={dismiss}
+        className="absolute right-4 flex items-center justify-center w-5 h-5 rounded transition-colors hover:text-[#f0f4f3]"
+        style={{ color: '#5a7268' }}
+        aria-label="Dismiss"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 // ─── Main Export ──────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   return (
     <>
+      <AnnouncementBar />
       <HeroSection />
-      <SocialProofBar />
-      <BentoFeaturesSection />
       <LiveDemo />
+      <BentoFeaturesSection />
       <DashboardPreview />
       <HowItWorksSection />
       <PricingSection />
