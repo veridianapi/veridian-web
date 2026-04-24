@@ -477,97 +477,336 @@ function CodeWindow({ className = '' }: { className?: string }) {
   );
 }
 
+// ─── Hero Dashboard Visual ────────────────────────────────────────────────────
+
+type VerifStatus = 'Approved' | 'Review' | 'Rejected';
+
+const HERO_ROWS: { name: string; document: string; status: VerifStatus; risk: number }[] = [
+  { name: 'Sarah Chen',     document: 'passport',        status: 'Approved', risk: 12 },
+  { name: 'James Okafor',   document: 'driving_licence', status: 'Review',   risk: 45 },
+  { name: 'Maria Santos',   document: 'passport',        status: 'Approved', risk: 9  },
+  { name: 'Unknown Person', document: 'national_id',     status: 'Rejected', risk: 82 },
+  { name: 'Aiko Tanaka',    document: 'passport',        status: 'Approved', risk: 12 },
+];
+
+const STATUS_STYLES: Record<VerifStatus, { color: string; bg: string }> = {
+  Approved: { color: '#16a34a', bg: 'rgba(22,163,74,0.12)'   },
+  Review:   { color: '#d97706', bg: 'rgba(217,119,6,0.12)'   },
+  Rejected: { color: '#dc2626', bg: 'rgba(220,38,38,0.12)'   },
+};
+
+function riskColor(r: number) {
+  return r < 30 ? '#16a34a' : r < 70 ? '#d97706' : '#dc2626';
+}
+
+function HeroDashboard() {
+  return (
+    <div style={{
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '16px',
+      overflow: 'hidden',
+      boxShadow: '0 0 0 1px rgba(29,158,117,0.1), 0 40px 80px -20px rgba(0,0,0,0.6)',
+    }}>
+      {/* Browser chrome */}
+      <div style={{
+        height: '36px',
+        background: '#0d1211',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 12px',
+        gap: '8px',
+        flexShrink: 0,
+      }}>
+        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#1d9e75' }} />
+        </div>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: '11px', color: '#5a7268' }}>
+          app.veridianapi.com/dashboard
+        </div>
+      </div>
+
+      {/* Dashboard body */}
+      <div style={{ display: 'flex', background: '#0a0f0e', height: '420px' }}>
+        {/* Sidebar */}
+        <div style={{
+          width: '200px',
+          flexShrink: 0,
+          background: '#050a09',
+          borderRight: '1px solid rgba(255,255,255,0.06)',
+          padding: '16px 12px',
+        }}>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: '#f0f4f3', marginBottom: '24px', paddingLeft: '8px' }}>
+            <span style={{ color: '#1d9e75' }}>V</span>eridian
+          </div>
+          {[
+            { label: 'Overview',      active: true  },
+            { label: 'Verifications', active: false },
+            { label: 'API Keys',      active: false },
+            { label: 'Billing',       active: false },
+          ].map((item) => (
+            <div
+              key={item.label}
+              style={{
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                paddingLeft: item.active ? '6px' : '8px',
+                borderRadius: '6px',
+                marginBottom: '2px',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: item.active ? '#1d9e75' : '#5a7268',
+                backgroundColor: item.active ? 'rgba(29,158,117,0.10)' : 'transparent',
+                borderLeft: item.active ? '2px solid #1d9e75' : '2px solid transparent',
+              }}
+            >
+              {item.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Main content */}
+        <div style={{ flex: 1, padding: '20px 24px', overflowY: 'auto', minWidth: 0 }}>
+          <div style={{ fontSize: '16px', fontWeight: 500, color: '#f0f4f3', marginBottom: '16px' }}>Overview</div>
+
+          {/* Metric cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '10px', marginBottom: '20px' }}>
+            {[
+              { label: 'TOTAL',    value: '1,247' },
+              { label: 'APPROVED', value: '1,089' },
+              { label: 'REVIEW',   value: '98'    },
+              { label: 'REJECTED', value: '60'    },
+            ].map((card) => (
+              <div key={card.label} style={{
+                background: '#111916',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '8px',
+                padding: '12px',
+              }}>
+                <div style={{ fontSize: '20px', fontWeight: 600, color: '#f0f4f3', fontVariantNumeric: 'tabular-nums' }}>{card.value}</div>
+                <div style={{ fontSize: '10px', fontWeight: 500, color: '#5a7268', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '4px' }}>{card.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Table label */}
+          <div style={{ fontSize: '11px', fontWeight: 500, color: '#5a7268', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+            Recent Verifications
+          </div>
+
+          {/* Table */}
+          <div style={{ background: '#111916', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', overflow: 'hidden' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <thead>
+                <tr>
+                  {['Name', 'Document', 'Status', 'Risk'].map((col) => (
+                    <th key={col} style={{
+                      padding: '8px 12px', textAlign: 'left',
+                      fontSize: '10px', fontWeight: 500, color: '#5a7268',
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                      borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    }}>{col}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {HERO_ROWS.map((row, i) => (
+                  <tr key={i} style={{ borderBottom: i < HERO_ROWS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                    <td style={{ padding: '8px 12px', color: '#f0f4f3', fontWeight: 500, whiteSpace: 'nowrap' }}>{row.name}</td>
+                    <td style={{ padding: '8px 12px', color: '#5a7268', fontFamily: 'monospace', fontSize: '11px', whiteSpace: 'nowrap' }}>{row.document}</td>
+                    <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center',
+                        padding: '2px 6px', borderRadius: '9999px',
+                        fontSize: '10px', fontWeight: 500,
+                        color: STATUS_STYLES[row.status].color,
+                        backgroundColor: STATUS_STYLES[row.status].bg,
+                      }}>{row.status}</span>
+                    </td>
+                    <td style={{ padding: '8px 12px', color: riskColor(row.risk), fontFamily: 'monospace', fontSize: '11px', fontVariantNumeric: 'tabular-nums' }}>{row.risk}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Hero Section ─────────────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden hero-bg">
-      {/* Dot grid background */}
-      <div className="absolute inset-0 dot-grid opacity-30" />
+    <section
+      className="relative flex flex-col items-center overflow-hidden"
+      style={{
+        minHeight: '100vh',
+        background: [
+          'radial-gradient(ellipse 80% 60% at 60% 0%, rgba(29,158,117,0.12) 0%, transparent 100%)',
+          'radial-gradient(ellipse 50% 40% at 20% 30%, rgba(29,158,117,0.06) 0%, transparent 100%)',
+          '#050a09',
+        ].join(', '),
+      }}
+    >
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: [
+            'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+          ].join(', '),
+          backgroundSize: '48px 48px',
+        }}
+      />
 
-      <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-32 w-full">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          {/* Left: text */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="show"
-            suppressHydrationWarning
-          >
-            {/* Headline */}
-            <motion.h1
-              variants={fadeUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-semibold leading-[1.05] mb-6 break-words"
-              style={{ color: '#f0f4f3', letterSpacing: '-1.4px' }}
+      {/* Centered content */}
+      <div className="relative w-full mx-auto px-6 flex flex-col items-center text-center" style={{ maxWidth: '900px', paddingTop: '128px', paddingBottom: '96px' }}>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          suppressHydrationWarning
+          className="flex flex-col items-center w-full"
+        >
+          {/* Badge */}
+          <motion.div variants={fadeUp} className="mb-8">
+            <div
+              className="inline-flex items-center gap-2 rounded-full font-medium"
+              style={{
+                border: '1px solid rgba(29,158,117,0.3)',
+                backgroundColor: 'rgba(29,158,117,0.08)',
+                color: '#1d9e75',
+                fontSize: '12px',
+                padding: '6px 16px',
+                borderRadius: '9999px',
+              }}
             >
-              KYC without the{' '}
-              <span className="gradient-text glow-text">
-                $50K contract.
-              </span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              variants={fadeUp}
-              className="text-lg font-light leading-[1.6] mb-8 max-w-lg break-words"
-              style={{ color: '#a3b3ae' }}
-            >
-              Veridian is the developer-first compliance API. Identity verification,
-              sanctions screening, and AML in one REST call. Transparent pricing from $199/mo.
-            </motion.p>
-
-            {/* Trust signals */}
-            <motion.p variants={fadeUp} className="text-[13px] mb-10" style={{ color: '#5a7268' }}>
-              18,698 OFAC records · Results in &lt;2s · 14-day free trial
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href={DASHBOARD_LOGIN}
-                className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
-                style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-              >
-                Get API key free
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-              <Link
-                href={DOCS_URL}
-                className="inline-flex items-center justify-center gap-2 font-medium px-6 h-11 sm:h-9 rounded-lg transition-all text-[13px]"
-                style={{
-                  border: '1px solid rgba(29, 158, 117, 0.2)',
-                  color: '#a3b3ae',
-                }}
-              >
-                View docs
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2.5 7h9M7 2.5l4.5 4.5L7 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </motion.div>
-
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#1d9e75' }} />
+              Developer-first KYC API
+            </div>
           </motion.div>
 
-          {/* Right: code window */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            suppressHydrationWarning
-            className="overflow-x-hidden min-w-0"
+          {/* Headline */}
+          <motion.h1
+            variants={fadeUp}
+            style={{
+              fontSize: 'clamp(48px, 7vw, 80px)',
+              fontWeight: 300,
+              letterSpacing: '-0.04em',
+              color: '#f0f4f3',
+              lineHeight: 1.0,
+              maxWidth: '800px',
+              margin: '0 auto',
+            }}
           >
-            <CodeWindow />
+            KYC without the $50K contract.
+          </motion.h1>
+
+          {/* Subheadline */}
+          <motion.p
+            variants={fadeUp}
+            style={{
+              fontSize: '18px',
+              fontWeight: 300,
+              color: '#a3b3ae',
+              maxWidth: '560px',
+              marginTop: '20px',
+              lineHeight: '1.6',
+            }}
+          >
+            Identity verification, sanctions screening, and AML in one REST call.
+            Transparent pricing. No sales calls.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row items-center"
+            style={{ gap: '12px', marginTop: '36px' }}
+          >
+            <Link
+              href={DASHBOARD_LOGIN}
+              className="inline-flex items-center justify-center font-medium transition-all hover:opacity-90"
+              style={{ height: '44px', padding: '0 24px', backgroundColor: '#1d9e75', color: '#050a09', borderRadius: '8px', fontSize: '14px', fontWeight: 500 }}
+            >
+              Get API key free →
+            </Link>
+            <Link
+              href={DOCS_URL}
+              className="inline-flex items-center justify-center transition-all hover:text-[#f0f4f3] hover:border-white/20"
+              style={{ height: '44px', padding: '0 24px', border: '1px solid rgba(255,255,255,0.12)', color: '#a3b3ae', borderRadius: '8px', fontSize: '14px' }}
+            >
+              View docs
+            </Link>
           </motion.div>
-        </div>
+
+          {/* Trust line */}
+          <motion.p variants={fadeUp} style={{ fontSize: '12px', color: '#5a7268', marginTop: '16px' }}>
+            18,698 OFAC records · &lt;2s response · 14-day free trial
+          </motion.p>
+
+          {/* Hero dashboard visual */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            suppressHydrationWarning
+            className="w-full"
+            style={{ marginTop: '64px' }}
+          >
+            <HeroDashboard />
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Bottom fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-24"
+        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
         style={{ background: 'linear-gradient(to bottom, transparent, #050a09)' }}
       />
+    </section>
+  );
+}
+
+// ─── Simple Integration Section ───────────────────────────────────────────────
+
+function SimpleIntegrationSection() {
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-24">
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-80px' }}
+        className="text-center mb-12"
+      >
+        <motion.div variants={fadeUp}>
+          <SectionLabel>Integration</SectionLabel>
+        </motion.div>
+        <motion.h2
+          variants={fadeUp}
+          className="text-4xl md:text-5xl font-semibold"
+          style={{ color: '#f0f4f3', letterSpacing: '-0.64px' }}
+        >
+          Integrate in minutes, not weeks.
+        </motion.h2>
+      </motion.div>
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-40px' }}
+        className="mx-auto"
+        style={{ maxWidth: '700px' }}
+      >
+        <CodeWindow />
+      </motion.div>
     </section>
   );
 }
@@ -1550,6 +1789,7 @@ export default function LandingPage() {
     <>
       <AnnouncementBar />
       <HeroSection />
+      <SimpleIntegrationSection />
       <LiveDemo />
       <BentoFeaturesSection />
       <DashboardPreview />
