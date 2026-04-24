@@ -1,89 +1,68 @@
-import Link from "next/link";
-
-const DOCS_URL = "/docs";
-const STATUS_URL = "https://api.veridianapi.com/health";
+import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer style={{ borderTop: '1px solid var(--border)', backgroundColor: 'var(--card)' }}>
-      <div className="max-w-6xl mx-auto px-6 py-14">
-        <div className="flex flex-col md:flex-row justify-between gap-10">
-          {/* Brand */}
-          <div className="max-w-xs">
-            <div className="font-bold text-xl mb-3" style={{ color: '#e8f5ef' }}>
-              <span style={{ color: 'var(--brand)' }}>V</span>eridian
+    <footer className="footer">
+      <div className="wrap">
+        <div className="footer-grid">
+          <div className="footer-col footer-brand">
+            <div className="logo">
+              <svg className="logo-mark" viewBox="0 0 22 22" fill="none">
+                <rect x="1" y="1" width="20" height="20" rx="4" stroke="#1d9e75" strokeWidth="1.25"/>
+                <path d="M5.5 10.5L9.5 14.5L16.5 7.5" stroke="#1d9e75" strokeWidth="1.5"/>
+              </svg>
+              <span>Veridian</span>
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              Compliance-as-a-Service for fintechs. KYC, sanctions screening,
-              and AML via a single REST API.
-            </p>
+            <p>Compliance infrastructure for companies moving money. Operated from Berlin, New York, and Singapore.</p>
+            <div style={{ marginTop: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
+              <span className="chip"><span className="dot"/> All systems operational</span>
+            </div>
           </div>
-
-          {/* Links */}
-          <div className="flex gap-16 text-sm">
-            <div>
-              <div className="font-semibold mb-4" style={{ color: 'rgba(232, 245, 239, 0.6)' }}>
-                Product
-              </div>
-              <ul className="space-y-3">
-                {[
-                  { label: 'Features', href: '#features', external: false },
-                  { label: 'Pricing', href: '#pricing', external: false },
-                  { label: 'Docs', href: DOCS_URL, external: false },
-                ].map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      href={item.href}
-                      className="transition-colors hover:text-[#e8f5ef]"
-                      style={{ color: 'var(--text-muted)' }}
-                      target={item.external ? '_blank' : undefined}
-                      rel={item.external ? 'noopener noreferrer' : undefined}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <div className="font-semibold mb-4" style={{ color: 'rgba(232, 245, 239, 0.6)' }}>
-                Legal
-              </div>
-              <ul className="space-y-3">
-                {[
-                  { label: 'Terms', href: '/terms' },
-                  { label: 'Privacy', href: '/privacy' },
-                  { label: 'Refund', href: '/refund' },
-                ].map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      href={item.href}
-                      className="transition-colors hover:text-[#e8f5ef]"
-                      style={{ color: 'var(--text-muted)' }}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="footer-col">
+            <h6>Product</h6>
+            <ul>
+              <li><a href="#features">Identity</a></li>
+              <li><a href="#features">Business KYB</a></li>
+              <li><a href="#features">Sanctions</a></li>
+              <li><a href="#features">Monitoring</a></li>
+              <li><a href="#dashboard">Cases</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h6>Developers</h6>
+            <ul>
+              <li><Link href="/docs">Documentation</Link></li>
+              <li><Link href="/docs">API reference</Link></li>
+              <li><Link href="/docs">SDKs</Link></li>
+              <li><Link href="/docs">Changelog</Link></li>
+              <li><a href="https://status.veridianapi.com" target="_blank" rel="noopener noreferrer">Status</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h6>Company</h6>
+            <ul>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Customers</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Press</a></li>
+              <li><a href="mailto:support@veridianapi.com">Contact</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h6>Legal</h6>
+            <ul>
+              <li><Link href="/terms">Terms</Link></li>
+              <li><Link href="/privacy">Privacy</Link></li>
+              <li><a href="#">DPA</a></li>
+              <li><a href="#">Sub-processors</a></li>
+              <li><a href="#">Trust centre</a></li>
+            </ul>
           </div>
         </div>
-
-        {/* Bottom bar */}
-        <div
-          className="mt-12 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
-          style={{ borderTop: '1px solid var(--border)', color: 'var(--text-subtle)' }}
-        >
-          <span>© 2026 Veridian. All rights reserved.</span>
-          <Link
-            href={STATUS_URL}
-            className="inline-flex items-center gap-2 transition-colors hover:text-[#e8f5ef]"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-            Operational
-          </Link>
+        <div className="footer-bot">
+          <span>© 2026 Veridian Systems, Inc.</span>
+          <span>Berlin · New York · Singapore</span>
+          <span>veridianapi.com</span>
         </div>
       </div>
     </footer>

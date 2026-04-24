@@ -1,2006 +1,831 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import LiveDemo from './LiveDemo';
-import DashboardPreview from './DashboardPreview';
 
-const DASHBOARD_LOGIN = "https://app.veridianapi.com/login";
-const BILLING_URL = "https://app.veridianapi.com/login?next=/dashboard/billing";
+const SIGNUP_URL = "https://app.veridianapi.com/login?next=/dashboard/billing";
 const DOCS_URL = "/docs";
+const SALES_EMAIL = "mailto:support@veridianapi.com";
 
-// ─── Animation variants ───────────────────────────────────────────────────────
+// ─── Icon ────────────────────────────────────────────────────────────────────
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-};
-
-const fadeIn = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.5 } },
-};
-
-const staggerContainer = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
-
-const staggerFast = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
-
-// ─── Shared sub-components ────────────────────────────────────────────────────
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase mb-6 px-3 py-1.5 rounded-full"
-      style={{
-        color: 'var(--brand)',
-        backgroundColor: 'rgba(29, 158, 117, 0.08)',
-        border: '1px solid rgba(29, 158, 117, 0.15)',
-        letterSpacing: '0.08em',
-      }}
-    >
-      {children}
-    </div>
-  );
+function Icon({ name, size = 16, stroke = 1.5, className = '' }: { name: string; size?: number; stroke?: number; className?: string }) {
+  const p = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: stroke, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, className };
+  switch (name) {
+    case "graph": return <svg {...p}><path d="M4 20V4M4 20h16M7 16l4-4 3 3 5-7"/></svg>;
+    case "search": return <svg {...p}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>;
+    case "copy": return <svg {...p}><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V4H4v12h4"/></svg>;
+    default: return null;
+  }
 }
 
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 2 }}>
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 
-// ─── Code Window ──────────────────────────────────────────────────────────────
-
-type TabId = 'curl' | 'typescript' | 'python';
-
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'curl', label: 'cURL' },
-  { id: 'typescript', label: 'TypeScript' },
-  { id: 'python', label: 'Python' },
+const CONSOLE_ROWS = [
+  { t: "14:32:08", ev: "identity.verified",     country: "DE · Berlin",    risk: "0.08", status: "ok",   label: "PASS" },
+  { t: "14:32:06", ev: "transaction.screened",  country: "US · NY",        risk: "0.12", status: "ok",   label: "PASS" },
+  { t: "14:32:04", ev: "sanction.hit.ofac",      country: "CY · Limassol", risk: "0.94", status: "err",  label: "BLOCK" },
+  { t: "14:32:01", ev: "kyb.ubo.verified",       country: "GB · London",   risk: "0.21", status: "ok",   label: "PASS" },
+  { t: "14:31:58", ev: "pep.match.review",       country: "AE · Dubai",    risk: "0.61", status: "warn", label: "REVIEW" },
+  { t: "14:31:55", ev: "transaction.screened",  country: "SG · Central",   risk: "0.09", status: "ok",   label: "PASS" },
+  { t: "14:31:52", ev: "identity.verified",     country: "FR · Paris",     risk: "0.14", status: "ok",   label: "PASS" },
+  { t: "14:31:49", ev: "kyc.document.ocr",       country: "BR · São Paulo", risk: "0.18", status: "ok",  label: "PASS" },
 ];
 
-// Plain strings for the copy button
-const CODE_TEXT: Record<TabId, string> = {
-  curl: `curl -X POST https://api.veridianapi.com/v1/verifications \\
-  -H "Authorization: Bearer your_api_key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "document_type": "passport",
-    "document_front": "<base64_image>",
-    "selfie": "<base64_image>"
-  }'`,
-  typescript: `import VeridianClient from '@veridian/sdk'
+const QUEUE_HEIGHTS = [6, 8, 5, 9, 12, 7, 10, 14, 8, 6, 9, 11, 7, 5, 8, 10, 13, 9, 6, 8, 11, 7, 9, 12];
 
-const veridian = new VeridianClient('your_api_key')
-
-const result = await veridian.createVerification({
-  documentType: 'passport',
-  documentFront: imageBase64,
-  selfie: selfieBase64
-})
-
-console.log(result)
-// {
-//   verificationId: "a1b2c3d4...",
-//   status: "pending"
-// }`,
-  python: `from veridian import VeridianClient
-
-client = VeridianClient("your_api_key")
-
-result = client.create_verification(
-    document_type="passport",
-    document_front=image_base64,
-    selfie=selfie_base64
-)
-
-print(result)
-# {
-#   "verification_id": "a1b2c3d4...",
-#   "status": "pending"
-# }`,
-};
-
-// Syntax-highlighted JSX for each tab
-function CurlCode() {
-  const k = '#ff7b72';   // keyword / flag
-  const s = '#a5d6ff';   // string / URL
-  const d = '#ffa657';   // data key
-  const c = 'rgba(201,232,217,0.35)'; // comment / muted
-  const p = '#c9e8d9';   // plain
+function Hero() {
   return (
-    <code>
-      <span style={{ color: k }}>curl</span>
-      <span style={{ color: p }}> -X POST </span>
-      <span style={{ color: s }}>https://api.veridianapi.com/v1/verifications</span>
-      <span style={{ color: c }}> \</span>{'\n'}
-      {'  '}
-      <span style={{ color: k }}>-H</span>
-      <span style={{ color: p }}> </span>
-      <span style={{ color: '#a8ff78' }}>&quot;Authorization: Bearer </span>
-      <span style={{ color: d }}>your_api_key</span>
-      <span style={{ color: '#a8ff78' }}>&quot;</span>
-      <span style={{ color: c }}> \</span>{'\n'}
-      {'  '}
-      <span style={{ color: k }}>-H</span>
-      <span style={{ color: p }}> </span>
-      <span style={{ color: '#a8ff78' }}>&quot;Content-Type: application/json&quot;</span>
-      <span style={{ color: c }}> \</span>{'\n'}
-      {'  '}
-      <span style={{ color: k }}>-d</span>
-      <span style={{ color: p }}> </span>
-      <span style={{ color: '#a8ff78' }}>&apos;{'{'}</span>{'\n'}
-      {'    '}
-      <span style={{ color: d }}>&quot;document_type&quot;</span>
-      <span style={{ color: p }}>: </span>
-      <span style={{ color: '#a8ff78' }}>&quot;passport&quot;</span>
-      <span style={{ color: p }}>,</span>{'\n'}
-      {'    '}
-      <span style={{ color: d }}>&quot;document_front&quot;</span>
-      <span style={{ color: p }}>: </span>
-      <span style={{ color: '#a8ff78' }}>&quot;&lt;base64_image&gt;&quot;</span>
-      <span style={{ color: p }}>,</span>{'\n'}
-      {'    '}
-      <span style={{ color: d }}>&quot;selfie&quot;</span>
-      <span style={{ color: p }}>: </span>
-      <span style={{ color: '#a8ff78' }}>&quot;&lt;base64_image&gt;&quot;</span>{'\n'}
-      {'  '}
-      <span style={{ color: '#a8ff78' }}>{"}'"}</span>
-    </code>
-  );
-}
-
-function TypeScriptCode() {
-  const kw = '#ff7b72';
-  const fn = '#d2a8ff';
-  const str = '#a8ff78';
-  const id = '#c9e8d9';
-  const cm = 'rgba(201,232,217,0.35)';
-  const cls = '#ffa657';
-  return (
-    <code>
-      <span style={{ color: kw }}>import </span>
-      <span style={{ color: cls }}>VeridianClient</span>
-      <span style={{ color: kw }}> from </span>
-      <span style={{ color: str }}>&apos;@veridian/sdk&apos;</span>{'\n\n'}
-      <span style={{ color: kw }}>const </span>
-      <span style={{ color: id }}>veridian</span>
-      <span style={{ color: '#c9e8d9' }}> = </span>
-      <span style={{ color: kw }}>new </span>
-      <span style={{ color: cls }}>VeridianClient</span>
-      <span style={{ color: '#c9e8d9' }}>(</span>
-      <span style={{ color: str }}>&apos;your_api_key&apos;</span>
-      <span style={{ color: '#c9e8d9' }}>)</span>{'\n\n'}
-      <span style={{ color: kw }}>const </span>
-      <span style={{ color: id }}>result</span>
-      <span style={{ color: '#c9e8d9' }}> = </span>
-      <span style={{ color: kw }}>await </span>
-      <span style={{ color: id }}>veridian</span>
-      <span style={{ color: '#c9e8d9' }}>.</span>
-      <span style={{ color: fn }}>createVerification</span>
-      <span style={{ color: '#c9e8d9' }}>({"{"}</span>{'\n'}
-      {'  '}
-      <span style={{ color: id }}>documentType</span>
-      <span style={{ color: '#c9e8d9' }}>: </span>
-      <span style={{ color: str }}>&apos;passport&apos;</span>
-      <span style={{ color: '#c9e8d9' }}>,</span>{'\n'}
-      {'  '}
-      <span style={{ color: id }}>documentFront</span>
-      <span style={{ color: '#c9e8d9' }}>: </span>
-      <span style={{ color: '#a5d6ff' }}>imageBase64</span>
-      <span style={{ color: '#c9e8d9' }}>,</span>{'\n'}
-      {'  '}
-      <span style={{ color: id }}>selfie</span>
-      <span style={{ color: '#c9e8d9' }}>: </span>
-      <span style={{ color: '#a5d6ff' }}>selfieBase64</span>{'\n'}
-      <span style={{ color: '#c9e8d9' }}>{')'}</span>{'\n\n'}
-      <span style={{ color: fn }}>console</span>
-      <span style={{ color: '#c9e8d9' }}>.</span>
-      <span style={{ color: fn }}>log</span>
-      <span style={{ color: '#c9e8d9' }}>(</span>
-      <span style={{ color: '#a5d6ff' }}>result</span>
-      <span style={{ color: '#c9e8d9' }}>)</span>{'\n'}
-      <span style={{ color: cm }}>{`// {`}</span>{'\n'}
-      <span style={{ color: cm }}>{`//   verificationId: "a1b2c3d4...",`}</span>{'\n'}
-      <span style={{ color: cm }}>{`//   status: "pending"`}</span>{'\n'}
-      <span style={{ color: cm }}>{`// }`}</span>
-    </code>
-  );
-}
-
-function PythonCode() {
-  const kw = '#ff7b72';
-  const fn = '#d2a8ff';
-  const str = '#a8ff78';
-  const id = '#c9e8d9';
-  const cm = 'rgba(201,232,217,0.35)';
-  const cls = '#ffa657';
-  return (
-    <code>
-      <span style={{ color: kw }}>from </span>
-      <span style={{ color: id }}>veridian</span>
-      <span style={{ color: kw }}> import </span>
-      <span style={{ color: cls }}>VeridianClient</span>{'\n\n'}
-      <span style={{ color: id }}>client</span>
-      <span style={{ color: '#c9e8d9' }}> = </span>
-      <span style={{ color: cls }}>VeridianClient</span>
-      <span style={{ color: '#c9e8d9' }}>(</span>
-      <span style={{ color: str }}>&quot;your_api_key&quot;</span>
-      <span style={{ color: '#c9e8d9' }}>)</span>{'\n\n'}
-      <span style={{ color: id }}>result</span>
-      <span style={{ color: '#c9e8d9' }}> = </span>
-      <span style={{ color: id }}>client</span>
-      <span style={{ color: '#c9e8d9' }}>.</span>
-      <span style={{ color: fn }}>create_verification</span>
-      <span style={{ color: '#c9e8d9' }}>(</span>{'\n'}
-      {'    '}
-      <span style={{ color: id }}>document_type</span>
-      <span style={{ color: '#c9e8d9' }}>=</span>
-      <span style={{ color: str }}>&quot;passport&quot;</span>
-      <span style={{ color: '#c9e8d9' }}>,</span>{'\n'}
-      {'    '}
-      <span style={{ color: id }}>document_front</span>
-      <span style={{ color: '#c9e8d9' }}>=</span>
-      <span style={{ color: '#a5d6ff' }}>image_base64</span>
-      <span style={{ color: '#c9e8d9' }}>,</span>{'\n'}
-      {'    '}
-      <span style={{ color: id }}>selfie</span>
-      <span style={{ color: '#c9e8d9' }}>=</span>
-      <span style={{ color: '#a5d6ff' }}>selfie_base64</span>{'\n'}
-      <span style={{ color: '#c9e8d9' }}>)</span>{'\n\n'}
-      <span style={{ color: fn }}>print</span>
-      <span style={{ color: '#c9e8d9' }}>(</span>
-      <span style={{ color: '#a5d6ff' }}>result</span>
-      <span style={{ color: '#c9e8d9' }}>)</span>{'\n'}
-      <span style={{ color: cm }}>{`# {`}</span>{'\n'}
-      <span style={{ color: cm }}>{`#   "verification_id": "a1b2c3d4...",`}</span>{'\n'}
-      <span style={{ color: cm }}>{`#   "status": "pending"`}</span>{'\n'}
-      <span style={{ color: cm }}>{`# }`}</span>
-    </code>
-  );
-}
-
-const TAB_CONTENT: Record<TabId, React.ReactNode> = {
-  curl: <CurlCode />,
-  typescript: <TypeScriptCode />,
-  python: <PythonCode />,
-};
-
-function CodeWindow({ className = '' }: { className?: string }) {
-  const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabId>('curl');
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(CODE_TEXT[activeTab]);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // clipboard unavailable
-    }
-  };
-
-  // Static shell rendered on server (and on first client paint before hydration).
-  // Matches the mounted version's DOM shape to avoid attribute mismatches.
-  if (!mounted) {
-    return (
-      <div
-        className={`rounded-2xl overflow-hidden w-full ${className}`}
-        style={{
-          background: '#0d1117',
-          border: '1px solid rgba(29, 158, 117, 0.2)',
-          boxShadow: '0 0 60px rgba(29, 158, 117, 0.08), 0 40px 80px rgba(0,0,0,0.6)',
-        }}
-      >
-        <div className="flex items-center gap-2 px-4 pt-3 pb-0" style={{ backgroundColor: '#161b22' }}>
-          <div className="flex items-center gap-1.5 mr-3">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f57' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#febc2e' }} />
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--brand)' }} />
+    <section className="hero">
+      <div className="wrap hero-inner">
+        <h1 className="hero-h1">
+          Compliance infrastructure<br/>
+          for companies <span className="accent">moving money.</span>
+        </h1>
+        <p className="hero-sub">
+          One API for KYC, KYB, sanctions screening, and transaction monitoring. Built for fintech teams who ship on Friday and sleep through the weekend.
+        </p>
+        <div className="hero-cta-row">
+          <Link href={SIGNUP_URL} className="btn btn-primary">Start building <span className="arrow">→</span></Link>
+          <Link href={DOCS_URL} className="btn-link">Read the docs <span className="arrow">→</span></Link>
+        </div>
+        <div className="hero-meta">
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Uptime · 90 day</span>
+            <span className="hero-meta-val">99.998%</span>
           </div>
-          <div className="flex items-end gap-0.5 flex-1">
-            {TABS.map((tab) => (
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Median latency</span>
+            <span className="hero-meta-val">47 ms</span>
+          </div>
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Checks / day</span>
+            <span className="hero-meta-val">184M</span>
+          </div>
+          <div className="hero-meta-item">
+            <span className="hero-meta-label">Coverage</span>
+            <span className="hero-meta-val">212 jurisdictions</span>
+          </div>
+        </div>
+
+        <div className="hero-console">
+          <div className="console">
+            <div className="console-head">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div className="console-dots"><span/><span/><span/></div>
+                <span className="console-title">veridian / live · acme-payments</span>
+              </div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
+                <span className="live-dot"/>streaming · eu-central-1
+              </span>
+            </div>
+            <div className="console-body">
+              <div className="console-main">
+                <div className="console-rows">
+                  {CONSOLE_ROWS.map((r, i) => (
+                    <div className="console-row" key={i}>
+                      <span className="r-time">{r.t}</span>
+                      <span className="r-ev">{r.ev}</span>
+                      <span className="r-country">{r.country}</span>
+                      <span className="r-risk" style={{ color: r.status === 'err' ? 'var(--red)' : r.status === 'warn' ? 'var(--amber)' : 'var(--text-2)' }}>
+                        risk {r.risk}
+                      </span>
+                      <span className="r-status">
+                        <span className={`pill ${r.status === 'err' ? 'pill-err' : r.status === 'warn' ? 'pill-warn' : 'pill-ok'}`}>{r.label}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <aside className="console-side-r">
+                <div className="mini-metric">
+                  <span className="mini-metric-label">Events / sec</span>
+                  <span className="mini-metric-val">2,143<span className="suffix">rps</span></span>
+                  <svg className="sparkline" viewBox="0 0 200 52" preserveAspectRatio="none">
+                    <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8" stroke="#1d9e75" strokeWidth="1.25" fill="none"/>
+                    <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8 L200,52 L0,52 Z" fill="url(#sparkGrad)"/>
+                    <defs>
+                      <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0" stopColor="#1d9e75" stopOpacity="0.3"/>
+                        <stop offset="1" stopColor="#1d9e75" stopOpacity="0"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <div className="mini-metric">
+                  <span className="mini-metric-label">P50 · p99 latency</span>
+                  <span className="mini-metric-val">47<span className="suffix">/ 112 ms</span></span>
+                </div>
+                <div className="mini-metric">
+                  <span className="mini-metric-label">Block rate · 24h</span>
+                  <span className="mini-metric-val">0.41<span className="suffix">%</span></span>
+                </div>
+                <div className="mini-metric">
+                  <span className="mini-metric-label">Queue depth</span>
+                  <div style={{ display: 'flex', gap: 3, marginTop: 6 }}>
+                    {QUEUE_HEIGHTS.map((h, i) => (
+                      <div key={i} style={{ width: 6, height: h * 2, background: 'var(--green)', opacity: 0.3 + h / 20 }}/>
+                    ))}
+                  </div>
+                </div>
+              </aside>
+            </div>
+            <div className="console-footer">
+              <span>wss://api.veridianapi.com/v3/stream</span>
+              <span>0 dropped · 184,204,108 delivered · lag 3ms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Trust strip ──────────────────────────────────────────────────────────────
+
+const TRUST_LOGOS = ["Vaultline", "Parallax", "Northbeam", "Axiom Pay", "Relay"];
+
+function TrustStrip() {
+  return (
+    <section className="trust">
+      <div className="wrap trust-inner">
+        <div className="trust-label">Trusted by teams moving<br/>$40B+ in regulated flows.</div>
+        <div className="trust-logos">
+          {TRUST_LOGOS.map((l, i) => (
+            <div className="trust-logo" key={i}>{l}</div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── API Demo ─────────────────────────────────────────────────────────────────
+
+const ENDPOINTS = [
+  { id: "verify",  method: "POST", path: "/v3/identity/verify",       desc: "Run KYC against 9,200 document types in 212 jurisdictions." },
+  { id: "screen",  method: "POST", path: "/v3/sanctions/screen",      desc: "Screen against OFAC, EU, UN, HMT, and 140+ watchlists." },
+  { id: "monitor", method: "POST", path: "/v3/transactions/monitor",  desc: "Real-time rules engine. Block, review, or approve in <50ms." },
+  { id: "kyb",     method: "POST", path: "/v3/business/verify",       desc: "KYB with UBO graph resolution and corporate registry lookups." },
+  { id: "case",    method: "GET",  path: "/v3/cases/:id",             desc: "Investigator-grade audit trail with immutable evidence chains." },
+];
+
+type LangId = 'node' | 'python' | 'curl';
+
+type CodeLine = [string, ReactNode];
+
+const CODE_SAMPLES: Record<string, Record<LangId, CodeLine[]>> = {
+  verify: {
+    node: [
+      ['1',  <><span className="tok-k">import</span>{' '}{'{ Veridian }'}{' '}<span className="tok-k">from</span>{' '}<span className="tok-s">&quot;@veridian/sdk&quot;</span>;</>],
+      ['2',  <></>],
+      ['3',  <><span className="tok-k">const</span>{' '}<span className="tok-p">v</span>{' = '}<span className="tok-k">new</span>{' '}<span className="tok-f">Veridian</span>(process.env.<span className="tok-p">VERIDIAN_KEY</span>);</>],
+      ['4',  <></>],
+      ['5',  <><span className="tok-k">const</span>{' '}result{' = '}<span className="tok-k">await</span>{' '}v.identity.<span className="tok-f">verify</span>{'({'}</>],
+      ['6',  <>{'  '}<span className="tok-m">subject</span>{': {' }</>],
+      ['7',  <>{'    '}<span className="tok-m">firstName</span>{': '}<span className="tok-s">&quot;Amara&quot;</span>,</>],
+      ['8',  <>{'    '}<span className="tok-m">lastName</span>{': '}<span className="tok-s">&quot;Okafor&quot;</span>,</>],
+      ['9',  <>{'    '}<span className="tok-m">dateOfBirth</span>{': '}<span className="tok-s">&quot;1991-04-12&quot;</span>,</>],
+      ['10', <>{'    '}<span className="tok-m">country</span>{': '}<span className="tok-s">&quot;NG&quot;</span>,</>],
+      ['11', <>{'  '}{'}'},{' '}</>],
+      ['12', <>{'  '}<span className="tok-m">document</span>{': { '}<span className="tok-m">type</span>{': '}<span className="tok-s">&quot;passport&quot;</span>{', '}<span className="tok-m">file</span>{': buffer },'}</>],
+      ['13', <>{'  '}<span className="tok-m">liveness</span>{': '}<span className="tok-n">true</span>,</>],
+      ['14', <>{'  '}<span className="tok-m">riskProfile</span>{': '}<span className="tok-s">&quot;standard&quot;</span>,</>],
+      ['15', <>{'});'}</>],
+      ['16', <></>],
+      ['17', <><span className="tok-c">{'// result.decision ⇒ "approve" | "review" | "reject"'}</span></>],
+    ],
+    python: [
+      ['1', <><span className="tok-k">from</span>{' '}veridian{' '}<span className="tok-k">import</span>{' '}Veridian</>],
+      ['2', <></>],
+      ['3', <>v{' = '}<span className="tok-f">Veridian</span>(os.environ[<span className="tok-s">&quot;VERIDIAN_KEY&quot;</span>])</>],
+      ['4', <></>],
+      ['5', <>result{' = '}v.identity.<span className="tok-f">verify</span>(</>],
+      ['6', <>{'    '}subject=Subject(first=<span className="tok-s">&quot;Amara&quot;</span>, last=<span className="tok-s">&quot;Okafor&quot;</span>),</>],
+      ['7', <>{'    '}document=Document.<span className="tok-f">from_file</span>(<span className="tok-s">&quot;passport.jpg&quot;</span>),</>],
+      ['8', <>{'    '}liveness=<span className="tok-n">True</span>,</>],
+      ['9', <>)</>],
+    ],
+    curl: [
+      ['1', <><span className="tok-f">curl</span>{' '}<span className="tok-s">https://api.veridianapi.com/v3/identity/verify</span>{' \\'}</>],
+      ['2', <>{'  '}-H{' '}<span className="tok-s">&quot;Authorization: Bearer $VERIDIAN_KEY&quot;</span>{' \\'}</>],
+      ['3', <>{'  '}-H{' '}<span className="tok-s">&quot;Content-Type: application/json&quot;</span>{' \\'}</>],
+      ['4', <>{'  '}-d{' '}<span className="tok-s">&apos;{'{"subject":{"firstName":"Amara"}}'}&apos;</span></>],
+    ],
+  },
+};
+
+const RESPONSE_LINES = [
+  '{',
+  '  "id": "ver_4kT9aQxXm2p",',
+  '  "decision": "approve",',
+  '  "score": 0.0842,',
+  '  "checks": {',
+  '    "document.authenticity": "pass",',
+  '    "face.match":            "pass · 0.971",',
+  '    "liveness":              "pass",',
+  '    "sanctions":             "pass · 142 lists",',
+  '    "pep":                   "pass",',
+  '    "adverse_media":         "pass"',
+  '  },',
+  '  "jurisdiction": "NG",',
+  '  "latency_ms": 312,',
+  '  "evidence_chain": "sha256:a7f…c81",',
+  '  "expires_at": "2027-04-24T14:32:08Z"',
+  '}',
+];
+
+function ApiDemo() {
+  const [active, setActive] = useState("verify");
+  const [lang, setLang] = useState<LangId>("node");
+  const sample = CODE_SAMPLES[active] ?? CODE_SAMPLES.verify;
+  const lines = sample[lang] ?? sample.node;
+
+  return (
+    <section className="section" id="api">
+      <div className="wrap">
+        <div className="section-head">
+          <div className="section-kicker">S / 03 — API</div>
+          <div>
+            <h2 className="section-title">
+              Five endpoints. <em>Every compliance decision<br/>your fintech will ever make.</em>
+            </h2>
+            <p className="section-sub">Typed SDKs in six languages. Webhooks with exactly-once delivery. Sandbox environments that mirror production risk scoring down to the basis point.</p>
+          </div>
+        </div>
+
+        <div className="api-demo">
+          <div className="api-endpoints">
+            {ENDPOINTS.map(e => (
               <div
-                key={tab.id}
-                className="relative px-4 py-2 text-xs font-medium rounded-t-lg"
-                style={{
-                  color: tab.id === 'curl' ? '#f0f4f3' : 'rgba(232,245,239,0.35)',
-                  backgroundColor: tab.id === 'curl' ? '#0d1117' : 'transparent',
-                }}
+                key={e.id}
+                className={`api-endpoint${active === e.id ? ' active' : ''}`}
+                onClick={() => setActive(e.id)}
               >
-                {tab.label}
-                {tab.id === 'curl' && (
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-px"
-                    style={{ backgroundColor: 'var(--brand)' }}
-                  />
-                )}
+                <div className="api-endpoint-top">
+                  <span className={`api-method${e.method === 'POST' ? ' post' : ''}`}>{e.method}</span>
+                  <span className="api-path">{e.path}</span>
+                </div>
+                <span className="api-desc">{e.desc}</span>
               </div>
             ))}
+            <div style={{ padding: '20px 0 0 20px', marginTop: 'auto' }}>
+              <Link href={DOCS_URL} className="btn-link">View full reference <span className="arrow">→</span></Link>
+            </div>
           </div>
-          <div
-            className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md mb-1"
-            style={{
-              color: 'rgba(232,245,239,0.35)',
-              backgroundColor: 'rgba(232,245,239,0.05)',
-              border: '1px solid rgba(232,245,239,0.08)',
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <rect x="4" y="4" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.25" />
-              <path d="M2 8V2h6" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Copy
+
+          <div className="code-panel">
+            <div className="code-tabs">
+              {(['node', 'python', 'curl'] as LangId[]).map(l => (
+                <div key={l} className={`code-tab${lang === l ? ' active' : ''}`} onClick={() => setLang(l)}>
+                  {l === 'node' ? 'TypeScript' : l === 'python' ? 'Python' : 'cURL'}
+                </div>
+              ))}
+              <div className="code-tab-r">
+                <Icon name="copy" size={12}/> Copy
+              </div>
+            </div>
+            <div className="code-body">
+              {lines.map(([n, content], i) => (
+                <div key={i}><span className="ln">{n}</span>{content}</div>
+              ))}
+            </div>
+            <div className="response-panel">
+              <div className="response-head">
+                <span className="status">200 OK</span>
+                <span>312 ms</span>
+                <span>sha256 · evidence</span>
+                <span style={{ marginLeft: 'auto' }}>response</span>
+              </div>
+              <div className="response-body">
+                {RESPONSE_LINES.map((l, i) => (
+                  <div key={i} style={{ whiteSpace: 'pre' }}>{l}</div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-        <div style={{ height: '1px', backgroundColor: 'rgba(29,158,117,0.1)' }} />
-        <div className="relative overflow-hidden" style={{ minHeight: '240px' }}>
-          <pre className="p-3 sm:p-5 text-xs sm:text-sm leading-[1.8] overflow-x-auto code-block" style={{ color: '#c9e8d9', margin: 0 }}>
-            <CurlCode />
-          </pre>
-        </div>
-        <div
-          className="flex items-center gap-2.5 px-3 sm:px-5 py-2.5 text-xs code-block"
-          style={{
-            backgroundColor: 'rgba(29, 158, 117, 0.05)',
-            borderTop: '1px solid rgba(29, 158, 117, 0.1)',
-            color: 'var(--brand)',
-          }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--brand)' }} />
-          POST /v1/verifications · 200 OK · 1.8s
-        </div>
       </div>
-    );
-  }
-
-  return (
-    <div
-      className={`rounded-2xl overflow-hidden ${className}`}
-      style={{
-        background: '#0d1117',
-        border: '1px solid rgba(29, 158, 117, 0.2)',
-        boxShadow: '0 0 60px rgba(29, 158, 117, 0.08), 0 40px 80px rgba(0,0,0,0.6)',
-      }}
-    >
-      {/* Title bar — macOS chrome */}
-      <div
-        className="flex items-center gap-2 px-4 pt-3 pb-0"
-        style={{ backgroundColor: '#161b22' }}
-      >
-        <div className="flex items-center gap-1.5 mr-3">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff5f57' }} />
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#febc2e' }} />
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--brand)' }} />
-        </div>
-
-        {/* Tabs */}
-        <div className="flex items-end gap-0.5 flex-1">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="relative px-4 py-2 text-xs font-medium rounded-t-lg transition-colors"
-              style={{
-                color: activeTab === tab.id ? '#f0f4f3' : 'rgba(232,245,239,0.35)',
-                backgroundColor: activeTab === tab.id ? '#0d1117' : 'transparent',
-              }}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="tab-underline"
-                  className="absolute bottom-0 left-0 right-0 h-px"
-                  style={{ backgroundColor: 'var(--brand)' }}
-                  transition={{ duration: 0.2 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Copy button */}
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md mb-1 transition-all"
-          style={{
-            color: copied ? 'var(--brand)' : 'rgba(232,245,239,0.35)',
-            backgroundColor: 'rgba(232,245,239,0.05)',
-            border: '1px solid rgba(232,245,239,0.08)',
-          }}
-          title="Copy to clipboard"
-        >
-          {copied ? (
-            <>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2 6l2.5 2.5L10 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Copied
-            </>
-          ) : (
-            <>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <rect x="4" y="4" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.25" />
-                <path d="M2 8V2h6" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Copy
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Divider under title bar */}
-      <div style={{ height: '1px', backgroundColor: 'rgba(29,158,117,0.1)' }} />
-
-      {/* Code area */}
-      <div className="relative overflow-hidden" style={{ minHeight: '240px' }}>
-        <AnimatePresence mode="wait">
-          <motion.pre
-            key={activeTab}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.18, ease: 'easeInOut' }}
-            className="p-3 sm:p-5 text-xs sm:text-sm leading-[1.8] overflow-x-auto code-block"
-            style={{ color: '#c9e8d9', margin: 0 }}
-          >
-            {TAB_CONTENT[activeTab]}
-          </motion.pre>
-        </AnimatePresence>
-      </div>
-
-      {/* Status bar */}
-      <div
-        className="flex items-center gap-2.5 px-5 py-2.5 text-xs code-block"
-        style={{
-          backgroundColor: 'rgba(29, 158, 117, 0.05)',
-          borderTop: '1px solid rgba(29, 158, 117, 0.1)',
-          color: 'var(--brand)',
-        }}
-      >
-        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--brand)' }} />
-        POST /v1/verifications · 200 OK · 1.8s
-      </div>
-    </div>
+    </section>
   );
 }
 
-// ─── Hero Console Visual ──────────────────────────────────────────────────────
+// ─── Dashboard ────────────────────────────────────────────────────────────────
 
-const STREAM_ROWS = [
-  { t: '14:32:08', ev: 'identity.verified',    country: 'DE · Berlin',    risk: '0.08', status: 'ok',   label: 'PASS'   },
-  { t: '14:32:06', ev: 'transaction.screened', country: 'US · New York',  risk: '0.12', status: 'ok',   label: 'PASS'   },
-  { t: '14:32:04', ev: 'sanction.hit.ofac',    country: 'CY · Limassol',  risk: '0.94', status: 'err',  label: 'BLOCK'  },
-  { t: '14:32:01', ev: 'kyb.ubo.verified',     country: 'GB · London',    risk: '0.21', status: 'ok',   label: 'PASS'   },
-  { t: '14:31:58', ev: 'pep.match.review',     country: 'AE · Dubai',     risk: '0.61', status: 'warn', label: 'REVIEW' },
-  { t: '14:31:55', ev: 'transaction.screened', country: 'SG · Central',   risk: '0.09', status: 'ok',   label: 'PASS'   },
-  { t: '14:31:52', ev: 'identity.verified',    country: 'FR · Paris',     risk: '0.14', status: 'ok',   label: 'PASS'   },
-  { t: '14:31:49', ev: 'kyc.document.ocr',     country: 'BR · São Paulo', risk: '0.18', status: 'ok',   label: 'PASS'   },
+const QUEUE_ITEMS = [
+  { id: "CS-48201", name: "Helena Søresen",       sub: "Individual · NO · Passport",    risk: "12", bar: 12, cls: "r-l", status: "ok",   label: "CLEAR",  sla: "2m 14s" },
+  { id: "CS-48200", name: "Meridian Holdings Ltd", sub: "Business · KY · UBO graph",    risk: "68", bar: 68, cls: "r-m", status: "warn", label: "REVIEW", sla: "11m 02s" },
+  { id: "CS-48199", name: "Jakub Nowak",           sub: "Individual · PL · DL",         risk: "09", bar: 9,  cls: "r-l", status: "ok",   label: "CLEAR",  sla: "48s" },
+  { id: "CS-48198", name: "Volga Export S.A.",     sub: "Business · CY · OFAC match",   risk: "94", bar: 94, cls: "r-h", status: "err",  label: "BLOCK",  sla: "esc." },
+  { id: "CS-48197", name: "Anjali Raman",          sub: "Individual · IN · Aadhaar",    risk: "22", bar: 22, cls: "r-l", status: "ok",   label: "CLEAR",  sla: "1m 34s" },
+  { id: "CS-48196", name: "Cascade Digital Inc",   sub: "Business · US · PEP officer",  risk: "54", bar: 54, cls: "r-m", status: "warn", label: "REVIEW", sla: "4m 22s" },
 ];
 
-const QUEUE_HEIGHTS = [6,8,5,9,12,7,10,14,8,6,9,11,7,5,8,10,13,9,6,8,11,7,9,12];
+const CHART_BARS = [12, 18, 22, 19, 26, 31, 28, 35, 42, 38, 41, 46, 52, 49, 55, 61, 58, 64, 69, 66, 72, 78, 74, 82];
+const CHART_MAX = Math.max(...CHART_BARS);
 
-function statusPillStyle(status: string): React.CSSProperties {
-  if (status === 'err')  return { background: 'rgba(220,38,38,0.15)',  color: '#f87171', border: '1px solid rgba(220,38,38,0.3)',  padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
-  if (status === 'warn') return { background: 'rgba(217,119,6,0.15)',  color: '#fbbf24', border: '1px solid rgba(217,119,6,0.3)',  padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
-  return                        { background: 'rgba(29,158,117,0.15)', color: '#1d9e75', border: '1px solid rgba(29,158,117,0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em' };
-}
-
-function HeroConsole() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
+function DashboardSection() {
   return (
-    <div style={{
-      border: '1px solid rgba(255,255,255,0.07)',
-      borderRadius: '14px',
-      overflow: 'hidden',
-      boxShadow: '0 0 0 1px rgba(29,158,117,0.08), 0 40px 80px -20px rgba(0,0,0,0.7)',
-      background: '#080e0c',
-    }}>
-      {/* Header */}
-      <div style={{
-        height: '38px',
-        background: '#0b1211',
-        borderBottom: '1px solid rgba(240,244,243,0.06)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 14px',
-        flexShrink: 0,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ display: 'flex', gap: '5px' }}>
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff5f57' }} />
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#febc2e' }} />
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#1d9e75' }} />
+    <section className="section" id="dashboard">
+      <div className="wrap">
+        <div className="section-head">
+          <div className="section-kicker">S / 04 — Console</div>
+          <div>
+            <h2 className="section-title">
+              Give your compliance team the same<br/><em>surface your engineers already love.</em>
+            </h2>
+            <p className="section-sub">Case management, rule authoring, and audit exports — all reading the same primitives your API calls do. No data copy, no reconciliation.</p>
           </div>
-          <span style={{ ...mono, fontSize: '11px', color: '#5a7268' }}>veridian / live · acme-payments</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', ...mono, fontSize: '11px', color: '#5a7268' }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#1d9e75', display: 'inline-block', animation: 'pulse 2s infinite' }} />
-          streaming · eu-central-1
+
+        <div className="dash-wrap">
+          <div className="dash">
+            <div className="dash-top">
+              <div className="dash-top-left">
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                  <rect x="1" y="1" width="20" height="20" rx="4" stroke="#1d9e75" strokeWidth="1.25"/>
+                  <path d="M5.5 10.5L9.5 14.5L16.5 7.5" stroke="#1d9e75" strokeWidth="1.5"/>
+                </svg>
+                <span className="breadcrumb">acme-payments · <b>Operations</b> · cases</span>
+              </div>
+              <div className="dash-top-right">
+                <span>⌘K</span><span style={{ margin: '0 8px' }}>·</span>
+                <span>jamie@acme.co</span>
+              </div>
+            </div>
+
+            <div className="dash-grid">
+              <aside className="dash-nav">
+                <div className="dash-nav-section">
+                  <div className="dash-nav-label">Overview</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Home</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Alerts <span className="badge">7</span></div>
+                </div>
+                <div className="dash-nav-section">
+                  <div className="dash-nav-label">Operations</div>
+                  <div className="dash-nav-item active"><span className="nav-ind"/>Cases <span className="badge">48</span></div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Screening</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Monitoring</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Investigations</div>
+                </div>
+                <div className="dash-nav-section">
+                  <div className="dash-nav-label">Configure</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Rule engine</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Watchlists</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Webhooks</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>API keys</div>
+                </div>
+                <div className="dash-nav-section">
+                  <div className="dash-nav-label">Compliance</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Audit log</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Reports</div>
+                  <div className="dash-nav-item"><span className="nav-ind"/>Exports</div>
+                </div>
+              </aside>
+
+              <div className="dash-main">
+                <div className="dash-head">
+                  <div className="dash-h">
+                    <span className="sub">Operations · cases</span>
+                    Review queue
+                  </div>
+                  <div className="dash-filters">
+                    <span className="dash-filter">24h</span>
+                    <span className="dash-filter active">7d</span>
+                    <span className="dash-filter">30d</span>
+                    <span className="dash-filter">90d</span>
+                  </div>
+                </div>
+
+                <div className="dash-kpis">
+                  <div className="kpi">
+                    <span className="kpi-label">Open cases</span>
+                    <span className="kpi-val">48</span>
+                    <span className="kpi-foot delta-down">↓ 12 <span style={{ color: 'var(--text-3)' }}>vs. last week</span></span>
+                  </div>
+                  <div className="kpi">
+                    <span className="kpi-label">Avg. resolution</span>
+                    <span className="kpi-val">3m 42s</span>
+                    <span className="kpi-foot delta-up">↓ 38% <span style={{ color: 'var(--text-3)' }}>SLA breach 0</span></span>
+                  </div>
+                  <div className="kpi">
+                    <span className="kpi-label">Auto-approval</span>
+                    <span className="kpi-val">94.2%</span>
+                    <span className="kpi-foot delta-up">↑ 2.1 pts</span>
+                  </div>
+                  <div className="kpi">
+                    <span className="kpi-label">False positive rate</span>
+                    <span className="kpi-val">0.41%</span>
+                    <span className="kpi-foot delta-down">↓ 0.08</span>
+                  </div>
+                </div>
+
+                <div className="dash-charts">
+                  <div className="chart-card">
+                    <div className="chart-head">
+                      <div className="chart-title">
+                        <span className="sub">Decisions · last 24h</span>
+                        Volume by hour
+                      </div>
+                      <div style={{ display: 'flex', gap: 12, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--green)', marginRight: 6, verticalAlign: 1 }}/>Approved 8.2M</span>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--amber)', marginRight: 6, verticalAlign: 1 }}/>Review 412K</span>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--red)', marginRight: 6, verticalAlign: 1 }}/>Blocked 18K</span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 140, borderBottom: '1px solid var(--line)', paddingBottom: 4 }}>
+                      {CHART_BARS.map((v, i) => (
+                        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                          <div style={{ height: (v / CHART_MAX * 110) + 'px', background: 'var(--green)', opacity: 0.85 }}/>
+                          <div style={{ height: (v / CHART_MAX * 10) + 'px', background: 'var(--amber)', opacity: 0.8 }}/>
+                          <div style={{ height: (v / CHART_MAX * 3) + 'px', background: 'var(--red)', opacity: 0.8 }}/>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>
+                      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>now</span>
+                    </div>
+                  </div>
+                  <div className="chart-card">
+                    <div className="chart-head">
+                      <div className="chart-title"><span className="sub">Risk distribution</span> Score bands</div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 12 }}>
+                      {[
+                        { l: "0 – 20",   v: 82,  c: 'var(--green)',   n: "7.2M" },
+                        { l: "21 – 40",  v: 12,  c: 'var(--green-2)', n: "1.1M", op: 0.6 },
+                        { l: "41 – 70",  v: 4.8, c: 'var(--amber)',   n: "412K" },
+                        { l: "71 – 90",  v: 1.0, c: '#d4774a',        n: "91K" },
+                        { l: "91 – 100", v: 0.2, c: 'var(--red)',     n: "18K" },
+                      ].map((b, i) => (
+                        <div key={i}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', marginBottom: 4 }}>
+                            <span>{b.l}</span><span>{b.n}</span>
+                          </div>
+                          <div style={{ height: 6, background: '#1a2320', borderRadius: 3, overflow: 'hidden' }}>
+                            <div style={{ width: b.v + '%', height: '100%', background: b.c, opacity: b.op ?? 1 }}/>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="dash-queue-head">
+                  <div className="chart-title"><span className="sub">Queue · assigned to me</span> Awaiting review</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
+                    <Icon name="search" size={12}/> filter: sla &lt; 15m
+                  </div>
+                </div>
+                <div className="dash-queue">
+                  <div className="queue-row">
+                    <span>Case ID</span><span>Subject</span><span>Risk score</span><span>SLA</span><span>Decision</span><span>Actions</span>
+                  </div>
+                  {QUEUE_ITEMS.map((r, i) => (
+                    <div className="queue-row" key={i}>
+                      <span className="queue-id">{r.id}</span>
+                      <div>
+                        <span className="queue-name">{r.name}</span>
+                        <span className="sub">{r.sub}</span>
+                      </div>
+                      <div>
+                        <span className="queue-risk" style={{ color: r.status === 'err' ? 'var(--red)' : r.status === 'warn' ? 'var(--amber)' : 'var(--text-2)' }}>
+                          {r.risk} / 100
+                        </span>
+                        <div className="risk-bar"><span className={r.cls} style={{ width: r.bar + '%' }}/></div>
+                      </div>
+                      <span className="queue-risk">{r.sla}</span>
+                      <span><span className={`pill ${r.status === 'err' ? 'pill-err' : r.status === 'warn' ? 'pill-warn' : 'pill-ok'}`}>{r.label}</span></span>
+                      <span style={{ color: 'var(--text-3)' }}>open →</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
+  );
+}
 
-      {/* Body */}
-      <div style={{ display: 'flex', height: '340px' }}>
-        {/* Main stream */}
-        <div style={{ flex: 1, overflowY: 'hidden', padding: '0' }}>
-          {/* Column headers */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '72px 1fr 120px 72px 64px',
-            gap: '0',
-            padding: '8px 16px',
-            borderBottom: '1px solid rgba(240,244,243,0.05)',
-          }}>
-            {['TIME', 'EVENT', 'LOCATION', 'RISK', ''].map((h, i) => (
-              <span key={i} style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.1em', fontWeight: 600 }}>{h}</span>
-            ))}
+// ─── Features ─────────────────────────────────────────────────────────────────
+
+const AUDIT_CHAIN = [
+  { l: "request",    h: "sha256:a7f…c81" },
+  { l: "document",   h: "sha256:3d2…b09" },
+  { l: "biometric",  h: "sha256:e81…4fa" },
+  { l: "screen.ofac", h: "sha256:12c…7e3" },
+  { l: "decision",   h: "sha256:9bb…a14" },
+];
+
+const LATENCY_BARS = [18,22,20,24,28,22,26,30,24,28,32,26,28,22,26,30,24,28,22,26,20,24,22,26,20,24,28,22,26,30,24,28,22,26,20,24];
+
+function Features() {
+  return (
+    <section className="section" id="features">
+      <div className="wrap">
+        <div className="section-head">
+          <div className="section-kicker">S / 05 — Capabilities</div>
+          <div>
+            <h2 className="section-title">
+              Every regulatory primitive,<br/><em>composable and individually priced.</em>
+            </h2>
+            <p className="section-sub">Use the full stack or a single endpoint. Swap in Veridian&apos;s rules engine without touching your existing KYC vendor. We&apos;re infrastructure, not a walled garden.</p>
           </div>
-          {STREAM_ROWS.map((r, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '72px 1fr 120px 72px 64px',
-                gap: '0',
-                padding: '7px 16px',
-                borderBottom: '1px solid rgba(240,244,243,0.03)',
-                alignItems: 'center',
-                background: i % 2 === 0 ? 'transparent' : 'rgba(240,244,243,0.01)',
-              }}
-            >
-              <span style={{ ...mono, fontSize: '11px', color: '#3d544e' }}>{r.t}</span>
-              <span style={{ ...mono, fontSize: '11px', color: r.status === 'err' ? '#f87171' : r.status === 'warn' ? '#fbbf24' : '#7ecf97' }}>{r.ev}</span>
-              <span style={{ ...mono, fontSize: '11px', color: '#5a7268' }}>{r.country}</span>
-              <span style={{ ...mono, fontSize: '11px', color: r.status === 'err' ? '#f87171' : r.status === 'warn' ? '#fbbf24' : '#a3b3ae' }}>risk {r.risk}</span>
-              <span style={statusPillStyle(r.status)}>{r.label}</span>
-            </div>
-          ))}
         </div>
 
-        {/* Right sidebar metrics */}
-        <div style={{
-          width: '160px',
-          flexShrink: 0,
-          borderLeft: '1px solid rgba(240,244,243,0.06)',
-          padding: '14px 12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '18px',
-        }}>
-          {/* Events/sec */}
-          <div>
-            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>Events / sec</div>
-            <div style={{ fontSize: '20px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
-              2,143<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400, marginLeft: '2px' }}>rps</span>
-            </div>
-            {/* Sparkline */}
-            <svg viewBox="0 0 120 32" preserveAspectRatio="none" style={{ width: '100%', height: '28px', marginTop: '6px' }}>
-              <defs>
-                <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0" stopColor="#1d9e75" stopOpacity="0.4" />
-                  <stop offset="1" stopColor="#1d9e75" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,15 L70,10 L80,13 L90,7 L100,10 L110,4 L120,6" stroke="#1d9e75" strokeWidth="1" fill="none" />
-              <path d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,15 L70,10 L80,13 L90,7 L100,10 L110,4 L120,6 L120,32 L0,32 Z" fill="url(#sg)" />
-            </svg>
-          </div>
-          {/* P50/P99 */}
-          <div>
-            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>P50 · p99 latency</div>
-            <div style={{ fontSize: '16px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
-              47<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400 }}> / 112 ms</span>
+        <div className="bento">
+          {/* 1: Rules engine — large */}
+          <div className="bento-cell bc-1">
+            <div className="b-eyebrow">Rules engine</div>
+            <h4>Author compliance logic the way your engineers author code.</h4>
+            <p>Version-controlled rules, shadow mode, gradual rollout. Any analyst can write a rule. Any engineer can review the diff.</p>
+            <div style={{ marginTop: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12.5, lineHeight: 1.8, color: 'var(--text-2)', background: '#080d0c', border: '1px solid var(--line)', borderRadius: 8, padding: '18px 20px' }}>
+              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>01</span>{'  '}rule <span style={{ color: '#c68cef' }}>velocity_structuring</span>{' {'}</div>
+              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>02</span>{'    '}when <span style={{ color: '#7ecf97' }}>txn.amount</span> &lt; 10000 and</div>
+              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>03</span>{'         '}<span style={{ color: '#7ecf97' }}>count(user, &apos;1h&apos;)</span> &gt; 4</div>
+              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>04</span>{'    '}then <span style={{ color: '#d4a24a' }}>flag</span>(<span style={{ color: '#7ecf97' }}>&quot;structuring&quot;</span>, 0.72)</div>
+              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>05</span>{'  '}{'}'}<span style={{ color: 'var(--text-4)', fontStyle: 'italic' }}>{'  // shadow · 3 days · 0.02% fp'}</span></div>
             </div>
           </div>
-          {/* Block rate */}
-          <div>
-            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '4px' }}>Block rate · 24h</div>
-            <div style={{ fontSize: '16px', fontWeight: 600, color: '#f0f4f3', letterSpacing: '-0.03em' }}>
-              0.41<span style={{ fontSize: '10px', color: '#5a7268', fontWeight: 400 }}>%</span>
+
+          {/* 2: Global coverage */}
+          <div className="bento-cell bc-2">
+            <div className="b-eyebrow">Coverage</div>
+            <h4>212 jurisdictions. 9,200 document types.</h4>
+            <p>Local identity schemes, national registries, and language-aware OCR — maintained by regional compliance teams, not a vendor map.</p>
+            <div style={{ position: 'absolute', right: -20, top: 30, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 4, width: 220, opacity: 0.6 }}>
+              {Array.from({ length: 56 }).map((_, i) => (
+                <div key={i} style={{ width: 18, height: 18, border: '1px solid var(--line-2)', background: [3,5,11,14,19,22,27,30,35,38,43,46,51].includes(i) ? 'var(--green)' : 'transparent', opacity: [3,5,11,14,19,22,27,30].includes(i) ? 0.8 : 0.4 }}/>
+              ))}
             </div>
           </div>
-          {/* Queue depth bars */}
+
+          {/* 3: Latency */}
+          <div className="bento-cell bc-3">
+            <div className="b-eyebrow">Performance</div>
+            <h4>47ms median. 112ms p99.</h4>
+            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', gap: 3, height: 40 }}>
+              {LATENCY_BARS.map((h, i) => (
+                <div key={i} style={{ flex: 1, height: h + 'px', background: 'var(--green)', opacity: 0.4 + i / 50 }}/>
+              ))}
+            </div>
+          </div>
+
+          {/* 4: Webhooks */}
+          <div className="bento-cell bc-4">
+            <div className="b-eyebrow">Webhooks</div>
+            <h4>Exactly once.</h4>
+            <p style={{ fontSize: 12.5 }}>Guaranteed ordering, signed payloads, replay log.</p>
+          </div>
+
+          {/* 5: Evidence chain — tall */}
+          <div className="bento-cell bc-5">
+            <div className="b-eyebrow">Audit</div>
+            <h4>Every decision is a cryptographic artifact.</h4>
+            <p>Immutable evidence chains. Exportable in regulator-friendly formats. Your audit trail is the product, not a feature.</p>
+            <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)' }}>
+              {AUDIT_CHAIN.map((r, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '16px 80px 1fr', gap: 10, alignItems: 'center', paddingBottom: 8, borderBottom: '1px dashed rgba(26,35,32,0.8)' }}>
+                  <span style={{ color: 'var(--green)' }}>→</span>
+                  <span style={{ color: 'var(--text-3)' }}>{r.l}</span>
+                  <span>{r.h}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 6: Adverse media */}
+          <div className="bento-cell bc-6">
+            <div className="b-eyebrow">Adverse media</div>
+            <h4>Multilingual NLP, scored and sourced.</h4>
+            <p>140+ languages. Every hit comes with a citation, a score, and a human-readable rationale.</p>
+          </div>
+
+          {/* 7: Migration */}
+          <div className="bento-cell bc-7">
+            <div className="b-eyebrow">Migrate · 48h</div>
+            <h4>Drop-in for Alloy, Persona, Sardine.</h4>
+            <p>Response shapes match out of the box. Run us in shadow first; flip the feature flag when you&apos;re ready.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Security ─────────────────────────────────────────────────────────────────
+
+const SEC_ITEMS = [
+  { n: "01", t: "Tenant-isolated key management",     d: "Per-tenant KMS with hardware-backed key derivation. Keys never leave the enclave. BYOK supported for regulated environments.", m: "AWS KMS · HSM FIPS 140-3" },
+  { n: "02", t: "Zero-retention processing paths",    d: "PII is hashed at the edge. Document images are destroyed after decisioning unless explicitly retained under a documented lawful basis.", m: "GDPR Art. 5 · 17 · 32" },
+  { n: "03", t: "Immutable, regulator-grade audit",   d: "Every API call is hash-chained and anchored hourly. Tamper evidence is provable to an external auditor — no cooperation from us required.", m: "SOC 2 · CC7 · CC8" },
+  { n: "04", t: "Regionalised data residency",        d: "Pin tenants to EU, US, UK, SG, or AU. Cross-border transfer is opt-in per endpoint, not per account.", m: "SCC · IDTA · Privacy Shield" },
+  { n: "05", t: "Red-team tested, continuously",      d: "Quarterly external pen tests. Bug bounty with a seven-figure pool. Our detection logic is audited against real-world fraud rings.", m: "Trail of Bits · HackerOne" },
+];
+
+function Security() {
+  return (
+    <section className="section" id="security">
+      <div className="wrap">
+        <div className="section-head">
+          <div className="section-kicker">S / 06 — Security</div>
           <div>
-            <div style={{ ...mono, fontSize: '9px', color: '#3d544e', letterSpacing: '0.08em', marginBottom: '6px' }}>Queue depth</div>
-            <div style={{ display: 'flex', gap: '2px', alignItems: 'flex-end', height: '28px' }}>
-              {QUEUE_HEIGHTS.map((h, i) => (
-                <div key={i} style={{ flex: 1, height: h * 2, background: '#1d9e75', opacity: 0.3 + h / 20, borderRadius: '1px' }} />
+            <h2 className="section-title">
+              Designed for the team<br/><em>whose name is on the filing.</em>
+            </h2>
+            <p className="section-sub">We build like your regulator is sitting in the next room. Because eventually, they will be.</p>
+          </div>
+        </div>
+
+        <div className="sec-grid">
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 24 }}>Certifications</div>
+            <div className="cert-grid">
+              <div className="cert">
+                <span className="cert-badge">SOC 2</span>
+                <span className="cert-name">Type II · annual</span>
+                <span className="cert-status">Active</span>
+              </div>
+              <div className="cert">
+                <span className="cert-badge">ISO 27001</span>
+                <span className="cert-name">+ 27017 · 27018 · 27701</span>
+                <span className="cert-status">Active</span>
+              </div>
+              <div className="cert">
+                <span className="cert-badge">PCI DSS</span>
+                <span className="cert-name">Level 1 · v4.0</span>
+                <span className="cert-status">Active</span>
+              </div>
+              <div className="cert">
+                <span className="cert-badge">HIPAA</span>
+                <span className="cert-name">BAA available</span>
+                <span className="cert-status">Active</span>
+              </div>
+              <div className="cert">
+                <span className="cert-badge">GDPR</span>
+                <span className="cert-name">DPA · SCCs</span>
+                <span className="cert-status">Active</span>
+              </div>
+              <div className="cert">
+                <span className="cert-badge">FedRAMP</span>
+                <span className="cert-name">Moderate · in-process</span>
+                <span className="cert-status" style={{ color: 'var(--amber)' }}>Q3 2026</span>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 40, padding: 24, border: '1px solid var(--line)', borderRadius: 8, background: 'var(--card-2)' }}>
+              <div className="eyebrow" style={{ marginBottom: 14 }}>Trust centre</div>
+              <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.55, marginBottom: 18 }}>Security questionnaires, penetration test summaries, and real-time sub-processor updates — no sales call required.</p>
+              <a href={SALES_EMAIL} className="btn-link">Contact security team <span className="arrow">→</span></a>
+            </div>
+          </div>
+
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 24 }}>Architecture</div>
+            <div className="sec-list">
+              {SEC_ITEMS.map((it, i) => (
+                <div className="sec-item" key={i}>
+                  <span className="sec-num">{it.n}</span>
+                  <div>
+                    <h5>{it.t}</h5>
+                    <p>{it.d}</p>
+                  </div>
+                  <span className="sec-meta">{it.m}</span>
+                </div>
               ))}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <div style={{
-        padding: '8px 16px',
-        borderTop: '1px solid rgba(240,244,243,0.06)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        ...mono,
-        fontSize: '10px',
-        color: '#3d544e',
-        background: '#0b1211',
-      }}>
-        <span>wss://api.veridianapi.com/v1/stream</span>
-        <span>0 dropped · 184,204,108 delivered · lag 3ms</span>
-      </div>
-    </div>
-  );
-}
-
-// ─── Hero Section ─────────────────────────────────────────────────────────────
-
-function HeroSection() {
-  return (
-    <section
-      className="relative flex flex-col items-center overflow-hidden"
-      style={{
-        minHeight: '100vh',
-        background: [
-          'radial-gradient(ellipse 80% 60% at 60% 0%, rgba(29,158,117,0.12) 0%, transparent 100%)',
-          'radial-gradient(ellipse 50% 40% at 20% 30%, rgba(29,158,117,0.06) 0%, transparent 100%)',
-          '#050a09',
-        ].join(', '),
-      }}
-    >
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: [
-            'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)',
-            'linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-          ].join(', '),
-          backgroundSize: '48px 48px',
-        }}
-      />
-
-      {/* Centered content */}
-      <div className="relative w-full mx-auto px-6 flex flex-col items-center text-center" style={{ maxWidth: '900px', paddingTop: '128px', paddingBottom: '96px' }}>
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="show"
-          suppressHydrationWarning
-          className="flex flex-col items-center w-full"
-        >
-          {/* Badge */}
-          <motion.div variants={fadeUp} className="mb-8">
-            <div
-              className="inline-flex items-center gap-2 rounded-full font-medium"
-              style={{
-                border: '1px solid rgba(29,158,117,0.3)',
-                backgroundColor: 'rgba(29,158,117,0.08)',
-                color: '#1d9e75',
-                fontSize: '12px',
-                padding: '6px 16px',
-                borderRadius: '9999px',
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#1d9e75' }} />
-              Developer-first KYC API
-            </div>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            variants={fadeUp}
-            style={{
-              fontSize: 'clamp(48px, 7vw, 80px)',
-              fontWeight: 300,
-              letterSpacing: '-0.04em',
-              color: '#f0f4f3',
-              lineHeight: 1.0,
-              maxWidth: '800px',
-              margin: '0 auto',
-            }}
-          >
-            KYC without the $50K contract.
-          </motion.h1>
-
-          {/* Subheadline */}
-          <motion.p
-            variants={fadeUp}
-            style={{
-              fontSize: '18px',
-              fontWeight: 300,
-              color: '#a3b3ae',
-              maxWidth: '560px',
-              marginTop: '20px',
-              lineHeight: '1.6',
-            }}
-          >
-            Identity verification, sanctions screening, and AML in one REST call.
-            Transparent pricing. No sales calls.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row items-center"
-            style={{ gap: '12px', marginTop: '36px' }}
-          >
-            <Link
-              href={DASHBOARD_LOGIN}
-              className="inline-flex items-center justify-center font-medium transition-all hover:opacity-90"
-              style={{ height: '44px', padding: '0 24px', backgroundColor: '#1d9e75', color: '#050a09', borderRadius: '8px', fontSize: '14px', fontWeight: 500 }}
-            >
-              Get API key free →
-            </Link>
-            <Link
-              href={DOCS_URL}
-              className="inline-flex items-center justify-center transition-all hover:text-[#f0f4f3] hover:border-white/20"
-              style={{ height: '44px', padding: '0 24px', border: '1px solid rgba(255,255,255,0.12)', color: '#a3b3ae', borderRadius: '8px', fontSize: '14px' }}
-            >
-              View docs
-            </Link>
-          </motion.div>
-
-          {/* Trust line */}
-          <motion.p variants={fadeUp} style={{ fontSize: '12px', color: '#5a7268', marginTop: '16px' }}>
-            18,698 OFAC records · &lt;2s response · 14-day free trial
-          </motion.p>
-
-          {/* Hero console stream visual */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            suppressHydrationWarning
-            className="w-full"
-            style={{ marginTop: '64px' }}
-          >
-            <HeroConsole />
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, transparent, #050a09)' }}
-      />
     </section>
   );
 }
 
-// ─── Simple Integration Section ───────────────────────────────────────────────
+// ─── Pricing ──────────────────────────────────────────────────────────────────
 
-function SimpleIntegrationSection() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
+function Pricing() {
   return (
-    <section className="max-w-6xl mx-auto px-6 py-24">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        style={{ marginBottom: '48px' }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-            gap: '40px',
-            alignItems: 'start',
-          }}
-        >
-          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
-            S / 03 — API
-          </div>
+    <section className="section" id="pricing">
+      <div className="wrap">
+        <div className="section-head">
+          <div className="section-kicker">S / 07 — Pricing</div>
           <div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '14px' }}>
-              Five endpoints.{' '}
-              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>Every compliance decision your fintech will ever make.</em>
+            <h2 className="section-title">
+              Usage-based, with a flat rate<br/><em>if your finance team prefers predictability.</em>
             </h2>
-            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
-              Typed SDKs in six languages. Webhooks with exactly-once delivery. Sandbox environments that mirror production risk scoring.
-            </p>
+            <p className="section-sub">No per-seat fees. No implementation minimums. Volume discounts apply automatically — we don&apos;t negotiate them, we publish them.</p>
           </div>
-        </motion.div>
-      </motion.div>
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-40px' }}
-        className="mx-auto"
-        style={{ maxWidth: '700px' }}
-      >
-        <CodeWindow />
-      </motion.div>
-    </section>
-  );
-}
-
-// ─── Trust Strip ─────────────────────────────────────────────────────────────
-
-const CAPABILITY_ITEMS = [
-  { label: 'KYC · 195+ countries' },
-  { label: 'OFAC & UN sanctions' },
-  { label: 'AML transaction monitoring' },
-  { label: 'Immutable audit logs' },
-  { label: 'GDPR-ready workflows' },
-  { label: 'SHA-256 hashed API keys' },
-];
-
-function TrustStrip() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
-  return (
-    <div
-      style={{
-        borderTop: '1px solid rgba(240,244,243,0.06)',
-        borderBottom: '1px solid rgba(240,244,243,0.06)',
-        padding: '28px 24px',
-      }}
-    >
-      <div
-        className="max-w-6xl mx-auto"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '40px',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div style={{ fontSize: '12px', color: '#5a7268', lineHeight: 1.5, flexShrink: 0 }}>
-          Built for regulated fintech workflows.
         </div>
-        <div style={{ display: 'flex', gap: '0', flexWrap: 'wrap', alignItems: 'center' }}>
-          {CAPABILITY_ITEMS.map((item, i) => (
-            <div
-              key={item.label}
-              style={{
-                ...mono,
-                fontSize: '11px',
-                color: 'rgba(240,244,243,0.30)',
-                letterSpacing: '0.02em',
-                padding: '4px 16px',
-                borderLeft: i > 0 ? '1px solid rgba(240,244,243,0.06)' : 'none',
-              }}
-            >
-              {item.label}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
-// ─── Bento Grid ───────────────────────────────────────────────────────────────
-
-function BentoCard({
-  children,
-  className = '',
-  highlighted = false,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  highlighted?: boolean;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      variants={fadeUp}
-      transition={{ duration: 0.5, delay }}
-      whileHover={{
-        y: -3,
-        boxShadow: highlighted
-          ? '0 0 0 1px rgba(29, 158, 117, 0.5), 0 0 40px rgba(29, 158, 117, 0.18)'
-          : '0 0 0 1px rgba(29, 158, 117, 0.25), 0 0 30px rgba(29, 158, 117, 0.1)',
-      }}
-      className={`rounded-2xl p-6 relative overflow-hidden ${className}`}
-      style={{
-        backgroundColor: '#111916',
-        border: highlighted
-          ? '1px solid rgba(29, 158, 117, 0.3)'
-          : '1px solid rgba(255,255,255,0.08)',
-        boxShadow: highlighted
-          ? '0 0 0 1px rgba(29, 158, 117, 0.2), 0 0 30px rgba(29, 158, 117, 0.08)'
-          : undefined,
-      }}
-    >
-      {highlighted && (
-        <div
-          className="absolute inset-0 opacity-100 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(29, 158, 117, 0.08) 0%, transparent 70%)',
-          }}
-        />
-      )}
-      <div className="relative z-10">{children}</div>
-    </motion.div>
-  );
-}
-
-function CardIcon({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-      style={{
-        backgroundColor: 'rgba(29, 158, 117, 0.1)',
-        border: '1px solid rgba(29, 158, 117, 0.15)',
-      }}
-    >
-      <span style={{ color: 'var(--brand)' }}>{children}</span>
-    </div>
-  );
-}
-
-function BentoFeaturesSection() {
-  return (
-    <section id="features" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        style={{ marginBottom: '64px' }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-            gap: '40px',
-            alignItems: 'start',
-          }}
-        >
-          <div
-            style={{
-              fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
-              fontSize: '11px',
-              color: '#5a7268',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              paddingTop: '6px',
-            }}
-          >
-            S / 05 — Capabilities
-          </div>
-          <div>
-            <h2
-              style={{
-                fontSize: 'clamp(32px, 4vw, 52px)',
-                fontWeight: 400,
-                letterSpacing: '-0.035em',
-                color: '#f0f4f3',
-                lineHeight: 1.1,
-                marginBottom: '16px',
-              }}
-            >
-              Every regulatory primitive,{' '}
-              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>composable and individually priced.</em>
-            </h2>
-            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '560px' }}>
-              Use the full stack or a single endpoint. Swap in Veridian&apos;s rules engine without touching your existing KYC vendor. We&apos;re infrastructure, not a walled garden.
-            </p>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-60px' }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-auto"
-      >
-        {/* Row 1: Identity (2 cols) + Uptime (1 col) */}
-        <BentoCard className="md:col-span-2" highlighted delay={0}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="6.5" cy="9" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M10 7.5h4M10 9h3M10 10.5h4" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
-            </svg>
-          </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>
-            Identity verification in 2 seconds
-          </h3>
-          <p className="text-sm leading-relaxed mb-6" style={{ color: '#a3b3ae' }}>
-            Document scanning, liveness detection, and database cross-checks across 195+ countries.
-            Passport, driver&apos;s license, national ID — all supported.
-          </p>
-          <div className="flex gap-3 flex-wrap">
-            {['195+ countries', 'Liveness detection', 'Database cross-check'].map((tag) => (
-              <span
-                key={tag}
-                className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{
-                  backgroundColor: 'rgba(29, 158, 117, 0.08)',
-                  border: '1px solid rgba(29, 158, 117, 0.15)',
-                  color: 'var(--brand)',
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </BentoCard>
-
-        <BentoCard delay={0.05}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M9 2L3 5v5c0 3.5 2.5 6.5 6 7.5C12.5 16.5 15 13.5 15 10V5L9 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </CardIcon>
-          <div className="text-3xl font-semibold mb-1" style={{ color: '#f0f4f3' }}>99.9%</div>
-          <div className="text-sm font-medium mb-2" style={{ color: 'var(--brand)' }}>Uptime SLA</div>
-          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-            Guaranteed availability on Scale plan. Redundant infra across multiple regions.
-          </p>
-        </BentoCard>
-
-        {/* Row 2: OFAC (1 col) + Developer API (2 cols) */}
-        <BentoCard delay={0.1}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M9 5v4l2.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </CardIcon>
-          <div className="text-3xl font-semibold mb-1" style={{ color: '#f0f4f3' }}>18,698</div>
-          <div className="text-sm font-medium mb-2" style={{ color: 'var(--brand)' }}>OFAC sanctions records</div>
-          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-            OFAC, UN, EU, and 50+ global watchlists. Updated daily. Included on every plan.
-          </p>
-        </BentoCard>
-
-        <BentoCard className="md:col-span-2" delay={0.15}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M5.5 6.5L2 9l3.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M12.5 6.5L16 9l-3.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M10.5 4l-3 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>Developer-first API</h3>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: '#a3b3ae' }}>
-            REST API with clear docs. SDKs for Node, Python, and Go.
-            Idempotency keys, webhooks, and a full sandbox environment.
-          </p>
-          <div
-            className="rounded-xl px-4 py-3 code-block text-xs leading-6"
-            style={{
-              backgroundColor: '#080f0c',
-              border: '1px solid rgba(29, 158, 117, 0.12)',
-              color: '#c9e8d9',
-            }}
-          >
-            <span style={{ color: '#7ee8a2' }}>import</span>
-            {' Veridian '}
-            <span style={{ color: '#7ee8a2' }}>from</span>
-            {' '}
-            <span style={{ color: '#ffd68a' }}>&quot;@veridian/sdk&quot;</span>
-            {'\n'}
-            <span style={{ color: 'rgba(232,245,239,0.3)' }}>{'//'} npm install @veridian/sdk</span>
-          </div>
-        </BentoCard>
-
-        {/* Row 3: Pricing + Global + Hosted flow */}
-        <BentoCard delay={0.2}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M9 2v1M9 15v1M2 9H1M17 9h-1M4.2 4.2l-.7-.7M14.5 14.5l-.7-.7M4.2 13.8l-.7.7M14.5 3.5l-.7.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <circle cx="9" cy="9" r="3.5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-          </CardIcon>
-          <h3 className="text-lg font-semibold mb-2" style={{ color: '#f0f4f3' }}>Transparent pricing</h3>
-          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-            No setup fees. No per-seat pricing. No $150K enterprise contracts. See exactly what you pay.
-          </p>
-        </BentoCard>
-
-        <BentoCard className="md:col-span-2" delay={0.25}>
-          <CardIcon>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M2 9h14M9 2c-2 2-3 4-3 7s1 5 3 7M9 2c2 2 3 4 3 7s-1 5-3 7" stroke="currentColor" strokeWidth="1.25" />
-            </svg>
-          </CardIcon>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#f0f4f3' }}>Global document coverage</h3>
-          <p className="text-sm leading-relaxed mb-5" style={{ color: '#a3b3ae' }}>
-            195+ countries. Passports, driver&apos;s licenses, national IDs, and residence permits.
-            Automatic document classification — no configuration needed.
-          </p>
-          <div className="flex items-center gap-2">
-            <div
-              className="h-1.5 rounded-full flex-1"
-              style={{ backgroundColor: 'rgba(29, 158, 117, 0.12)' }}
-            >
-              <div
-                className="h-1.5 rounded-full"
-                style={{ width: '92%', backgroundColor: 'var(--brand)' }}
-              />
-            </div>
-            <span className="text-xs font-semibold" style={{ color: 'var(--brand)' }}>195+</span>
-          </div>
-        </BentoCard>
-
-        <BentoCard delay={0.3}>
-          <div className="flex items-start justify-between mb-4">
-            <CardIcon>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M7.5 10.5a4 4 0 0 0 5.657 0l2-2a4 4 0 0 0-5.657-5.657l-1 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M10.5 7.5a4 4 0 0 0-5.657 0l-2 2a4 4 0 0 0 5.657 5.657l1-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </CardIcon>
-            <span
-              className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full"
-              style={{
-                backgroundColor: 'rgba(29, 158, 117, 0.12)',
-                border: '1px solid rgba(29, 158, 117, 0.25)',
-                color: '#1d9e75',
-                letterSpacing: '0.06em',
-              }}
-            >
-              New
-            </span>
-          </div>
-          <h3 className="text-lg font-semibold mb-2" style={{ color: '#f0f4f3' }}>Hosted verification flow</h3>
-          <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-            Send users a link. They upload their document and selfie on our hosted page. No UI to build.
-          </p>
-        </BentoCard>
-      </motion.div>
-    </section>
-  );
-}
-
-// ─── How It Works ─────────────────────────────────────────────────────────────
-
-function HowItWorksSection() {
-  const steps = [
-    {
-      number: '01',
-      title: 'Get your API key',
-      description: 'Sign up in 30 seconds. Your API key is available instantly in the dashboard. No approval process, no sales call.',
-    },
-    {
-      number: '02',
-      title: 'Send a document',
-      description: 'One POST request with a base64-encoded document and selfie. Our API handles document classification automatically.',
-    },
-    {
-      number: '03',
-      title: 'Get a verified result',
-      description: 'Receive a structured JSON response in under 2 seconds. Risk score, sanctions check, and identity confidence — all in one call.',
-    },
-  ];
-
-  return (
-    <section
-      id="how-it-works"
-      className="py-24 scroll-mt-16"
-      style={{
-        background: 'linear-gradient(to bottom, #050a09, #0a0f0e 50%, #050a09)',
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-80px' }}
-          style={{ marginBottom: '64px' }}
-        >
-          <motion.div
-            variants={fadeUp}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-              gap: '40px',
-              alignItems: 'start',
-            }}
-          >
-            <div
-              style={{
-                fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
-                fontSize: '11px',
-                color: '#5a7268',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                paddingTop: '6px',
-              }}
-            >
-              S / 02 — Setup
-            </div>
+        <div className="pricing-grid">
+          <div className="price-card">
             <div>
-              <h2
-                style={{
-                  fontSize: 'clamp(32px, 4vw, 52px)',
-                  fontWeight: 400,
-                  letterSpacing: '-0.035em',
-                  color: '#f0f4f3',
-                  lineHeight: 1.1,
-                  marginBottom: '16px',
-                }}
-              >
-                Production API keys in ninety seconds.{' '}
-                <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>First live decision before your coffee goes cold.</em>
-              </h2>
-              <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
-                From zero to live KYC verifications in an afternoon.
-              </p>
+              <div className="price-name">Build</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>For teams shipping their first compliance surface. Production-grade from check one.</p>
             </div>
-          </motion.div>
-        </motion.div>
+            <div className="price-amt">$0<span className="unit">/mo base</span></div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>then $0.14 / verification · $0.008 / screening</div>
+            <Link href={SIGNUP_URL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Start free <span className="arrow">→</span></Link>
+            <ul className="price-features">
+              <li>Up to 10,000 verifications / month</li>
+              <li>All five endpoints, full SDK surface</li>
+              <li>Sandbox + 2 production environments</li>
+              <li>Community Slack, 48h response</li>
+              <li className="muted">Shared rate limits · 100 rps</li>
+              <li className="muted">Single region</li>
+            </ul>
+          </div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-60px' }}
-          className="grid md:grid-cols-3 gap-8 relative"
-        >
-          {/* Connector line (desktop) */}
-          <div
-            className="absolute top-10 h-px hidden md:block"
-            style={{
-              left: '16.67%',
-              right: '16.67%',
-              background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08), rgba(255,255,255,0.08), transparent)',
-            }}
-          />
+          <div className="price-card featured">
+            <div>
+              <div className="price-name">Scale</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs in production. Includes the operations console, custom rules, and a named CSM.</p>
+            </div>
+            <div className="price-amt">$4,800<span className="unit">/mo min.</span></div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>volume pricing from $0.09 / verification at 500K+</div>
+            <a href={SALES_EMAIL} className="btn btn-primary" style={{ justifyContent: 'center' }}>Talk to sales <span className="arrow">→</span></a>
+            <ul className="price-features">
+              <li>Everything in Build</li>
+              <li>Operations console with case management</li>
+              <li>Custom rules, shadow mode, gradual rollout</li>
+              <li>Dedicated rate limits · 2,000 rps</li>
+              <li>Multi-region with failover</li>
+              <li>Named CSM · 1h priority response</li>
+              <li>SOC 2 + ISO 27001 artifacts on demand</li>
+            </ul>
+          </div>
 
-          {steps.map((step) => (
-            <motion.div key={step.number} variants={fadeUp} className="relative">
-              <div
-                className="w-20 h-20 rounded-2xl flex items-center justify-center mb-6 font-mono font-light text-5xl"
-                style={{
-                  backgroundColor: '#111916',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  color: 'var(--brand)',
-                }}
-              >
-                {step.number}
-              </div>
-              <h3 className="text-xl font-semibold mb-3" style={{ color: '#f0f4f3' }}>
-                {step.title}
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#a3b3ae' }}>
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+          <div className="price-card">
+            <div>
+              <div className="price-name">Sovereign</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>Single-tenant deployments, BYOK, and dedicated compliance engineering.</p>
+            </div>
+            <div className="price-amt">Custom</div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>annual contract · starts at $240K / yr</div>
+            <a href={SALES_EMAIL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Contact us <span className="arrow">→</span></a>
+            <ul className="price-features">
+              <li>Everything in Scale</li>
+              <li>Dedicated single-tenant infrastructure</li>
+              <li>Bring-your-own keys, vault, or cloud</li>
+              <li>On-prem / air-gapped deployment option</li>
+              <li>99.999% SLA · 15-minute incident response</li>
+              <li>Dedicated compliance engineer</li>
+              <li>Regulator-facing support letter on request</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 32, padding: '24px 28px', border: '1px solid var(--line)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <Icon name="graph" size={18}/>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 500, letterSpacing: '-0.01em' }}>Price estimator</div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>Plug in your monthly volume — we&apos;ll tell you the rate bracket you&apos;d land in.</div>
+            </div>
+          </div>
+          <a href={SALES_EMAIL} className="btn-link">Talk to sales <span className="arrow">→</span></a>
+        </div>
       </div>
     </section>
   );
 }
 
-// ─── Pricing Section ──────────────────────────────────────────────────────────
+// ─── CTA ──────────────────────────────────────────────────────────────────────
 
-const SALES_EMAIL = 'mailto:support@veridianapi.com';
-
-const plans: {
-  name: string;
-  price: string;
-  description: string;
-  features: string[];
-  cta: string;
-  ctaHref: string;
-  highlighted: boolean;
-}[] = [
-  {
-    name: 'Starter',
-    price: '$199',
-    description: 'Up to 500 verifications/month',
-    features: [
-      '500 verifications/month',
-      'KYC identity verification',
-      'Sanctions screening (OFAC, UN, EU)',
-      'REST API + sandbox',
-      'Email support',
-    ],
-    cta: 'Start free trial',
-    ctaHref: BILLING_URL,
-    highlighted: false,
-  },
-  {
-    name: 'Growth',
-    price: '$499',
-    description: 'Up to 2,000 verifications/month',
-    features: [
-      '2,000 verifications/month',
-      'Everything in Starter',
-      'KYB business verification',
-      'Adverse media monitoring',
-      'Webhook event streaming',
-      'Priority support',
-    ],
-    cta: 'Start free trial',
-    ctaHref: BILLING_URL,
-    highlighted: true,
-  },
-  {
-    name: 'Scale',
-    price: '$999',
-    description: 'Up to 10,000 verifications/month',
-    features: [
-      '10,000 verifications/month',
-      'Everything in Growth',
-      'Transaction monitoring',
-      '99.9% uptime SLA',
-      'Dedicated Slack channel',
-      'Custom rule configuration',
-    ],
-    cta: 'Contact sales',
-    ctaHref: SALES_EMAIL,
-    highlighted: false,
-  },
-];
-
-function PricingSection() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
+function Cta() {
   return (
-    <section id="pricing" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        style={{ marginBottom: '64px' }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-            gap: '40px',
-            alignItems: 'start',
-          }}
-        >
-          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
-            S / 07 — Pricing
-          </div>
-          <div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '16px' }}>
-              Simple, transparent pricing.{' '}
-              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>No per-seat fees. No implementation minimums.</em>
-            </h2>
-            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '520px' }}>
-              No setup fees. No contracts. Cancel anytime.{' '}
-              <em style={{ color: '#5a7268' }}>Persona starts at $50K/yr. We start at $199/mo.</em>
-            </p>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-60px' }}
-        className="grid md:grid-cols-3 gap-5"
-      >
-        {plans.map((plan) => (
-          <motion.div
-            key={plan.name}
-            variants={fadeUp}
-            whileHover={{ y: -4 }}
-            className="relative rounded-2xl p-8 flex flex-col"
-            style={{
-              backgroundColor: plan.highlighted ? 'rgba(29, 158, 117, 0.05)' : '#111916',
-              border: plan.highlighted
-                ? '1px solid rgba(29, 158, 117, 0.4)'
-                : '1px solid rgba(255,255,255,0.08)',
-              boxShadow: plan.highlighted
-                ? '0 0 0 1px rgba(29, 158, 117, 0.15), 0 0 50px rgba(29, 158, 117, 0.1), 0 30px 45px -30px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.2)'
-                : '0 30px 45px -30px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.2)',
-              backdropFilter: 'blur(12px)',
-            }}
-          >
-            {plan.highlighted && (
-              <>
-                <div
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1.5 rounded-full"
-                  style={{ backgroundColor: 'var(--brand)', color: '#050a09' }}
-                >
-                  Most popular
-                </div>
-                <div
-                  className="absolute inset-0 rounded-2xl pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(29, 158, 117, 0.08) 0%, transparent 70%)',
-                  }}
-                />
-              </>
-            )}
-
-            <div className="relative z-10 flex flex-col flex-1">
-              <div className="mb-6">
-                <div className="text-sm font-semibold mb-2" style={{ color: 'var(--brand)' }}>
-                  {plan.name}
-                </div>
-                <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-semibold tracking-tight" style={{ color: '#f0f4f3' }}>
-                    {plan.price}
-                  </span>
-                  <span className="text-sm mb-2" style={{ color: '#a3b3ae' }}>/mo</span>
-                </div>
-                <p className="text-sm" style={{ color: '#a3b3ae' }}>
-                  {plan.description}
-                </p>
-              </div>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feat) => (
-                  <li key={feat} className="flex items-start gap-2.5 text-sm" style={{ color: '#a3b3ae' }}>
-                    <CheckIcon />
-                    {feat}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href={plan.ctaHref}
-                className="flex items-center justify-center text-[13px] font-medium px-5 h-11 sm:h-9 rounded-lg transition-all"
-                style={
-                  plan.highlighted
-                    ? { backgroundColor: 'var(--brand)', color: '#050a09' }
-                    : {
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        color: '#a3b3ae',
-                      }
-                }
-              >
-                {plan.cta}
-              </Link>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <motion.p
-        variants={fadeIn}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        className="text-center text-sm mt-8"
-        style={{ color: '#5a7268' }}
-      >
-        Need more than 10,000 verifications/month?{' '}
-        <Link
-          href={SALES_EMAIL}
-          className="underline underline-offset-4 transition-colors"
-          style={{ color: 'var(--brand)' }}
-        >
-          Talk to us about custom volume pricing.
-        </Link>
-      </motion.p>
+    <section className="cta">
+      <div className="wrap cta-inner">
+        <div className="eyebrow" style={{ marginBottom: 32 }}>S / 08 — Start</div>
+        <h2>
+          Ship the hard parts<br/>
+          <span className="accent">of fintech</span> in an afternoon.
+        </h2>
+        <p>Production API keys in ninety seconds. First live decision before your coffee goes cold.</p>
+        <div className="cta-row">
+          <Link href={SIGNUP_URL} className="btn btn-primary">Start building <span className="arrow">→</span></Link>
+          <a href={SALES_EMAIL} className="btn btn-ghost">Talk to sales</a>
+        </div>
+      </div>
     </section>
   );
 }
 
-// ─── FAQ ──────────────────────────────────────────────────────────────────────
-
-const FAQ_ITEMS = [
-  {
-    question: 'How long does a verification take?',
-    answer:
-      'Under 2 seconds for most documents. OCR extraction, face matching, and sanctions screening all happen in parallel.',
-  },
-  {
-    question: 'Which documents do you support?',
-    answer:
-      'Passports, driving licences, and national IDs from 195+ countries. Document type is auto-detected — no configuration needed.',
-  },
-  {
-    question: 'How does sanctions screening work?',
-    answer:
-      'We screen against 18,698 OFAC SDN records using fuzzy matching to catch name variations and transliterations.',
-  },
-  {
-    question: 'Is there a free trial?',
-    answer:
-      'Yes — 14 days free, no credit card required. You get full API access from day one. Cancel anytime.',
-  },
-  {
-    question: 'How do I get my API key?',
-    answer:
-      'Sign up at the dashboard, go to API Keys, and create a key in 30 seconds. No approval process, no sales call.',
-  },
-  {
-    question: 'What happens if I exceed my verification limit?',
-    answer:
-      'The API returns a 429 error with a clear message. Upgrade your plan from the dashboard in one click.',
-  },
-  {
-    question: 'How does Veridian compare to Persona?',
-    answer:
-      'Persona charges $50K+ per year with custom contracts. Veridian starts at $199/mo, self-serve, 14-day free trial. Same core technology — OCR, face matching, sanctions screening.',
-  },
-  {
-    question: 'Where is data stored?',
-    answer:
-      'Document images are processed in eu-west-1 (Ireland) and deleted after verification. We never store raw document images.',
-  },
-];
-
-function FAQItem({
-  question,
-  answer,
-  last,
-}: {
-  question: string;
-  answer: string;
-  last: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div style={{ borderBottom: last ? 'none' : '1px solid rgba(255,255,255,0.06)' }}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left"
-      >
-        <span className="text-sm font-medium" style={{ color: '#f0f4f3' }}>
-          {question}
-        </span>
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          style={{
-            flexShrink: 0,
-            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 200ms ease',
-          }}
-        >
-          <path
-            d="M4 6l4 4 4-4"
-            stroke="#5a7268"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="answer"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            style={{ overflow: 'hidden' }}
-          >
-            <p
-              className="px-6 pb-5 text-sm leading-relaxed"
-              style={{ color: '#a3b3ae' }}
-            >
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// ─── Security Section ─────────────────────────────────────────────────────────
-
-const SECURITY_CARDS = [
-  {
-    title: 'SHA-256 API key hashing',
-    description: 'API keys are hashed before storage. Even in a breach, your credentials cannot be recovered or replayed.',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <rect x="4" y="9" width="12" height="9" rx="2" stroke="#1d9e75" strokeWidth="1.5" />
-        <path d="M7 9V6a3 3 0 0 1 6 0v3" stroke="#1d9e75" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: 'OFAC sanctions screening',
-    description: '18,000+ sanctions records checked on every verification against OFAC, EU, and UN watchlists in real time.',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M10 2L3 5.5v5c0 4 3.1 7.3 7 8 3.9-.7 7-4 7-8v-5L10 2Z" stroke="#1d9e75" strokeWidth="1.5" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    title: 'GDPR ready',
-    description: 'Data minimisation, right-to-erasure endpoints, and EU data residency options built in from day one.',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <circle cx="10" cy="10" r="7.5" stroke="#1d9e75" strokeWidth="1.5" />
-        <path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="#1d9e75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    title: 'SOC 2 in progress',
-    description: 'Audit underway with an accredited assessor. Controls cover availability, confidentiality, and processing integrity.',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M10 2l1.8 3.6 4 .6-2.9 2.8.7 4L10 11l-3.6 1.9.7-4L4.2 6.2l4-.6L10 2Z" stroke="#1d9e75" strokeWidth="1.5" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-];
-
-const SECURITY_ARCH = [
-  { n: '01', t: 'Tenant-isolated key management', d: 'Per-tenant KMS with hardware-backed key derivation. Keys never leave the enclave. BYOK supported for regulated environments.', m: 'AWS KMS · HSM FIPS 140-3' },
-  { n: '02', t: 'Zero-retention processing paths', d: 'PII is hashed at the edge. Document images are destroyed after decisioning unless explicitly retained under a documented lawful basis.', m: 'GDPR Art. 5 · 17 · 32' },
-  { n: '03', t: 'Immutable, regulator-grade audit', d: 'Every API call is hash-chained and anchored hourly. Tamper evidence is provable to an external auditor — no cooperation from us required.', m: 'SOC 2 · CC7 · CC8' },
-  { n: '04', t: 'Regionalised data residency', d: 'Pin tenants to EU, US, UK, SG, or AU. Cross-border transfer is opt-in per endpoint, not per account.', m: 'SCC · IDTA · Privacy Shield' },
-  { n: '05', t: 'Red-team tested, continuously', d: 'Quarterly external pen tests. Bug bounty with a seven-figure pool. Our detection logic is audited against real-world fraud rings.', m: 'Trail of Bits · HackerOne' },
-];
-
-const CERTS = [
-  { badge: 'SOC 2',            name: 'Type II audit in progress',    status: 'In progress', color: '#d97706' },
-  { badge: 'GDPR',             name: 'Data minimisation · DPA ready', status: 'Ready',       color: '#1d9e75' },
-  { badge: 'SHA-256',          name: 'Hashed API key storage',       status: 'Active',      color: '#1d9e75' },
-  { badge: 'OFAC',             name: 'Sanctions screening · 18K+',   status: 'Active',      color: '#1d9e75' },
-  { badge: 'Audit logs',       name: 'Immutable decision trail',     status: 'Active',      color: '#1d9e75' },
-  { badge: 'Secure processing', name: 'Document images destroyed post-decision', status: 'Active', color: '#1d9e75' },
-];
-
-function SecuritySection() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
-  return (
-    <section id="security" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      {/* Section head */}
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        style={{ marginBottom: '64px' }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-            gap: '40px',
-            alignItems: 'start',
-          }}
-        >
-          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
-            S / 06 — Security
-          </div>
-          <div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1, marginBottom: '16px' }}>
-              Designed for the team{' '}
-              <em style={{ fontStyle: 'italic', color: '#a3b3ae' }}>whose name is on the filing.</em>
-            </h2>
-            <p style={{ fontSize: '15px', color: '#a3b3ae', lineHeight: 1.6, maxWidth: '500px' }}>
-              We build like your regulator is sitting in the next room. Because eventually, they will be.
-            </p>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Two-col layout: certifications + architecture */}
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-40px' }}
-        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}
-        className="grid-cols-1 md:grid-cols-2"
-      >
-        {/* Certifications */}
-        <motion.div variants={fadeUp}>
-          <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px' }}>Certifications</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '28px' }}>
-            {CERTS.map((c) => (
-              <div
-                key={c.badge}
-                style={{
-                  background: '#0e1614',
-                  border: '1px solid rgba(240,244,243,0.06)',
-                  borderRadius: '8px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                }}
-              >
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0f4f3' }}>{c.badge}</span>
-                <span style={{ ...mono, fontSize: '10px', color: '#5a7268' }}>{c.name}</span>
-                <span style={{ ...mono, fontSize: '10px', color: c.color, marginTop: '4px' }}>{c.status}</span>
-              </div>
-            ))}
-          </div>
-          {/* Security contact callout */}
-          <div style={{ padding: '20px', border: '1px solid rgba(240,244,243,0.06)', borderRadius: '8px', background: '#0e1614' }}>
-            <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Security questions</div>
-            <p style={{ fontSize: '13px', color: '#a3b3ae', lineHeight: 1.55, marginBottom: '14px' }}>
-              Security questionnaires and sub-processor details available on request. No sales call required.
-            </p>
-            <a href="mailto:support@veridianapi.com" style={{ fontSize: '13px', color: '#1d9e75' }}>support@veridianapi.com →</a>
-          </div>
-        </motion.div>
-
-        {/* Architecture items */}
-        <motion.div variants={fadeUp}>
-          <div style={{ ...mono, fontSize: '10px', color: '#5a7268', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '20px' }}>Architecture</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {SECURITY_ARCH.map((it, i) => (
-              <div
-                key={it.n}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '32px 1fr',
-                  gap: '16px',
-                  padding: '18px 0',
-                  borderBottom: i < SECURITY_ARCH.length - 1 ? '1px solid rgba(240,244,243,0.06)' : 'none',
-                }}
-              >
-                <span style={{ ...mono, fontSize: '11px', color: '#3d544e', paddingTop: '2px' }}>{it.n}</span>
-                <div>
-                  <h5 style={{ fontSize: '14px', fontWeight: 500, color: '#f0f4f3', marginBottom: '6px' }}>{it.t}</h5>
-                  <p style={{ fontSize: '12px', color: '#5a7268', lineHeight: 1.55, marginBottom: '6px' }}>{it.d}</p>
-                  <span style={{ ...mono, fontSize: '10px', color: '#3d544e' }}>{it.m}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-function FAQSection() {
-  const mono: React.CSSProperties = { fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' };
-  return (
-    <section id="faq" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        style={{ marginBottom: '56px' }}
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(140px, 15vw, 180px) 1fr',
-            gap: '40px',
-            alignItems: 'start',
-          }}
-        >
-          <div style={{ ...mono, fontSize: '11px', color: '#5a7268', letterSpacing: '0.06em', textTransform: 'uppercase', paddingTop: '6px' }}>
-            S / 09 — FAQ
-          </div>
-          <div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#f0f4f3', lineHeight: 1.1 }}>
-              Common questions
-            </h2>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Accordion card */}
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-40px' }}
-        className="max-w-3xl mx-auto"
-        style={{
-          backgroundColor: '#111916',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '12px',
-          overflow: 'hidden',
-        }}
-      >
-        {FAQ_ITEMS.map((item, i) => (
-          <FAQItem
-            key={item.question}
-            question={item.question}
-            answer={item.answer}
-            last={i === FAQ_ITEMS.length - 1}
-          />
-        ))}
-      </motion.div>
-    </section>
-  );
-}
-
-// ─── Final CTA ────────────────────────────────────────────────────────────────
-
-function FinalCTASection() {
-  return (
-    <section
-      className="relative overflow-hidden"
-      style={{
-        borderTop: '1px solid rgba(240,244,243,0.06)',
-        background: [
-          'radial-gradient(ellipse 70% 60% at 50% 100%, rgba(29,158,117,0.12) 0%, transparent 70%)',
-          '#050a09',
-        ].join(', '),
-        padding: '96px 24px',
-      }}
-    >
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        className="relative max-w-2xl mx-auto text-center"
-      >
-        <motion.div
-          variants={fadeUp}
-          style={{
-            fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
-            fontSize: '11px',
-            color: '#5a7268',
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            marginBottom: '32px',
-          }}
-        >
-          S / 08 — Start
-        </motion.div>
-        <motion.h2
-          variants={fadeUp}
-          style={{
-            fontSize: 'clamp(36px, 5vw, 64px)',
-            fontWeight: 400,
-            letterSpacing: '-0.035em',
-            color: '#f0f4f3',
-            lineHeight: 1.05,
-            marginBottom: '24px',
-          }}
-        >
-          Ship the hard parts{' '}
-          <br />
-          <em style={{ color: '#1d9e75', fontStyle: 'italic' }}>of fintech</em>{' '}
-          in an afternoon.
-        </motion.h2>
-        <motion.p
-          variants={fadeUp}
-          style={{ fontSize: '16px', color: '#a3b3ae', lineHeight: 1.65, maxWidth: '480px', margin: '0 auto 12px' }}
-        >
-          I built Veridian because fintech founders were paying $50K/yr for KYC when the
-          technology costs a fraction of that. Try it free for 14 days. If it doesn&apos;t
-          work, email me directly.
-        </motion.p>
-        <motion.p
-          variants={fadeUp}
-          style={{ fontSize: '13px', fontStyle: 'italic', color: '#5a7268', marginBottom: '40px' }}
-        >
-          — Kidanemariam, Founder ·{' '}
-          <a href="mailto:hello@veridianapi.com" style={{ color: '#5a7268' }}>
-            hello@veridianapi.com
-          </a>
-        </motion.p>
-        <motion.div
-          variants={fadeUp}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Link
-            href={BILLING_URL}
-            className="inline-flex items-center justify-center gap-2 font-medium transition-all hover:opacity-90"
-            style={{ height: '44px', padding: '0 28px', backgroundColor: '#1d9e75', color: '#050a09', borderRadius: '8px', fontSize: '14px', fontWeight: 500 }}
-          >
-            Start building →
-          </Link>
-          <Link
-            href={`mailto:support@veridianapi.com`}
-            className="inline-flex items-center justify-center gap-2 font-medium transition-all"
-            style={{ height: '44px', padding: '0 28px', border: '1px solid rgba(240,244,243,0.08)', color: '#a3b3ae', borderRadius: '8px', fontSize: '14px' }}
-          >
-            Talk to sales
-          </Link>
-        </motion.div>
-        <motion.div
-          variants={fadeUp}
-          className="flex flex-wrap items-center justify-center gap-6 mt-8"
-          style={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '12px', color: '#5a7268' }}
-        >
-          <span>No credit card</span>
-          <span>·</span>
-          <span>14-day free trial</span>
-          <span>·</span>
-          <span>Operational monitoring from day one</span>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-// ─── Announcement Bar ─────────────────────────────────────────────────────────
-
-function AnnouncementBar() {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('ann-hosted-flow-dismissed') === '1') {
-        setVisible(false);
-      }
-    }
-  }, []);
-
-  const dismiss = () => {
-    setVisible(false);
-    localStorage.setItem('ann-hosted-flow-dismissed', '1');
-  };
-
-  if (!visible) return null;
-
-  return (
-    <div
-      className="flex items-center justify-center gap-2 px-4 py-2.5 text-[13px] relative"
-      style={{
-        backgroundColor: 'rgba(29,158,117,0.10)',
-        borderBottom: '1px solid rgba(29,158,117,0.20)',
-      }}
-    >
-      <span style={{ color: '#a3b3ae' }}>
-        🚀 New: Hosted verification flow — no UI to build
-      </span>
-      <a
-        href="https://verify.veridianapi.com"
-        className="font-medium underline underline-offset-2 transition-colors hover:text-[#f0f4f3]"
-        style={{ color: '#1d9e75' }}
-      >
-        Try it →
-      </a>
-      <button
-        onClick={dismiss}
-        className="absolute right-4 flex items-center justify-center w-5 h-5 rounded transition-colors hover:text-[#f0f4f3]"
-        style={{ color: '#5a7268' }}
-        aria-label="Dismiss"
-      >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </button>
-    </div>
-  );
-}
-
-// ─── Main Export ──────────────────────────────────────────────────────────────
+// ─── Main export ──────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   return (
     <>
-      <AnnouncementBar />
-      <HeroSection />
+      <Hero />
       <TrustStrip />
-      <SimpleIntegrationSection />
-      <LiveDemo />
-      <BentoFeaturesSection />
-      <DashboardPreview />
-      <HowItWorksSection />
-      <PricingSection />
-      <SecuritySection />
-      <FAQSection />
-      <FinalCTASection />
+      <ApiDemo />
+      <DashboardSection />
+      <Features />
+      <Security />
+      <Pricing />
+      <Cta />
     </>
   );
 }
