@@ -38,6 +38,7 @@ const SIDEBAR_GROUPS = [
     items: [
       { id: 'webhooks', label: 'Webhooks' },
       { id: 'hosted-flow', label: 'Hosted verification flow' },
+      { id: 'managing-webhooks', label: 'Managing webhooks' },
       { id: 'error-handling', label: 'Error handling' },
     ],
   },
@@ -1021,6 +1022,93 @@ function SectionHostedFlow() {
   );
 }
 
+function SectionManagingWebhooks() {
+  return (
+    <div>
+      <SectionHeading id="managing-webhooks" title="Managing webhooks" />
+      <P>
+        Create webhook endpoints from the dashboard or via the API to receive real-time
+        notifications about verification events.
+      </P>
+
+      <H3>Create an endpoint</H3>
+      <CodeBlock
+        language="bash"
+        filename="POST /v1/webhooks"
+        code={`curl -X POST https://api.veridianapi.com/v1/webhooks \\
+  -H "Authorization: Bearer your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "url": "https://yourapp.com/webhooks/veridian",
+    "events": ["verification.completed", "verification.failed"]
+  }'`}
+      />
+      <CodeBlock
+        language="json"
+        filename="response.json"
+        code={`{
+  "id": "wh_a1b2c3d4",
+  "url": "https://yourapp.com/webhooks/veridian",
+  "secret": "whsec_abc123...",
+  "events": ["verification.completed", "verification.failed"]
+}`}
+      />
+      <Callout type="warning">
+        Save the secret — it is shown only once. Use it to verify all incoming webhook
+        signatures before trusting the payload.
+      </Callout>
+
+      <H3>Verifying signatures</H3>
+      <P>
+        Every request includes an <InlineCode>x-veridian-signature</InlineCode> header.
+        Reject any request where the signature does not match.
+      </P>
+      <CodeBlock
+        language="typescript"
+        filename="verify-signature.ts"
+        code={`import crypto from 'crypto'
+
+const signature = req.headers['x-veridian-signature']
+const expected = 'sha256=' + crypto
+  .createHmac('sha256', process.env.WEBHOOK_SECRET!)
+  .update(JSON.stringify(req.body))
+  .digest('hex')
+
+if (signature !== expected) return res.status(401).end()`}
+      />
+
+      <H3>Event payload</H3>
+      <CodeBlock
+        language="json"
+        code={`{
+  "event": "verification.completed",
+  "verification_id": "ver_a1b2c3d4",
+  "status": "approved",
+  "risk_score": 12,
+  "face_match_score": 0.94,
+  "sanctions_hit": false,
+  "created_at": "2026-04-17T12:00:00Z"
+}`}
+      />
+
+      <H3>List endpoints</H3>
+      <CodeBlock
+        language="bash"
+        code={`curl https://api.veridianapi.com/v1/webhooks \\
+  -H "Authorization: Bearer your_api_key"`}
+      />
+
+      <H3>Delete an endpoint</H3>
+      <CodeBlock
+        language="bash"
+        code={`curl -X DELETE https://api.veridianapi.com/v1/webhooks/wh_a1b2c3d4 \\
+  -H "Authorization: Bearer your_api_key"`}
+      />
+      <Divider />
+    </div>
+  );
+}
+
 function SectionErrorHandling() {
   return (
     <div>
@@ -1268,6 +1356,7 @@ export default function DocsClient() {
           <SectionSDKPython />
           <SectionWebhooks />
           <SectionHostedFlow />
+          <SectionManagingWebhooks />
           <SectionErrorHandling />
 
           {/* Footer */}

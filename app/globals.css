@@ -268,6 +268,30 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   max-width: 540px;
   letter-spacing: -0.005em;
 }
+.hero-benefits {
+  list-style: none;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-width: 500px;
+}
+.hero-benefit {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text-3);
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+}
+.hero-benefit::before {
+  content: '✓';
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  flex-shrink: 0;
+}
 .hero-cta-row { display: flex; gap: 20px; margin-top: 40px; align-items: center; }
 .hero-meta {
   display: grid;
@@ -339,6 +363,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .console-row:last-child { border-bottom: 0; }
 .console-row:hover { background: rgba(255, 255, 255, 0.015); }
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.console-row-new { animation: fadeInRow 300ms ease forwards; }
 .console-row .r-time { color: var(--text-3); font-size: 11px; font-feature-settings: "tnum"; }
 .console-row .r-ev { color: var(--text); }
 .console-row .r-country { color: var(--text-2); }
@@ -418,7 +447,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   text-transform: uppercase;
   line-height: 1.7;
 }
-.trust-logos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+.trust-logos { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; }
 .trust-logo {
   height: 56px;
   display: flex;
@@ -979,7 +1008,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .price-card { border-left: 0; border-top: 1px solid var(--hairline); }
   .price-card:first-child { border-top: 0; }
   .trust-inner { grid-template-columns: 1fr; }
-  .trust-logos { grid-template-columns: repeat(3, 1fr); }
+  .trust-logos {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    gap: 0;
+    scrollbar-width: none;
+  }
+  .trust-logos::-webkit-scrollbar { display: none; }
+  .trust-logo {
+    flex: 0 0 auto;
+    min-width: 140px;
+    border-left: 1px solid var(--hairline);
+    border-top: none;
+  }
+  .trust-logo:first-child { border-left: 0; }
   .section-head { grid-template-columns: 1fr; gap: 16px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .dash-kpis { grid-template-columns: repeat(2, 1fr); }

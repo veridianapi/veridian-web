@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
+import LiveDemo from './LiveDemo';
+import DashboardPreview from './DashboardPreview';
 
 const SIGNUP_URL = "https://app.veridianapi.com/login?next=/dashboard/billing";
 const DOCS_URL = "/docs";
@@ -34,37 +36,78 @@ const CONSOLE_ROWS = [
 
 const QUEUE_HEIGHTS = [6, 8, 5, 9, 12, 7, 10, 14, 8, 6, 9, 11, 7, 5, 8, 10, 13, 9, 6, 8, 11, 7, 9, 12];
 
+type ConsoleRowData = {
+  id: number; t: string; ev: string; country: string;
+  risk: string; status: string; label: string; isNew: boolean;
+};
+
+const BASE_CONSOLE_ROWS: ConsoleRowData[] = CONSOLE_ROWS.map((r, i) => ({ ...r, id: i, isNew: false }));
+
+const ANIMATED_EVENTS: Omit<ConsoleRowData, 'id' | 'isNew'>[] = [
+  { t: "14:32:10", ev: "identity.verified",    country: "SN · Dakar",    risk: "0.08", status: "ok",   label: "PASS"   },
+  { t: "14:32:09", ev: "identity.verified",    country: "CN · Shanghai", risk: "0.14", status: "ok",   label: "PASS"   },
+  { t: "14:32:08", ev: "pep.match.review",     country: "MX · CDMX",    risk: "0.52", status: "warn", label: "REVIEW" },
+  { t: "14:32:07", ev: "identity.verified",    country: "NG · Lagos",    risk: "0.06", status: "ok",   label: "PASS"   },
+  { t: "14:32:06", ev: "sanction.hit.ofac",    country: "US · Miami",    risk: "0.91", status: "err",  label: "BLOCK"  },
+];
+
 function Hero() {
+  const [rows, setRows] = useState<ConsoleRowData[]>(BASE_CONSOLE_ROWS);
+  const eventIdxRef = useRef(0);
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      const src = ANIMATED_EVENTS[eventIdxRef.current % ANIMATED_EVENTS.length];
+      eventIdxRef.current++;
+      const rowId = Date.now();
+      setRows(prev => [{ ...src, id: rowId, isNew: true }, ...prev].slice(0, 5));
+      setTimeout(() => {
+        setRows(prev => prev.map(r => r.id === rowId ? { ...r, isNew: false } : r));
+      }, 350);
+    }, 3000);
+    return () => clearInterval(timerId);
+  }, []);
+
   return (
     <section className="hero">
       <div className="wrap hero-inner">
         <h1 className="hero-h1">
-          Compliance infrastructure<br/>
-          for companies <span className="accent">moving money.</span>
+          Launch KYC today.<br/>
+          <span className="accent">Not after the sales cycle.</span>
         </h1>
         <p className="hero-sub">
-          One API for KYC, KYB, sanctions screening, and transaction monitoring. Built for fintech teams who ship on Friday and sleep through the weekend.
+          Identity verification, OFAC screening, and real-time AML monitoring via one REST API.
+          <span style={{ display: 'block', fontSize: 14, color: '#5a7268', marginTop: 10, lineHeight: 1.6 }}>
+            No sales call. No enterprise contract. First live decision in under 15 minutes.
+          </span>
         </p>
+        <ul className="hero-benefits">
+          <li className="hero-benefit">Launch compliant onboarding in minutes, not months</li>
+          <li className="hero-benefit">OFAC + 140 watchlists — screened on every call</li>
+          <li className="hero-benefit">Documents processed securely, destroyed after decisioning</li>
+          <li className="hero-benefit">No contract, no lock-in — 14-day free trial</li>
+          <li className="hero-benefit">API key in 90 seconds. No sales call.</li>
+        </ul>
         <div className="hero-cta-row">
-          <Link href={SIGNUP_URL} className="btn btn-primary">Start building <span className="arrow">→</span></Link>
-          <Link href={DOCS_URL} className="btn-link">Read the docs <span className="arrow">→</span></Link>
+          <Link href={SIGNUP_URL} className="btn btn-primary">Get your API key — free <span className="arrow">→</span></Link>
+          <Link href={DOCS_URL} className="btn-link">View the docs <span className="arrow">→</span></Link>
         </div>
         <div className="hero-meta">
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Uptime · 90 day</span>
+            <span className="hero-meta-label">Uptime SLA</span>
             <span className="hero-meta-val">99.998%</span>
           </div>
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Median latency</span>
-            <span className="hero-meta-val">47 ms</span>
+            <span className="hero-meta-label">Median decision</span>
+            <span className="hero-meta-val">47ms</span>
           </div>
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Checks / day</span>
-            <span className="hero-meta-val">184M</span>
+            <span className="hero-meta-label">Time to first check</span>
+            <span className="hero-meta-val">&lt;90s</span>
           </div>
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Coverage</span>
-            <span className="hero-meta-val">212 jurisdictions</span>
+            <span className="hero-meta-label">Jurisdictions</span>
+            <span className="hero-meta-val">212</span>
           </div>
         </div>
 
@@ -82,8 +125,8 @@ function Hero() {
             <div className="console-body">
               <div className="console-main">
                 <div className="console-rows">
-                  {CONSOLE_ROWS.map((r, i) => (
-                    <div className="console-row" key={i}>
+                  {rows.map((r) => (
+                    <div className={`console-row${r.isNew ? ' console-row-new' : ''}`} key={r.id}>
                       <span className="r-time">{r.t}</span>
                       <span className="r-ev">{r.ev}</span>
                       <span className="r-country">{r.country}</span>
@@ -143,16 +186,25 @@ function Hero() {
 
 // ─── Trust strip ──────────────────────────────────────────────────────────────
 
-const TRUST_LOGOS = ["Vaultline", "Parallax", "Northbeam", "Axiom Pay", "Relay"];
+const CREDIBILITY_ITEMS = [
+  "Live API",
+  "OFAC database loaded",
+  "Hosted KYC flow",
+  "Paddle billing active",
+  "14-day free trial",
+  "Full documentation",
+];
 
 function TrustStrip() {
   return (
     <section className="trust">
       <div className="wrap trust-inner">
-        <div className="trust-label">Trusted by teams moving<br/>$40B+ in regulated flows.</div>
+        <div className="trust-label">What&apos;s live<br/>and ready to use.</div>
         <div className="trust-logos">
-          {TRUST_LOGOS.map((l, i) => (
-            <div className="trust-logo" key={i}>{l}</div>
+          {CREDIBILITY_ITEMS.map((item, i) => (
+            <div className="trust-logo" key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <span className="live-dot"/>{item}
+            </div>
           ))}
         </div>
       </div>
@@ -250,7 +302,7 @@ function ApiDemo() {
             <h2 className="section-title">
               Five endpoints. <em>Every compliance decision<br/>your fintech will ever make.</em>
             </h2>
-            <p className="section-sub">Typed SDKs in six languages. Webhooks with exactly-once delivery. Sandbox environments that mirror production risk scoring down to the basis point.</p>
+            <p className="section-sub">TypeScript, Python, Go, Ruby, PHP, and Java SDKs. Webhooks with exactly-once delivery. A sandbox that mirrors production risk scoring — no surprises when you go live.</p>
           </div>
         </div>
 
@@ -332,9 +384,9 @@ function DashboardSection() {
           <div className="section-kicker">S / 04 — Console</div>
           <div>
             <h2 className="section-title">
-              Give your compliance team the same<br/><em>surface your engineers already love.</em>
+              Your engineers get the API.<br/><em>Your compliance team gets the dashboard.</em>
             </h2>
-            <p className="section-sub">Case management, rule authoring, and audit exports — all reading the same primitives your API calls do. No data copy, no reconciliation.</p>
+            <p className="section-sub">Case management, rule authoring, and audit exports — all from the same data your API calls produce. No sync jobs, no reconciliation. One source of truth for both teams.</p>
           </div>
         </div>
 
@@ -529,9 +581,9 @@ function Features() {
           <div className="section-kicker">S / 05 — Capabilities</div>
           <div>
             <h2 className="section-title">
-              Every regulatory primitive,<br/><em>composable and individually priced.</em>
+              Every compliance primitive,<br/><em>composable and individually priced.</em>
             </h2>
-            <p className="section-sub">Use the full stack or a single endpoint. Swap in Veridian&apos;s rules engine without touching your existing KYC vendor. We&apos;re infrastructure, not a walled garden.</p>
+            <p className="section-sub">Use all five endpoints or just one. Drop Veridian&apos;s rules engine into your existing KYC stack without a migration. Infrastructure — not a platform lock-in.</p>
           </div>
         </div>
 
@@ -713,7 +765,7 @@ function Pricing() {
           <div className="section-kicker">S / 07 — Pricing</div>
           <div>
             <h2 className="section-title">
-              Usage-based, with a flat rate<br/><em>if your finance team prefers predictability.</em>
+              Usage-based pricing.<br/><em>Volume discounts published, not negotiated.</em>
             </h2>
             <p className="section-sub">No per-seat fees. No implementation minimums. Volume discounts apply automatically — we don&apos;t negotiate them, we publish them.</p>
           </div>
@@ -800,10 +852,10 @@ function Cta() {
       <div className="wrap cta-inner">
         <div className="eyebrow" style={{ marginBottom: 32 }}>S / 08 — Start</div>
         <h2>
-          Ship the hard parts<br/>
-          <span className="accent">of fintech</span> in an afternoon.
+          One afternoon.<br/>
+          <span className="accent">Your compliance layer, done.</span>
         </h2>
-        <p>Production API keys in ninety seconds. First live decision before your coffee goes cold.</p>
+        <p>Production API key in 90 seconds. First live verification in under 15 minutes. No sales call. No contract review.</p>
         <div className="cta-row">
           <Link href={SIGNUP_URL} className="btn btn-primary">Start building <span className="arrow">→</span></Link>
           <a href={SALES_EMAIL} className="btn btn-ghost">Talk to sales</a>
@@ -819,10 +871,11 @@ export default function LandingPage() {
   return (
     <>
       <Hero />
+      <LiveDemo />
       <TrustStrip />
       <ApiDemo />
-      <DashboardSection />
       <Features />
+      <DashboardPreview />
       <Security />
       <Pricing />
       <Cta />
