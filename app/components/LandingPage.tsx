@@ -70,11 +70,11 @@ function Hero() {
     <section className="hero">
       <div className="wrap hero-inner">
         <h1 className="hero-h1">
-          KYC infrastructure.<br/>
-          <span className="accent">Live before lunch.</span>
+          KYC without the<br/>
+          <span className="accent">enterprise drag.</span>
         </h1>
         <p className="hero-sub">
-          Identity verification, OFAC screening, and AML risk scoring via one REST API. No sales call. No contract.
+          Identity verification, OFAC screening, and AML risk scoring through one REST API. Launch compliant onboarding in minutes — no sales call, no annual contract.
         </p>
         <ul className="hero-benefits">
           <li className="hero-benefit">API key in 90 seconds — no approval</li>
@@ -82,7 +82,7 @@ function Hero() {
           <li className="hero-benefit">14-day free trial, no credit card</li>
         </ul>
         <div className="hero-cta-row">
-          <Link href={SIGNUP_URL} className="btn btn-primary">Get API key free <span className="arrow">→</span></Link>
+          <Link href={SIGNUP_URL} className="btn btn-primary">Get your API key — free <span className="arrow">→</span></Link>
           <Link href={DOCS_URL} className="btn btn-ghost">View docs</Link>
         </div>
         <div className="hero-meta">
@@ -164,7 +164,7 @@ function Hero() {
             </div>
             <div className="console-footer">
               <span>wss://api.veridianapi.com/v3/stream</span>
-              <span>0 dropped · 184,204,108 delivered · lag 3ms</span>
+              <span>streaming · lag 3ms</span>
             </div>
           </div>
         </div>
@@ -464,7 +464,7 @@ const SEC_ITEMS = [
   { n: "02", t: "Zero-retention processing paths",    d: "PII is hashed at the edge. Document images are destroyed after decisioning unless explicitly retained under a documented lawful basis.", m: "GDPR Art. 5 · 17 · 32" },
   { n: "03", t: "Immutable, regulator-grade audit",   d: "Every API call is hash-chained and anchored hourly. Tamper evidence is provable to an external auditor — no cooperation from us required.", m: "SOC 2 · CC7 · CC8" },
   { n: "04", t: "Regionalised data residency",        d: "Pin tenants to EU, US, UK, SG, or AU. Cross-border transfer is opt-in per endpoint, not per account.", m: "SCC · IDTA · Privacy Shield" },
-  { n: "05", t: "Red-team tested, continuously",      d: "Quarterly external pen tests. Bug bounty with a seven-figure pool. Our detection logic is audited against real-world fraud rings.", m: "Trail of Bits · HackerOne" },
+  { n: "05", t: "Responsible disclosure policy",      d: "We maintain a public security policy and accept responsible disclosure reports. Security architecture documentation available on request.", m: "security@veridianapi.com" },
 ];
 
 function Security() {
@@ -483,44 +483,24 @@ function Security() {
 
         <div className="sec-grid">
           <div>
-            <div className="eyebrow" style={{ marginBottom: 24 }}>Certifications</div>
-            <div className="cert-grid">
+            <div className="eyebrow" style={{ marginBottom: 24 }}>Compliance status</div>
+            <div className="cert-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               <div className="cert">
                 <span className="cert-badge">SOC 2</span>
-                <span className="cert-name">Type II · annual</span>
-                <span className="cert-status">Active</span>
-              </div>
-              <div className="cert">
-                <span className="cert-badge">ISO 27001</span>
-                <span className="cert-name">+ 27017 · 27018 · 27701</span>
-                <span className="cert-status">Active</span>
-              </div>
-              <div className="cert">
-                <span className="cert-badge">PCI DSS</span>
-                <span className="cert-name">Level 1 · v4.0</span>
-                <span className="cert-status">Active</span>
-              </div>
-              <div className="cert">
-                <span className="cert-badge">HIPAA</span>
-                <span className="cert-name">BAA available</span>
-                <span className="cert-status">Active</span>
+                <span className="cert-name">Type II · in progress</span>
+                <span className="cert-status" style={{ color: 'var(--amber)' }}>In progress</span>
               </div>
               <div className="cert">
                 <span className="cert-badge">GDPR</span>
-                <span className="cert-name">DPA · SCCs</span>
-                <span className="cert-status">Active</span>
-              </div>
-              <div className="cert">
-                <span className="cert-badge">FedRAMP</span>
-                <span className="cert-name">Moderate · in-process</span>
-                <span className="cert-status" style={{ color: 'var(--amber)' }}>Q3 2026</span>
+                <span className="cert-name">Privacy-ready workflows</span>
+                <span className="cert-status">Ready</span>
               </div>
             </div>
 
             <div style={{ marginTop: 40, padding: 24, border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, background: '#111916' }}>
-              <div className="eyebrow" style={{ marginBottom: 14 }}>Trust centre</div>
-              <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.55, marginBottom: 18 }}>Security questionnaires, penetration test summaries, and real-time sub-processor updates — no sales call required.</p>
-              <a href={SALES_EMAIL} className="btn-link">Contact security team <span className="arrow">→</span></a>
+              <div className="eyebrow" style={{ marginBottom: 14 }}>Security contact</div>
+              <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 18 }}>Security architecture documentation and responsible disclosure policy available on request. No sales call required.</p>
+              <a href="mailto:security@veridianapi.com" className="btn-link">Contact security team <span className="arrow">→</span></a>
             </div>
           </div>
 
@@ -555,79 +535,74 @@ function Pricing() {
           <div className="section-kicker">S / 07 — Pricing</div>
           <div>
             <h2 className="section-title">
-              Usage-based pricing.<br/><em>Volume discounts published, not negotiated.</em>
+              Simple monthly pricing.<br/><em>14-day free trial on all plans.</em>
             </h2>
-            <p className="section-sub">No per-seat fees. No implementation minimums. Volume discounts apply automatically — we don&apos;t negotiate them, we publish them.</p>
+            <p className="section-sub">No per-seat fees. No annual contract. Cancel any time. Start with a free trial — no credit card required.</p>
           </div>
         </div>
 
         <div className="pricing-grid">
           <div className="price-card">
             <div>
-              <div className="price-name">Build</div>
-              <p className="price-desc" style={{ marginTop: 10 }}>For teams shipping their first compliance surface. Production-grade from check one.</p>
+              <div className="price-name">Starter</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>For teams building their first compliance integration. Everything you need to go live.</p>
             </div>
-            <div className="price-amt">$0<span className="unit">/mo base</span></div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>then $0.14 / verification · $0.008 / screening</div>
-            <Link href={SIGNUP_URL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Start free <span className="arrow">→</span></Link>
+            <div className="price-amt">$199<span className="unit">/mo</span></div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>14-day free trial · no credit card required</div>
+            <Link href={SIGNUP_URL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Start free trial <span className="arrow">→</span></Link>
             <ul className="price-features">
-              <li>Up to 10,000 verifications / month</li>
-              <li>All five endpoints, full SDK surface</li>
-              <li>Sandbox + 2 production environments</li>
-              <li>Community Slack, 48h response</li>
-              <li className="muted">Shared rate limits · 100 rps</li>
-              <li className="muted">Single region</li>
+              <li>Identity verification (KYC)</li>
+              <li>OFAC + 140 watchlist screening</li>
+              <li>Hosted KYC flow</li>
+              <li>Full API access + sandbox</li>
+              <li>Webhook delivery</li>
+              <li>Email support</li>
             </ul>
           </div>
 
           <div className="price-card featured">
             <div>
-              <div className="price-name">Scale</div>
-              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs in production. Includes the operations console, custom rules, and a named CSM.</p>
+              <div className="price-name">Growth</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs scaling onboarding. Adds AML monitoring and business verification.</p>
             </div>
-            <div className="price-amt">$4,800<span className="unit">/mo min.</span></div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>volume pricing from $0.09 / verification at 500K+</div>
-            <a href={SALES_EMAIL} className="btn btn-primary" style={{ justifyContent: 'center' }}>Talk to sales <span className="arrow">→</span></a>
+            <div className="price-amt">$499<span className="unit">/mo</span></div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>14-day free trial · no credit card required</div>
+            <Link href={SIGNUP_URL} className="btn btn-primary" style={{ justifyContent: 'center' }}>Start free trial <span className="arrow">→</span></Link>
             <ul className="price-features">
-              <li>Everything in Build</li>
-              <li>Operations console with case management</li>
-              <li>Custom rules, shadow mode, gradual rollout</li>
-              <li>Dedicated rate limits · 2,000 rps</li>
-              <li>Multi-region with failover</li>
-              <li>Named CSM · 1h priority response</li>
-              <li>SOC 2 + ISO 27001 artifacts on demand</li>
+              <li>Everything in Starter</li>
+              <li>AML transaction monitoring</li>
+              <li>KYB business verification</li>
+              <li>Operations case queue</li>
+              <li>Audit log exports</li>
+              <li>Priority email support</li>
             </ul>
           </div>
 
           <div className="price-card">
             <div>
-              <div className="price-name">Sovereign</div>
-              <p className="price-desc" style={{ marginTop: 10 }}>Single-tenant deployments, BYOK, and dedicated compliance engineering.</p>
+              <div className="price-name">Scale</div>
+              <p className="price-desc" style={{ marginTop: 10 }}>For regulated fintechs with complex compliance requirements and higher volumes.</p>
             </div>
-            <div className="price-amt">Custom</div>
-            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>annual contract · starts at $240K / yr</div>
-            <a href={SALES_EMAIL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Contact us <span className="arrow">→</span></a>
+            <div className="price-amt">$999<span className="unit">/mo</span></div>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>14-day free trial · no credit card required</div>
+            <Link href={SIGNUP_URL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Start free trial <span className="arrow">→</span></Link>
             <ul className="price-features">
-              <li>Everything in Scale</li>
-              <li>Dedicated single-tenant infrastructure</li>
-              <li>Bring-your-own keys, vault, or cloud</li>
-              <li>On-prem / air-gapped deployment option</li>
-              <li>99.999% SLA · 15-minute incident response</li>
-              <li>Dedicated compliance engineer</li>
-              <li>Regulator-facing support letter on request</li>
+              <li>Everything in Growth</li>
+              <li>Custom compliance rules engine</li>
+              <li>GDPR-ready data retention controls</li>
+              <li>Dedicated onboarding support</li>
+              <li>Higher API rate limits</li>
+              <li>SOC 2 documentation when available</li>
             </ul>
           </div>
         </div>
 
         <div style={{ marginTop: 32, padding: '24px 28px', border: '1px solid var(--line)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <Icon name="graph" size={18}/>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 500, letterSpacing: '-0.01em' }}>Price estimator</div>
-              <div style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>Plug in your monthly volume — we&apos;ll tell you the rate bracket you&apos;d land in.</div>
-            </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 500, letterSpacing: '-0.01em' }}>Not sure which plan fits?</div>
+            <div style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>All plans include a 14-day free trial. Start building and upgrade when you&apos;re ready.</div>
           </div>
-          <a href={SALES_EMAIL} className="btn-link">Talk to sales <span className="arrow">→</span></a>
+          <a href={SALES_EMAIL} className="btn-link">Questions? Contact us <span className="arrow">→</span></a>
         </div>
       </div>
     </section>

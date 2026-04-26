@@ -13,7 +13,7 @@ export default function Footer() {
               </svg>
               <span>Veridian</span>
             </div>
-            <p>Compliance infrastructure for companies moving money. Operated from Berlin, New York, and Singapore.</p>
+            <p>Built from Ethiopia for global fintech teams.</p>
             <div style={{ marginTop: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
               <span className="chip"><span className="dot"/> All systems operational</span>
             </div>
@@ -60,8 +60,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bot">
-          <span>© 2026 Veridian Systems, Inc.</span>
-          <span>Berlin · New York · Singapore</span>
+          <span>© 2026 Veridian</span>
           <span>veridianapi.com</span>
         </div>
       </div>
