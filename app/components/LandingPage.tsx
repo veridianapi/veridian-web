@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
-import LiveDemo from './LiveDemo';
-import DashboardPreview from './DashboardPreview';
 
 const SIGNUP_URL = "https://app.veridianapi.com/login?next=/dashboard/billing";
 const DOCS_URL = "/docs";
@@ -72,38 +70,29 @@ function Hero() {
     <section className="hero">
       <div className="wrap hero-inner">
         <h1 className="hero-h1">
-          Launch KYC today.<br/>
-          <span className="accent">Not after the sales cycle.</span>
+          KYC infrastructure.<br/>
+          <span className="accent">Live before lunch.</span>
         </h1>
         <p className="hero-sub">
-          Identity verification, OFAC screening, and real-time AML monitoring via one REST API.
-          <span style={{ display: 'block', fontSize: 14, color: '#5a7268', marginTop: 10, lineHeight: 1.6 }}>
-            No sales call. No enterprise contract. First live decision in under 15 minutes.
-          </span>
+          Identity verification, OFAC screening, and AML risk scoring via one REST API. No sales call. No contract.
         </p>
         <ul className="hero-benefits">
-          <li className="hero-benefit">Launch compliant onboarding in minutes, not months</li>
-          <li className="hero-benefit">OFAC + 140 watchlists — screened on every call</li>
-          <li className="hero-benefit">Documents processed securely, destroyed after decisioning</li>
-          <li className="hero-benefit">No contract, no lock-in — 14-day free trial</li>
-          <li className="hero-benefit">API key in 90 seconds. No sales call.</li>
+          <li className="hero-benefit">API key in 90 seconds — no approval</li>
+          <li className="hero-benefit">OFAC + 140 watchlists on every call</li>
+          <li className="hero-benefit">14-day free trial, no credit card</li>
         </ul>
         <div className="hero-cta-row">
-          <Link href={SIGNUP_URL} className="btn btn-primary">Get your API key — free <span className="arrow">→</span></Link>
-          <Link href={DOCS_URL} className="btn-link">View the docs <span className="arrow">→</span></Link>
+          <Link href={SIGNUP_URL} className="btn btn-primary">Get API key free <span className="arrow">→</span></Link>
+          <Link href={DOCS_URL} className="btn btn-ghost">View docs</Link>
         </div>
         <div className="hero-meta">
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Uptime SLA</span>
-            <span className="hero-meta-val">99.998%</span>
+            <span className="hero-meta-label">Uptime</span>
+            <span className="hero-meta-val">99.9%</span>
           </div>
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Median decision</span>
+            <span className="hero-meta-label">Median</span>
             <span className="hero-meta-val">47ms</span>
-          </div>
-          <div className="hero-meta-item">
-            <span className="hero-meta-label">Time to first check</span>
-            <span className="hero-meta-val">&lt;90s</span>
           </div>
           <div className="hero-meta-item">
             <span className="hero-meta-label">Jurisdictions</span>
@@ -362,205 +351,6 @@ function ApiDemo() {
   );
 }
 
-// ─── Dashboard ────────────────────────────────────────────────────────────────
-
-const QUEUE_ITEMS = [
-  { id: "CS-48201", name: "Helena Søresen",       sub: "Individual · NO · Passport",    risk: "12", bar: 12, cls: "r-l", status: "ok",   label: "CLEAR",  sla: "2m 14s" },
-  { id: "CS-48200", name: "Meridian Holdings Ltd", sub: "Business · KY · UBO graph",    risk: "68", bar: 68, cls: "r-m", status: "warn", label: "REVIEW", sla: "11m 02s" },
-  { id: "CS-48199", name: "Jakub Nowak",           sub: "Individual · PL · DL",         risk: "09", bar: 9,  cls: "r-l", status: "ok",   label: "CLEAR",  sla: "48s" },
-  { id: "CS-48198", name: "Volga Export S.A.",     sub: "Business · CY · OFAC match",   risk: "94", bar: 94, cls: "r-h", status: "err",  label: "BLOCK",  sla: "esc." },
-  { id: "CS-48197", name: "Anjali Raman",          sub: "Individual · IN · Aadhaar",    risk: "22", bar: 22, cls: "r-l", status: "ok",   label: "CLEAR",  sla: "1m 34s" },
-  { id: "CS-48196", name: "Cascade Digital Inc",   sub: "Business · US · PEP officer",  risk: "54", bar: 54, cls: "r-m", status: "warn", label: "REVIEW", sla: "4m 22s" },
-];
-
-const CHART_BARS = [12, 18, 22, 19, 26, 31, 28, 35, 42, 38, 41, 46, 52, 49, 55, 61, 58, 64, 69, 66, 72, 78, 74, 82];
-const CHART_MAX = Math.max(...CHART_BARS);
-
-function DashboardSection() {
-  return (
-    <section className="section" id="dashboard">
-      <div className="wrap">
-        <div className="section-head">
-          <div className="section-kicker">S / 04 — Console</div>
-          <div>
-            <h2 className="section-title">
-              Your engineers get the API.<br/><em>Your compliance team gets the dashboard.</em>
-            </h2>
-            <p className="section-sub">Case management, rule authoring, and audit exports — all from the same data your API calls produce. No sync jobs, no reconciliation. One source of truth for both teams.</p>
-          </div>
-        </div>
-
-        <div className="dash-wrap">
-          <div className="dash">
-            <div className="dash-top">
-              <div className="dash-top-left">
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
-                  <rect x="1" y="1" width="20" height="20" rx="4" stroke="#1d9e75" strokeWidth="1.25"/>
-                  <path d="M5.5 10.5L9.5 14.5L16.5 7.5" stroke="#1d9e75" strokeWidth="1.5"/>
-                </svg>
-                <span className="breadcrumb">acme-payments · <b>Operations</b> · cases</span>
-              </div>
-              <div className="dash-top-right">
-                <span>⌘K</span><span style={{ margin: '0 8px' }}>·</span>
-                <span>jamie@acme.co</span>
-              </div>
-            </div>
-
-            <div className="dash-grid">
-              <aside className="dash-nav">
-                <div className="dash-nav-section">
-                  <div className="dash-nav-label">Overview</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Home</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Alerts <span className="badge">7</span></div>
-                </div>
-                <div className="dash-nav-section">
-                  <div className="dash-nav-label">Operations</div>
-                  <div className="dash-nav-item active"><span className="nav-ind"/>Cases <span className="badge">48</span></div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Screening</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Monitoring</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Investigations</div>
-                </div>
-                <div className="dash-nav-section">
-                  <div className="dash-nav-label">Configure</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Rule engine</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Watchlists</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Webhooks</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>API keys</div>
-                </div>
-                <div className="dash-nav-section">
-                  <div className="dash-nav-label">Compliance</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Audit log</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Reports</div>
-                  <div className="dash-nav-item"><span className="nav-ind"/>Exports</div>
-                </div>
-              </aside>
-
-              <div className="dash-main">
-                <div className="dash-head">
-                  <div className="dash-h">
-                    <span className="sub">Operations · cases</span>
-                    Review queue
-                  </div>
-                  <div className="dash-filters">
-                    <span className="dash-filter">24h</span>
-                    <span className="dash-filter active">7d</span>
-                    <span className="dash-filter">30d</span>
-                    <span className="dash-filter">90d</span>
-                  </div>
-                </div>
-
-                <div className="dash-kpis">
-                  <div className="kpi">
-                    <span className="kpi-label">Open cases</span>
-                    <span className="kpi-val">48</span>
-                    <span className="kpi-foot delta-down">↓ 12 <span style={{ color: 'var(--text-3)' }}>vs. last week</span></span>
-                  </div>
-                  <div className="kpi">
-                    <span className="kpi-label">Avg. resolution</span>
-                    <span className="kpi-val">3m 42s</span>
-                    <span className="kpi-foot delta-up">↓ 38% <span style={{ color: 'var(--text-3)' }}>SLA breach 0</span></span>
-                  </div>
-                  <div className="kpi">
-                    <span className="kpi-label">Auto-approval</span>
-                    <span className="kpi-val">94.2%</span>
-                    <span className="kpi-foot delta-up">↑ 2.1 pts</span>
-                  </div>
-                  <div className="kpi">
-                    <span className="kpi-label">False positive rate</span>
-                    <span className="kpi-val">0.41%</span>
-                    <span className="kpi-foot delta-down">↓ 0.08</span>
-                  </div>
-                </div>
-
-                <div className="dash-charts">
-                  <div className="chart-card">
-                    <div className="chart-head">
-                      <div className="chart-title">
-                        <span className="sub">Decisions · last 24h</span>
-                        Volume by hour
-                      </div>
-                      <div style={{ display: 'flex', gap: 12, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
-                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--green)', marginRight: 6, verticalAlign: 1 }}/>Approved 8.2M</span>
-                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--amber)', marginRight: 6, verticalAlign: 1 }}/>Review 412K</span>
-                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: 'var(--red)', marginRight: 6, verticalAlign: 1 }}/>Blocked 18K</span>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 140, borderBottom: '1px solid var(--line)', paddingBottom: 4 }}>
-                      {CHART_BARS.map((v, i) => (
-                        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                          <div style={{ height: (v / CHART_MAX * 110) + 'px', background: 'var(--green)', opacity: 0.85 }}/>
-                          <div style={{ height: (v / CHART_MAX * 10) + 'px', background: 'var(--amber)', opacity: 0.8 }}/>
-                          <div style={{ height: (v / CHART_MAX * 3) + 'px', background: 'var(--red)', opacity: 0.8 }}/>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-3)' }}>
-                      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>now</span>
-                    </div>
-                  </div>
-                  <div className="chart-card">
-                    <div className="chart-head">
-                      <div className="chart-title"><span className="sub">Risk distribution</span> Score bands</div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 12 }}>
-                      {[
-                        { l: "0 – 20",   v: 82,  c: 'var(--green)',   n: "7.2M" },
-                        { l: "21 – 40",  v: 12,  c: 'var(--green-2)', n: "1.1M", op: 0.6 },
-                        { l: "41 – 70",  v: 4.8, c: 'var(--amber)',   n: "412K" },
-                        { l: "71 – 90",  v: 1.0, c: '#d4774a',        n: "91K" },
-                        { l: "91 – 100", v: 0.2, c: 'var(--red)',     n: "18K" },
-                      ].map((b, i) => (
-                        <div key={i}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)', marginBottom: 4 }}>
-                            <span>{b.l}</span><span>{b.n}</span>
-                          </div>
-                          <div style={{ height: 6, background: '#1a2320', borderRadius: 3, overflow: 'hidden' }}>
-                            <div style={{ width: b.v + '%', height: '100%', background: b.c, opacity: b.op ?? 1 }}/>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="dash-queue-head">
-                  <div className="chart-title"><span className="sub">Queue · assigned to me</span> Awaiting review</div>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
-                    <Icon name="search" size={12}/> filter: sla &lt; 15m
-                  </div>
-                </div>
-                <div className="dash-queue">
-                  <div className="queue-row">
-                    <span>Case ID</span><span>Subject</span><span>Risk score</span><span>SLA</span><span>Decision</span><span>Actions</span>
-                  </div>
-                  {QUEUE_ITEMS.map((r, i) => (
-                    <div className="queue-row" key={i}>
-                      <span className="queue-id">{r.id}</span>
-                      <div>
-                        <span className="queue-name">{r.name}</span>
-                        <span className="sub">{r.sub}</span>
-                      </div>
-                      <div>
-                        <span className="queue-risk" style={{ color: r.status === 'err' ? 'var(--red)' : r.status === 'warn' ? 'var(--amber)' : 'var(--text-2)' }}>
-                          {r.risk} / 100
-                        </span>
-                        <div className="risk-bar"><span className={r.cls} style={{ width: r.bar + '%' }}/></div>
-                      </div>
-                      <span className="queue-risk">{r.sla}</span>
-                      <span><span className={`pill ${r.status === 'err' ? 'pill-err' : r.status === 'warn' ? 'pill-warn' : 'pill-ok'}`}>{r.label}</span></span>
-                      <span style={{ color: 'var(--text-3)' }}>open →</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── Features ─────────────────────────────────────────────────────────────────
 
 const AUDIT_CHAIN = [
@@ -727,7 +517,7 @@ function Security() {
               </div>
             </div>
 
-            <div style={{ marginTop: 40, padding: 24, border: '1px solid var(--line)', borderRadius: 8, background: 'var(--card-2)' }}>
+            <div style={{ marginTop: 40, padding: 24, border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, background: '#111916' }}>
               <div className="eyebrow" style={{ marginBottom: 14 }}>Trust centre</div>
               <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.55, marginBottom: 18 }}>Security questionnaires, penetration test summaries, and real-time sub-processor updates — no sales call required.</p>
               <a href={SALES_EMAIL} className="btn-link">Contact security team <span className="arrow">→</span></a>
@@ -871,11 +661,8 @@ export default function LandingPage() {
   return (
     <>
       <Hero />
-      <LiveDemo />
       <TrustStrip />
-      <ApiDemo />
       <Features />
-      <DashboardPreview />
       <Security />
       <Pricing />
       <Cta />
