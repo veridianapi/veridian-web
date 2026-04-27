@@ -22,10 +22,7 @@ export default function Footer() {
             <h6>Product</h6>
             <ul>
               <li><a href="#features">Identity</a></li>
-              <li><a href="#features">Business KYB</a></li>
               <li><a href="#features">Sanctions</a></li>
-              <li><a href="#features">Monitoring</a></li>
-              <li><a href="#dashboard">Cases</a></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -34,17 +31,12 @@ export default function Footer() {
               <li><Link href="/docs">Documentation</Link></li>
               <li><Link href="/docs">API reference</Link></li>
               <li><Link href="/docs">SDKs</Link></li>
-              <li><Link href="/docs">Changelog</Link></li>
-              <li><a href="https://status.veridianapi.com" target="_blank" rel="noopener noreferrer">Status</a></li>
+              <li><a href="#">Status</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Company</h6>
             <ul>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Customers</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Press</a></li>
               <li><a href="mailto:support@veridianapi.com">Contact</a></li>
             </ul>
           </div>
@@ -53,9 +45,6 @@ export default function Footer() {
             <ul>
               <li><Link href="/terms">Terms</Link></li>
               <li><Link href="/privacy">Privacy</Link></li>
-              <li><a href="#">DPA</a></li>
-              <li><a href="#">Sub-processors</a></li>
-              <li><a href="#">Trust centre</a></li>
             </ul>
           </div>
         </div>

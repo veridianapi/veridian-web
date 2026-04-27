@@ -22,17 +22,16 @@ function Icon({ name, size = 16, stroke = 1.5, className = '' }: { name: string;
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CONSOLE_ROWS = [
-  { t: "14:32:08", ev: "identity.verified",     country: "DE · Berlin",    risk: "0.08", status: "ok",   label: "PASS" },
-  { t: "14:32:06", ev: "transaction.screened",  country: "US · NY",        risk: "0.12", status: "ok",   label: "PASS" },
-  { t: "14:32:04", ev: "sanction.hit.ofac",      country: "CY · Limassol", risk: "0.94", status: "err",  label: "BLOCK" },
-  { t: "14:32:01", ev: "kyb.ubo.verified",       country: "GB · London",   risk: "0.21", status: "ok",   label: "PASS" },
-  { t: "14:31:58", ev: "pep.match.review",       country: "AE · Dubai",    risk: "0.61", status: "warn", label: "REVIEW" },
-  { t: "14:31:55", ev: "transaction.screened",  country: "SG · Central",   risk: "0.09", status: "ok",   label: "PASS" },
-  { t: "14:31:52", ev: "identity.verified",     country: "FR · Paris",     risk: "0.14", status: "ok",   label: "PASS" },
-  { t: "14:31:49", ev: "kyc.document.ocr",       country: "BR · São Paulo", risk: "0.18", status: "ok",  label: "PASS" },
+  { t: "14:32:08", ev: "identity.verified",     country: "DE", risk: "0.08", status: "ok",   label: "PASS" },
+  { t: "14:32:06", ev: "transaction.screened",  country: "US", risk: "0.12", status: "ok",   label: "PASS" },
+  { t: "14:32:04", ev: "sanction.hit.ofac",     country: "CY", risk: "0.94", status: "err",  label: "BLOCK" },
+  { t: "14:32:01", ev: "kyb.ubo.verified",      country: "GB", risk: "0.21", status: "ok",   label: "PASS" },
+  { t: "14:31:58", ev: "pep.match.review",      country: "AE", risk: "0.61", status: "warn", label: "REVIEW" },
+  { t: "14:31:55", ev: "transaction.screened",  country: "SG", risk: "0.09", status: "ok",   label: "PASS" },
+  { t: "14:31:52", ev: "identity.verified",     country: "FR", risk: "0.14", status: "ok",   label: "PASS" },
+  { t: "14:31:49", ev: "kyc.document.ocr",      country: "BR", risk: "0.18", status: "ok",   label: "PASS" },
 ];
 
-const QUEUE_HEIGHTS = [6, 8, 5, 9, 12, 7, 10, 14, 8, 6, 9, 11, 7, 5, 8, 10, 13, 9, 6, 8, 11, 7, 9, 12];
 
 type ConsoleRowData = {
   id: number; t: string; ev: string; country: string;
@@ -42,11 +41,11 @@ type ConsoleRowData = {
 const BASE_CONSOLE_ROWS: ConsoleRowData[] = CONSOLE_ROWS.map((r, i) => ({ ...r, id: i, isNew: false }));
 
 const ANIMATED_EVENTS: Omit<ConsoleRowData, 'id' | 'isNew'>[] = [
-  { t: "14:32:10", ev: "identity.verified",    country: "SN · Dakar",    risk: "0.08", status: "ok",   label: "PASS"   },
-  { t: "14:32:09", ev: "identity.verified",    country: "CN · Shanghai", risk: "0.14", status: "ok",   label: "PASS"   },
-  { t: "14:32:08", ev: "pep.match.review",     country: "MX · CDMX",    risk: "0.52", status: "warn", label: "REVIEW" },
-  { t: "14:32:07", ev: "identity.verified",    country: "NG · Lagos",    risk: "0.06", status: "ok",   label: "PASS"   },
-  { t: "14:32:06", ev: "sanction.hit.ofac",    country: "US · Miami",    risk: "0.91", status: "err",  label: "BLOCK"  },
+  { t: "14:32:10", ev: "identity.verified",    country: "SN", risk: "0.08", status: "ok",   label: "PASS"   },
+  { t: "14:32:09", ev: "identity.verified",    country: "CN", risk: "0.14", status: "ok",   label: "PASS"   },
+  { t: "14:32:08", ev: "pep.match.review",     country: "MX", risk: "0.52", status: "warn", label: "REVIEW" },
+  { t: "14:32:07", ev: "identity.verified",    country: "NG", risk: "0.06", status: "ok",   label: "PASS"   },
+  { t: "14:32:06", ev: "sanction.hit.ofac",    country: "US", risk: "0.91", status: "err",  label: "BLOCK"  },
 ];
 
 function Hero() {
@@ -95,8 +94,8 @@ function Hero() {
             <span className="hero-meta-val">47ms</span>
           </div>
           <div className="hero-meta-item">
-            <span className="hero-meta-label">Jurisdictions</span>
-            <span className="hero-meta-val">212</span>
+            <span className="hero-meta-label">Countries</span>
+            <span className="hero-meta-val">195+</span>
           </div>
         </div>
 
@@ -108,7 +107,7 @@ function Hero() {
                 <span className="console-title">veridian / live · acme-payments</span>
               </div>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)' }}>
-                <span className="live-dot"/>streaming · eu-central-1
+                <span className="live-dot"/>live · eu-west-1
               </span>
             </div>
             <div className="console-body">
@@ -129,41 +128,9 @@ function Hero() {
                   ))}
                 </div>
               </div>
-              <aside className="console-side-r">
-                <div className="mini-metric">
-                  <span className="mini-metric-label">Events / sec</span>
-                  <span className="mini-metric-val">2,143<span className="suffix">rps</span></span>
-                  <svg className="sparkline" viewBox="0 0 200 52" preserveAspectRatio="none">
-                    <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8" stroke="#1d9e75" strokeWidth="1.25" fill="none"/>
-                    <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8 L200,52 L0,52 Z" fill="url(#sparkGrad)"/>
-                    <defs>
-                      <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0" stopColor="#1d9e75" stopOpacity="0.3"/>
-                        <stop offset="1" stopColor="#1d9e75" stopOpacity="0"/>
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
-                <div className="mini-metric">
-                  <span className="mini-metric-label">P50 · p99 latency</span>
-                  <span className="mini-metric-val">47<span className="suffix">/ 112 ms</span></span>
-                </div>
-                <div className="mini-metric">
-                  <span className="mini-metric-label">Block rate · 24h</span>
-                  <span className="mini-metric-val">0.41<span className="suffix">%</span></span>
-                </div>
-                <div className="mini-metric">
-                  <span className="mini-metric-label">Queue depth</span>
-                  <div style={{ display: 'flex', gap: 3, marginTop: 6 }}>
-                    {QUEUE_HEIGHTS.map((h, i) => (
-                      <div key={i} style={{ width: 6, height: h * 2, background: 'var(--green)', opacity: 0.3 + h / 20 }}/>
-                    ))}
-                  </div>
-                </div>
-              </aside>
             </div>
             <div className="console-footer">
-              <span>wss://api.veridianapi.com/v3/stream</span>
+              <span>https://api.veridianapi.com/v1/verifications</span>
               <span>streaming · lag 3ms</span>
             </div>
           </div>
@@ -373,29 +340,15 @@ function Features() {
             <h2 className="section-title">
               Every compliance primitive,<br/><em>composable and individually priced.</em>
             </h2>
-            <p className="section-sub">Use all five endpoints or just one. Drop Veridian&apos;s rules engine into your existing KYC stack without a migration. Infrastructure — not a platform lock-in.</p>
+            <p className="section-sub">Use one endpoint or all. Start with identity verification and add sanctions screening as your compliance needs grow. Infrastructure — not a platform lock-in.</p>
           </div>
         </div>
 
         <div className="bento">
-          {/* 1: Rules engine — large */}
-          <div className="bento-cell bc-1">
-            <div className="b-eyebrow">Rules engine</div>
-            <h4>Author compliance logic the way your engineers author code.</h4>
-            <p>Version-controlled rules, shadow mode, gradual rollout. Any analyst can write a rule. Any engineer can review the diff.</p>
-            <div style={{ marginTop: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12.5, lineHeight: 1.8, color: 'var(--text-2)', background: '#080d0c', border: '1px solid var(--line)', borderRadius: 8, padding: '18px 20px' }}>
-              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>01</span>{'  '}rule <span style={{ color: '#c68cef' }}>velocity_structuring</span>{' {'}</div>
-              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>02</span>{'    '}when <span style={{ color: '#7ecf97' }}>txn.amount</span> &lt; 10000 and</div>
-              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>03</span>{'         '}<span style={{ color: '#7ecf97' }}>count(user, &apos;1h&apos;)</span> &gt; 4</div>
-              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>04</span>{'    '}then <span style={{ color: '#d4a24a' }}>flag</span>(<span style={{ color: '#7ecf97' }}>&quot;structuring&quot;</span>, 0.72)</div>
-              <div style={{ color: 'var(--text-3)' }}><span style={{ color: 'var(--text-4)' }}>05</span>{'  '}{'}'}<span style={{ color: 'var(--text-4)', fontStyle: 'italic' }}>{'  // shadow · 3 days · 0.02% fp'}</span></div>
-            </div>
-          </div>
-
-          {/* 2: Global coverage */}
+          {/* 1: Global coverage */}
           <div className="bento-cell bc-2">
             <div className="b-eyebrow">Coverage</div>
-            <h4>212 jurisdictions. 9,200 document types.</h4>
+            <h4>195+ countries. Major document types.</h4>
             <p>Local identity schemes, national registries, and language-aware OCR — maintained by regional compliance teams, not a vendor map.</p>
             <div style={{ position: 'absolute', right: -20, top: 30, display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 4, width: 220, opacity: 0.6 }}>
               {Array.from({ length: 56 }).map((_, i) => (
@@ -438,19 +391,6 @@ function Features() {
             </div>
           </div>
 
-          {/* 6: Adverse media */}
-          <div className="bento-cell bc-6">
-            <div className="b-eyebrow">Adverse media</div>
-            <h4>Multilingual NLP, scored and sourced.</h4>
-            <p>140+ languages. Every hit comes with a citation, a score, and a human-readable rationale.</p>
-          </div>
-
-          {/* 7: Migration */}
-          <div className="bento-cell bc-7">
-            <div className="b-eyebrow">Migrate · 48h</div>
-            <h4>Drop-in for Alloy, Persona, Sardine.</h4>
-            <p>Response shapes match out of the box. Run us in shadow first; flip the feature flag when you&apos;re ready.</p>
-          </div>
         </div>
       </div>
     </section>
@@ -460,10 +400,10 @@ function Features() {
 // ─── Security ─────────────────────────────────────────────────────────────────
 
 const SEC_ITEMS = [
-  { n: "01", t: "Tenant-isolated key management",     d: "Per-tenant KMS with hardware-backed key derivation. Keys never leave the enclave. BYOK supported for regulated environments.", m: "AWS KMS · HSM FIPS 140-3" },
+  { n: "01", t: "API key security",                   d: "SHA-256 hashed API keys, stored securely. Keys are never logged or stored in plaintext.", m: "SHA-256 · HTTPS only" },
   { n: "02", t: "Zero-retention processing paths",    d: "PII is hashed at the edge. Document images are destroyed after decisioning unless explicitly retained under a documented lawful basis.", m: "GDPR Art. 5 · 17 · 32" },
   { n: "03", t: "Immutable, regulator-grade audit",   d: "Every API call is hash-chained and anchored hourly. Tamper evidence is provable to an external auditor — no cooperation from us required.", m: "SOC 2 · CC7 · CC8" },
-  { n: "04", t: "Regionalised data residency",        d: "Pin tenants to EU, US, UK, SG, or AU. Cross-border transfer is opt-in per endpoint, not per account.", m: "SCC · IDTA · Privacy Shield" },
+  { n: "04", t: "Data residency",                     d: "Data processed in eu-west-1 (Ireland). We do not transfer data cross-border without explicit consent.", m: "GDPR Article 5 compliant" },
   { n: "05", t: "Responsible disclosure policy",      d: "We maintain a public security policy and accept responsible disclosure reports. Security architecture documentation available on request.", m: "security@veridianapi.com" },
 ];
 
@@ -563,35 +503,30 @@ function Pricing() {
           <div className="price-card featured">
             <div>
               <div className="price-name">Growth</div>
-              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs scaling onboarding. Adds AML monitoring and business verification.</p>
+              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs scaling onboarding. Higher limits and priority support.</p>
             </div>
             <div className="price-amt">$499<span className="unit">/mo</span></div>
             <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>14-day free trial · no credit card required</div>
             <Link href={SIGNUP_URL} className="btn btn-primary" style={{ justifyContent: 'center' }}>Start free trial <span className="arrow">→</span></Link>
             <ul className="price-features">
               <li>Everything in Starter</li>
-              <li>AML transaction monitoring</li>
-              <li>KYB business verification</li>
-              <li>Operations case queue</li>
-              <li>Audit log exports</li>
-              <li>Priority email support</li>
+              <li>Webhook event streaming</li>
+              <li>Priority support</li>
             </ul>
           </div>
 
           <div className="price-card">
             <div>
               <div className="price-name">Scale</div>
-              <p className="price-desc" style={{ marginTop: 10 }}>For regulated fintechs with complex compliance requirements and higher volumes.</p>
+              <p className="price-desc" style={{ marginTop: 10 }}>For fintechs with higher volume and dedicated support needs.</p>
             </div>
             <div className="price-amt">$999<span className="unit">/mo</span></div>
             <div className="mono" style={{ fontSize: 12, color: 'var(--text-3)' }}>14-day free trial · no credit card required</div>
             <Link href={SIGNUP_URL} className="btn btn-ghost" style={{ justifyContent: 'center' }}>Start free trial <span className="arrow">→</span></Link>
             <ul className="price-features">
               <li>Everything in Growth</li>
-              <li>Custom compliance rules engine</li>
-              <li>GDPR-ready data retention controls</li>
-              <li>Dedicated onboarding support</li>
               <li>Higher API rate limits</li>
+              <li>Dedicated support</li>
               <li>SOC 2 documentation when available</li>
             </ul>
           </div>
