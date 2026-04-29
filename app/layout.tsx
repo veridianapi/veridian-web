@@ -27,6 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}>
+      <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"/>
+      </head>
       <body className="min-h-full flex flex-col" style={{ backgroundColor: '#050a09', color: '#e8f5ef' }}>
         {children}
       </body>
