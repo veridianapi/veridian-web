@@ -194,7 +194,7 @@ function Nav() {
           </div>
           <div className={s.navCta}>
             <a href="https://app.veridianapi.com/login" className={`${s.btn} ${s.btnLink} ${s.navMini}`}>Sign in</a>
-            <a href="https://app.veridianapi.com/signup" className={`${s.btn} ${s.btnPrimary} ${s.navMini}`}>Start free <span className={s.arrow}>→</span></a>
+            <a href="https://app.veridianapi.com/login" className={`${s.btn} ${s.btnPrimary} ${s.navMini}`}>Start free <span className={s.arrow}>→</span></a>
           </div>
         </div>
       </div>
@@ -223,8 +223,8 @@ function Hero() {
         {/* Badge */}
         <div className={`${s.reveal} in`}>
           <div className={s.heroPill}>
-            <span className={s.heroPillTag}>v3.0</span>
-            <span>Terminal-grade KYC for fintech engineers</span>
+            <span className={s.heroPillTag}>Live</span>
+            <span>Developer-first compliance API</span>
             <Icon name="arrow" size={11} />
           </div>
         </div>
@@ -239,10 +239,10 @@ function Hero() {
 
         {/* CTAs */}
         <div className={`${s.heroCtaRow} ${s.reveal} ${s.revealD3} in`}>
-          <a href="https://app.veridianapi.com/signup" className={`${s.btn} ${s.btnPrimary}`}>
+          <a href="https://app.veridianapi.com/login" className={`${s.btn} ${s.btnPrimary}`}>
             Get API key free <span className={s.arrow}>→</span>
           </a>
-          <a href="https://docs.veridianapi.com" className={`${s.btn} ${s.btnGlass}`}>
+          <a href="https://veridianapi.com/docs" className={`${s.btn} ${s.btnGlass}`}>
             <Icon name="terminal" size={14} /> View docs
           </a>
         </div>
@@ -280,8 +280,8 @@ function Hero() {
                   <div>{'  '}<span className={s.key}>&quot;status&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;verified&quot;</span><span className={s.punct}>,</span></div>
                   <div>{'  '}<span className={s.key}>&quot;risk_score&quot;</span><span className={s.punct}>: </span><span className={s.num}>0.08</span><span className={s.punct}>,</span></div>
                   <div>{'  '}<span className={s.key}>&quot;checks&quot;</span><span className={s.punct}>: {'{'}</span></div>
-                  <div>{'    '}<span className={s.key}>&quot;document&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;pass&quot;</span><span className={s.punct}>,</span>{' '}<span className={s.key}>&quot;liveness&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;pass&quot;</span><span className={s.punct}>,</span></div>
-                  <div>{'    '}<span className={s.key}>&quot;sanctions&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;clear&quot;</span><span className={s.punct}>,</span>{' '}<span className={s.key}>&quot;pep&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;clear&quot;</span><span className={s.punct}>,</span>{' '}<span className={s.key}>&quot;adverse_media&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;clear&quot;</span></div>
+                  <div>{'    '}<span className={s.key}>&quot;document&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;pass&quot;</span><span className={s.punct}>,</span></div>
+                  <div>{'    '}<span className={s.key}>&quot;sanctions&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;clear&quot;</span><span className={s.punct}>,</span>{' '}<span className={s.key}>&quot;ofac&quot;</span><span className={s.punct}>: </span><span className={s.ok}>&quot;clear&quot;</span></div>
                   <div>{'  '}<span className={s.punct}>{'}'}</span></div>
                   <div>{'  '}<span className={s.key}>&quot;jurisdiction&quot;</span><span className={s.punct}>: </span><span className={s.str}>&quot;DE&quot;</span><span className={s.punct}>,</span>{' '}<span className={s.key}>&quot;latency_ms&quot;</span><span className={s.punct}>: </span><span className={s.num}>47</span></div>
                   <div><span className={s.punct}>{'}'}</span><span className={s.cursor}/></div>
@@ -289,7 +289,7 @@ function Hero() {
               )}
             </div>
             <div className={s.heroTermFoot}>
-              <span><span className={s.liveDot}/>connected · wss://api.veridianapi.com/v3</span>
+              <span><span className={s.liveDot}/>connected · https://api.veridianapi.com/v1</span>
               <span>HTTP 200 · req_2K3p9mLqV · 47ms</span>
             </div>
           </div>
@@ -342,22 +342,20 @@ function Trust() {
 interface StreamRow { t: string; ev: string; geo: string; risk: string; st: 'pass'|'block'|'review'; lbl: string; fresh?: boolean }
 
 const SEED_ROWS: StreamRow[] = [
-  { t:'14:32:08', ev:'identity.verified',    geo:'DE · Berlin',    risk:'0.08', st:'pass',   lbl:'PASS'   },
-  { t:'14:32:06', ev:'transaction.screened', geo:'US · NY',        risk:'0.12', st:'pass',   lbl:'PASS'   },
-  { t:'14:32:04', ev:'sanction.hit.ofac',    geo:'CY · Limassol',  risk:'0.94', st:'block',  lbl:'BLOCK'  },
-  { t:'14:32:01', ev:'kyb.ubo.verified',     geo:'GB · London',    risk:'0.21', st:'pass',   lbl:'PASS'   },
-  { t:'14:31:58', ev:'pep.match.review',     geo:'AE · Dubai',     risk:'0.61', st:'review', lbl:'REVIEW' },
-  { t:'14:31:55', ev:'transaction.screened', geo:'SG · Central',   risk:'0.09', st:'pass',   lbl:'PASS'   },
-  { t:'14:31:52', ev:'identity.verified',    geo:'FR · Paris',     risk:'0.14', st:'pass',   lbl:'PASS'   },
+  { t:'14:32:08', ev:'identity.verified',    geo:'DE', risk:'0.08', st:'pass',   lbl:'PASS'   },
+  { t:'14:32:06', ev:'transaction.screened', geo:'US', risk:'0.12', st:'pass',   lbl:'PASS'   },
+  { t:'14:32:04', ev:'sanction.hit.ofac',    geo:'CY', risk:'0.94', st:'block',  lbl:'BLOCK'  },
+  { t:'14:32:01', ev:'kyb.ubo.verified',     geo:'GB', risk:'0.21', st:'pass',   lbl:'PASS'   },
+  { t:'14:31:58', ev:'sanctions.review',     geo:'AE', risk:'0.61', st:'review', lbl:'REVIEW' },
+  { t:'14:31:55', ev:'transaction.screened', geo:'SG', risk:'0.09', st:'pass',   lbl:'PASS'   },
+  { t:'14:31:52', ev:'identity.verified',    geo:'FR', risk:'0.14', st:'pass',   lbl:'PASS'   },
 ];
 
 function Stream() {
   const ref = useReveal();
   const [rows, setRows] = useState<StreamRow[]>(SEED_ROWS);
-  const [count, setCount] = useState(184_204_108);
-  const EVENTS = ['identity.verified','transaction.screened','kyb.ubo.verified','kyc.document.ocr','pep.screening','velocity.check'];
-  const GEOS   = ['DE · Munich','US · SF','JP · Tokyo','SG · Marina','NL · Amsterdam','CA · Toronto','BR · Rio','IN · Mumbai'];
-  const bars   = [6,8,5,9,12,7,10,14,8,6,9,11,7,5,8,10,13,9,6,8,11,7,9,12,10,8,11,9,7,12];
+  const EVENTS = ['identity.verified','transaction.screened','kyb.ubo.verified','kyc.document.ocr','sanctions.screening','velocity.check'];
+  const GEOS   = ['DE','US','GB','SG','AE','CY','FR','NL'];
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -377,7 +375,6 @@ function Stream() {
         fresh: true,
       };
       setRows(prev => [newRow, ...prev.slice(0, 6)]);
-      setCount(c => c + Math.floor(20 + Math.random()*40));
     }, 1800);
     return () => clearInterval(id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -412,7 +409,7 @@ function Stream() {
                 <span className={s.termTitle}><span className={s.termTitleBold}>veridian tail</span> — events.live</span>
               </div>
               <div className={s.termMeta}>
-                <span className={s.liveDot}/><span>streaming · 2.1k rps</span>
+                <span className={s.liveDot}/><span>streaming · live</span>
               </div>
             </div>
             <div className={s.streamRows}>
@@ -430,41 +427,10 @@ function Stream() {
               ))}
             </div>
             <div className={s.heroTermFoot}>
-              <span>delivered · {count.toLocaleString()}</span>
               <span>0 dropped · lag 3ms</span>
             </div>
           </div>
 
-          {/* Metric cards */}
-          <div className={s.streamAside}>
-            <div className={`${s.glass} ${s.streamCard}`}>
-              <h5>Events / second</h5>
-              <div className={s.metricBig}>2,143<span className={s.metricUnit}>rps</span></div>
-              <div className={s.metricSub}>↑ 12% vs 1h ago</div>
-              <svg className={s.spark} viewBox="0 0 200 52" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0" stopColor="#2dc590" stopOpacity="0.4"/>
-                    <stop offset="1" stopColor="#2dc590" stopOpacity="0"/>
-                  </linearGradient>
-                </defs>
-                <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8 L200,52 L0,52 Z" fill="url(#sg)"/>
-                <path d="M0,40 L15,34 L30,38 L45,28 L60,30 L75,22 L90,26 L105,18 L120,22 L135,14 L150,18 L165,10 L180,14 L200,8" stroke="#2dc590" strokeWidth="1.5" fill="none"/>
-              </svg>
-            </div>
-            <div className={`${s.glass} ${s.streamCard}`}>
-              <h5>P50 / P99 latency</h5>
-              <div className={s.metricBig}>47<span className={s.metricUnit}>/ 112 ms</span></div>
-              <div className={s.metricSub}>SLO: 200ms · 99.97% under</div>
-            </div>
-            <div className={`${s.glass} ${s.streamCard}`}>
-              <h5>Queue depth</h5>
-              <div className={s.metricBig}>7<span className={s.metricUnit}>cases open</span></div>
-              <div className={s.bars}>
-                {bars.map((h, i) => <div key={i} className={s.bar} style={{ height: h*2, opacity: 0.3+(h/20) }}/>)}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -477,10 +443,10 @@ function Stream() {
 function Capabilities() {
   const ref = useReveal();
   const cards = [
-    { icon:'globe',   name:'Coverage',    desc:'Local identity schemes, national registries, and language-aware OCR — maintained by regional compliance teams.', val:'212', unit:'jurisdictions', label:'Live in 9,200+ document types' },
-    { icon:'bolt',    name:'Performance', desc:'P50 of 47ms. P99 under 112ms. Decisions fast enough to inline in checkout, not bolt onto onboarding.',         val:'47',  unit:'ms · p50',      label:'Across all regions'          },
-    { icon:'webhook', name:'Webhooks',    desc:'Exactly-once delivery, signed payloads, replay log, ordered per-account. Production-grade out of the box.',        val:'99.99%',unit:'delivered',   label:'30 day rolling'              },
-    { icon:'shield',  name:'Audit',       desc:'Every decision is a cryptographic artifact. Immutable evidence chains, exportable in regulator-friendly formats.', val:'0',  unit:'data loss events',label:'Since 2021'                  },
+    { icon:'globe',   name:'Coverage',    desc:'Local identity schemes, national registries, and language-aware OCR — maintained by regional compliance teams.', val:'195+', unit:'countries',        label:'Major document types'        },
+    { icon:'bolt',    name:'Performance', desc:'Fast API responses designed to inline in your checkout flow, not bolt onto onboarding.',                          val:'Fast', unit:'API responses',    label:'Across all regions'          },
+    { icon:'webhook', name:'Webhooks',    desc:'Signed payloads, replay log, ordered per-account. Production-grade out of the box.',                              val:'Reliable', unit:'delivery',    label:'Signed & ordered'            },
+    { icon:'shield',  name:'Audit',       desc:'Every decision is logged and exportable in regulator-friendly formats.',                                           val:'April', unit:'2026',           label:'Veridian launched'           },
   ];
 
   return (
@@ -532,12 +498,12 @@ function ApiShowcase() {
 
   const samples: Record<LangKey, CodeLine[]> = {
     node: [
-      {t:'k',v:'import'},{t:'p',v:' { Veridian } '},{t:'k',v:'from'},{t:'s',v:" 'veridian'"},{t:'p',v:';'},'\n\n',
+      {t:'k',v:'import'},{t:'p',v:' { Veridian } '},{t:'k',v:'from'},{t:'s',v:" '@veridian/sdk'"},{t:'p',v:';'},'\n\n',
       {t:'k',v:'const'},{t:'f',v:' veridian '},{t:'p',v:'= '},{t:'k',v:'new'},{t:'f',v:' Veridian'},{t:'p',v:'({ apiKey: process.env.VERIDIAN_KEY });'},'\n\n',
-      {t:'k',v:'const'},{t:'f',v:' result '},{t:'p',v:'= '},{t:'k',v:'await'},{t:'f',v:' veridian.verify'},{t:'p',v:'({'},'\n',
+      {t:'k',v:'const'},{t:'f',v:' result '},{t:'p',v:'= '},{t:'k',v:'await'},{t:'f',v:' veridian.verifications.create'},{t:'p',v:'({'},'\n',
       '  ',{t:'key',v:'document'},{t:'p',v:': '},{t:'s',v:"'DE_passport'"},{t:'p',v:','},'\n',
       '  ',{t:'key',v:'image'},{t:'p',v:': '},{t:'f',v:'fs.readFileSync'},{t:'p',v:'('},{t:'s',v:"'./id.jpg'"},{t:'p',v:'),'},'\n',
-      '  ',{t:'key',v:'checks'},{t:'p',v:': ['},{t:'s',v:"'liveness'"},{t:'p',v:', '},{t:'s',v:"'sanctions'"},{t:'p',v:', '},{t:'s',v:"'pep'"},{t:'p',v:']'},'\n',
+      '  ',{t:'key',v:'checks'},{t:'p',v:': ['},{t:'s',v:"'sanctions'"},{t:'p',v:', '},{t:'s',v:"'ofac'"},{t:'p',v:']'},'\n',
       {t:'p',v:'});'},'\n\n',
       {t:'k',v:'if '},{t:'p',v:'(result.status '},{t:'p',v:'=== '},{t:'s',v:"'verified'"},{t:'p',v:') {'},'\n',
       '  ',{t:'f',v:'console.log'},{t:'p',v:'('},{t:'s',v:'`✓ ${result.id} (${result.latency_ms}ms)`'},{t:'p',v:');'},'\n',
@@ -546,10 +512,10 @@ function ApiShowcase() {
     python: [
       {t:'k',v:'from'},{t:'f',v:' veridian '},{t:'k',v:'import'},{t:'f',v:' Veridian'},'\n\n',
       {t:'f',v:'client '},{t:'p',v:'= '},{t:'f',v:'Veridian'},{t:'p',v:"(api_key=os.environ["},{t:'s',v:"'VERIDIAN_KEY'"},{t:'p',v:'])'},'\n\n',
-      {t:'f',v:'result '},{t:'p',v:'= client.'},{t:'f',v:'verify'},{t:'p',v:'('},'\n',
+      {t:'f',v:'result '},{t:'p',v:'= client.verifications.'},{t:'f',v:'create'},{t:'p',v:'('},'\n',
       "    document=",{t:'s',v:"'DE_passport'"},{t:'p',v:','},'\n',
       "    image=",{t:'k',v:'open'},{t:'p',v:'('},{t:'s',v:"'./id.jpg'"},{t:'p',v:', '},{t:'s',v:"'rb'"},{t:'p',v:'),'},'\n',
-      "    checks=[",{t:'s',v:"'liveness'"},{t:'p',v:', '},{t:'s',v:"'sanctions'"},{t:'p',v:']'},'\n',
+      "    checks=[",{t:'s',v:"'sanctions'"},{t:'p',v:', '},{t:'s',v:"'ofac'"},{t:'p',v:']'},'\n',
       {t:'p',v:')'},'\n\n',
       {t:'k',v:'if'},{t:'p',v:' result.status '},{t:'p',v:'== '},{t:'s',v:"'verified'"},{t:'p',v:':'},'\n',
       "    ",{t:'f',v:'print'},{t:'p',v:'('},{t:'s',v:"f'✓ {result.id} ({result.latency_ms}ms)'"},{t:'p',v:')'},
@@ -557,20 +523,20 @@ function ApiShowcase() {
     go: [
       {t:'k',v:'import'},{t:'p',v:' '},{t:'s',v:'"github.com/veridian/veridian-go"'},'\n\n',
       {t:'f',v:'client '},{t:'p',v:':= veridian.'},{t:'f',v:'New'},{t:'p',v:'(os.'},{t:'f',v:'Getenv'},{t:'p',v:'('},{t:'s',v:'"VERIDIAN_KEY"'},{t:'p',v:'))'},'\n\n',
-      {t:'f',v:'result, err '},{t:'p',v:':= client.'},{t:'f',v:'Verify'},{t:'p',v:'(ctx, &veridian.VerifyParams{'},'\n',
+      {t:'f',v:'result, err '},{t:'p',v:':= client.Verifications.'},{t:'f',v:'Create'},{t:'p',v:'(ctx, &veridian.VerificationParams{'},'\n',
       '    Document: ',{t:'s',v:'"DE_passport"'},{t:'p',v:','},'\n',
       '    Image:    ',{t:'f',v:'loadImage'},{t:'p',v:'('},{t:'s',v:'"./id.jpg"'},{t:'p',v:'),'},'\n',
-      '    Checks:   []',{t:'k',v:'string'},{t:'p',v:'{'},{t:'s',v:'"liveness"'},{t:'p',v:', '},{t:'s',v:'"sanctions"'},{t:'p',v:'},'},'\n',
+      '    Checks:   []',{t:'k',v:'string'},{t:'p',v:'{'},{t:'s',v:'"sanctions"'},{t:'p',v:', '},{t:'s',v:'"ofac"'},{t:'p',v:'},'},'\n',
       {t:'p',v:'})'},
     ],
     curl: [
-      {t:'p',v:'curl https://api.veridianapi.com/v1/verify \\'},'\n',
+      {t:'p',v:'curl https://api.veridianapi.com/v1/verifications \\'},'\n',
       '  -H ',{t:'s',v:"'Authorization: Bearer sk_live_•••'"},{t:'p',v:' \\'},'\n',
       '  -H ',{t:'s',v:"'Content-Type: application/json'"},{t:'p',v:' \\'},'\n',
       '  -d ',{t:'s',v:"'{"},'\n',
       {t:'s',v:'    "document": "DE_passport",'},'\n',
       {t:'s',v:'    "image": "@id.jpg",'},'\n',
-      {t:'s',v:'    "checks": ["liveness","sanctions","pep"]'},'\n',
+      {t:'s',v:'    "checks": ["sanctions","ofac"]'},'\n',
       {t:'s',v:"  }'"},
     ],
   };
@@ -621,7 +587,7 @@ function ApiShowcase() {
               </button>
             ))}
             <div className={s.apiTabMeta}>
-              <span><span className={s.liveDot}/>POST /v1/verify</span>
+              <span><span className={s.liveDot}/>POST /v1/verifications</span>
               <span>·</span>
               <span>47ms · 200 OK</span>
             </div>
@@ -653,9 +619,8 @@ function ApiShowcase() {
                 </div>
               ))}
               <div>{'    '}<span style={{ color:'#b58cf0' }}>&quot;document&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-2)' }}>&quot;pass&quot;</span><span className={s.punct}>,</span></div>
-              <div>{'    '}<span style={{ color:'#b58cf0' }}>&quot;liveness&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-2)' }}>&quot;pass&quot;</span><span className={s.punct}>,</span></div>
               <div>{'    '}<span style={{ color:'#b58cf0' }}>&quot;sanctions&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-2)' }}>&quot;clear&quot;</span><span className={s.punct}>,</span></div>
-              <div>{'    '}<span style={{ color:'#b58cf0' }}>&quot;pep&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-2)' }}>&quot;clear&quot;</span></div>
+              <div>{'    '}<span style={{ color:'#b58cf0' }}>&quot;ofac&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-2)' }}>&quot;clear&quot;</span></div>
               <div>{'  '}<span className={s.punct}>{'}'}</span><span className={s.punct}>,</span></div>
               <div>{'  '}<span style={{ color:'#b58cf0' }}>&quot;latency_ms&quot;</span><span className={s.punct}>: </span><span style={{ color:'#d4a24a' }}>47</span><span className={s.punct}>,</span></div>
               <div>{'  '}<span style={{ color:'#b58cf0' }}>&quot;jurisdiction&quot;</span><span className={s.punct}>: </span><span style={{ color:'var(--vd-teal-3)' }}>&quot;DE&quot;</span></div>
@@ -674,11 +639,11 @@ function ApiShowcase() {
 function Security() {
   const ref = useReveal();
   const flow = [
-    { num:'01', label:'Client signs request · ed25519', meta:'TLS 1.3',       accent:false },
-    { num:'02', label:'Edge auth · key rotation every 90d', meta:'Cloudflare', accent:false },
-    { num:'03', label:'Verify · per-tenant compute pool', meta:'veridian-core',accent:true  },
-    { num:'04', label:'Decision logged · cryptographic chain', meta:'audit.v3',accent:false },
-    { num:'05', label:'Encrypted at rest · per-region keys', meta:'AES-256-GCM',accent:false},
+    { num:'01', label:'Client authenticates · Bearer key', meta:'TLS 1.3',       accent:false },
+    { num:'02', label:'Request verified · HTTPS only',     meta:'veridian-edge',  accent:false },
+    { num:'03', label:'Verify · sanctions + identity',     meta:'veridian-core',  accent:true  },
+    { num:'04', label:'Decision logged · audit trail',     meta:'audit.v1',       accent:false },
+    { num:'05', label:'Encrypted at rest',                 meta:'AES-256-GCM',    accent:false },
   ];
   const certs = [
     { name:'TLS 1.3 in transit',    desc:'All API traffic encrypted end-to-end',       stat:'Default'   },
@@ -747,39 +712,34 @@ function Pricing() {
       name:'Starter', price: 199, featured:false,
       desc:'Everything you need to ship KYC into your first product surface.',
       features:[
-        {t:'10,000 verifications / mo',       on:true },
+        {t:'500 verifications / mo',           on:true },
         {t:'Identity + OFAC screening',        on:true },
         {t:'REST API + hosted KYC flow',       on:true },
         {t:'Email support · 24h SLA',          on:true },
         {t:'Webhooks · standard delivery',     on:true },
-        {t:'Custom rules engine',              on:false},
-        {t:'AML risk scoring',                 on:false},
       ],
     },
     {
       name:'Growth', price: 499, featured:true,
       desc:'For teams scaling past their first compliance hire — predictable spend, every primitive unlocked.',
       features:[
-        {t:'100,000 verifications / mo',       on:true },
-        {t:'Identity + OFAC + PEP screening',  on:true },
+        {t:'2,000 verifications / mo',         on:true },
+        {t:'Identity + OFAC screening',        on:true },
         {t:'REST API + hosted KYC flow',       on:true },
         {t:'Priority support · 2h SLA',        on:true },
-        {t:'Webhooks · exactly-once',          on:true },
-        {t:'Custom rules engine',              on:true },
-        {t:'AML risk scoring',                 on:true },
+        {t:'Webhooks · standard delivery',     on:true },
       ],
     },
     {
       name:'Scale', price: 999, featured:false,
       desc:'For platforms processing high verification volume across multiple jurisdictions.',
       features:[
-        {t:'Unlimited verifications',          on:true },
-        {t:'All checks + adverse media',       on:true },
+        {t:'10,000 verifications / mo',        on:true },
+        {t:'Identity + OFAC screening',        on:true },
         {t:'REST API + hosted KYC flow',       on:true },
-        {t:'Dedicated support · 30m SLA',      on:true },
-        {t:'Webhooks · exactly-once',          on:true },
-        {t:'Custom rules + ML scoring',        on:true },
-        {t:'Audit logs + on-call escalation',  on:true },
+        {t:'Priority support · 2h SLA',        on:true },
+        {t:'Webhooks · standard delivery',     on:true },
+        {t:'Audit logs exportable as JSON',    on:true },
       ],
     },
   ];
@@ -822,7 +782,7 @@ function Pricing() {
               </div>
               <p className={s.priceDesc}>{t.desc}</p>
               <a
-                href="https://app.veridianapi.com/signup"
+                href="https://app.veridianapi.com/login"
                 className={`${s.btn} ${t.featured ? s.btnPrimary : s.btnGlass}`}
                 style={{ marginTop: 8, justifyContent:'center' }}
               >
@@ -911,7 +871,7 @@ function FinalCta() {
         </h2>
         <p className={s.fctaP}>Production keys in 90 seconds. No sales call required. No annual contract until you outgrow the trial.</p>
         <div className={s.fctaRow}>
-          <a href="https://app.veridianapi.com/signup" className={`${s.btn} ${s.btnPrimary}`}>
+          <a href="https://app.veridianapi.com/login" className={`${s.btn} ${s.btnPrimary}`}>
             Start free trial <span className={s.arrow}>→</span>
           </a>
           <a href="mailto:hello@veridianapi.com" className={`${s.btn} ${s.btnGlass}`}>
@@ -928,10 +888,10 @@ function FinalCta() {
 ──────────────────────────────────────────────────────────────────────── */
 function Footer() {
   const cols = [
-    { title:'Product',    links:[['Identity','#'],['Sanctions','#'],['Transactions','#'],['Console','https://app.veridianapi.com']] },
-    { title:'Developers', links:[['Documentation','https://docs.veridianapi.com'],['API reference','https://docs.veridianapi.com/api'],['Changelog','#'],['Status','#']] },
-    { title:'Company',    links:[['About','#'],['Careers','#'],['Customers','#'],['Press','#']] },
-    { title:'Legal',      links:[['Privacy','#'],['Terms','#'],['DPA','#'],['Trust centre','#']] },
+    { title:'Product',   links:[['Identity','#'],['Sanctions','#']] },
+    { title:'Resources', links:[['Documentation','https://veridianapi.com/docs']] },
+    { title:'Company',   links:[['Contact','mailto:hello@veridianapi.com']] },
+    { title:'Legal',     links:[['Terms','#'],['Privacy','#']] },
   ];
 
   return (
