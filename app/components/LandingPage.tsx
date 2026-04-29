@@ -207,6 +207,7 @@ function Nav() {
 ──────────────────────────────────────────────────────────────────────── */
 function Hero() {
   const heroRef = useReveal(0.1) as React.RefObject<HTMLElement>;
+  const termRef = useReveal(0.1) as React.RefObject<HTMLElement>;
   const cmdLines = [
     "$ curl https://api.veridianapi.com/v1/verify \\",
     "    -H 'Authorization: Bearer sk_live_•••' \\",
@@ -247,8 +248,8 @@ function Hero() {
         </div>
 
         {/* Terminal */}
-        <div className={`${s.heroTermWrap} ${s.revealScale}`} ref={cmdEl as React.RefObject<HTMLDivElement>}>
-          <div className={`${s.glass} ${s.term}`}>
+        <div className={`${s.heroTermWrap} ${s.revealScale}`} ref={termRef as React.RefObject<HTMLDivElement>}>
+          <div className={`${s.glass} ${s.term}`} ref={cmdEl as React.RefObject<HTMLDivElement>}>
             <div className={s.termHead}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div className={s.termDots}><span/><span/><span/></div>

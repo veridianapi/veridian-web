@@ -163,7 +163,7 @@
   transition: opacity 0.9s cubic-bezier(0.16, 0.84, 0.32, 1),
               transform 0.9s cubic-bezier(0.16, 0.84, 0.32, 1);
 }
-.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal:global(.in) { opacity: 1; transform: translateY(0); }
 .revealD1 { transition-delay: 0.06s; }
 .revealD2 { transition-delay: 0.14s; }
 .revealD3 { transition-delay: 0.22s; }
@@ -174,7 +174,7 @@
   transition: opacity 1s cubic-bezier(0.16, 0.84, 0.32, 1),
               transform 1.1s cubic-bezier(0.16, 0.84, 0.32, 1);
 }
-.revealScale.in { opacity: 1; transform: translateY(0) scale(1); }
+.revealScale:global(.in) { opacity: 1; transform: translateY(0) scale(1); }
 
 /* ── Nav ─────────────────────────────────────────────────────────────── */
 .nav {
