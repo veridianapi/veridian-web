@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
-const BASE_URL = 'https://api-production-b0c5.up.railway.app';
+const BASE_URL = 'https://api.veridianapi.com';
 const DASHBOARD_LOGIN = 'https://app.veridianapi.com/login';
 
 // ─── Sidebar data ─────────────────────────────────────────────────────────────
@@ -272,12 +272,11 @@ function SectionIntroduction() {
       <H3>Key features</H3>
       <ul className="space-y-2 mb-6 text-sm" style={{ color: 'var(--text-muted)' }}>
         {[
-          'KYC identity verification — document + liveness in under 2 seconds',
-          'Sanctions screening — OFAC, UN, EU, and 50+ global watchlists',
-          'AML compliance — adverse media, PEP screening',
-          'KYB business verification — UBOs, corporate structures',
+          'KYC identity verification — document check and face matching',
+          'Sanctions screening — OFAC database, 18,698 records',
           'Transparent pricing — no enterprise contracts',
           'Webhooks for async result delivery',
+          '14-day free trial included',
         ].map((item) => (
           <li key={item} className="flex items-start gap-2.5">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 2, color: 'var(--brand)' }}>
@@ -336,7 +335,7 @@ function SectionQuickstart() {
           Veridian dashboard
         </a>
         . Your API key is available immediately — no approval process, no sales call.
-        Your first 50 verifications are free.
+        14-day free trial, no credit card required.
       </P>
 
       <H3>Step 2 — Send your first verification</H3>
@@ -353,15 +352,13 @@ function SectionQuickstart() {
   -d '{
     "document_type": "passport",
     "document_front": "<base64_image>",
-    "selfie": "<base64_image>",
-    "reference_id": "user_abc123"
+    "selfie": "<base64_image>"
   }'
 
 # Response:
 # {
 #   "id": "ver_a1b2c3d4",
 #   "status": "pending",
-#   "reference_id": "user_abc123",
 #   "created_at": "2026-04-08T12:00:00Z"
 # }`}
       />
@@ -400,18 +397,17 @@ function SectionPostVerifications() {
       <SectionHeading id="post-verifications" method="POST" path="/v1/verifications" />
       <P>
         Creates a new KYC identity verification. Submit a document image and selfie;
-        Veridian handles document classification, liveness detection, and sanctions
+        Veridian handles document classification, face matching, and sanctions
         screening automatically. Returns a verification object with <InlineCode>status: &quot;pending&quot;</InlineCode>.
       </P>
 
       <H3>Request body</H3>
       <ParamTable
         params={[
-          { name: 'document_type', type: 'string', required: true, description: '"passport" | "drivers_license" | "national_id" | "residence_permit"' },
+          { name: 'document_type', type: 'string', required: true, description: '"passport" | "driving_licence" | "national_id" | "residence_permit"' },
           { name: 'document_front', type: 'string', required: true, description: 'Base64-encoded image of the document front. JPEG or PNG, max 10MB.' },
-          { name: 'document_back', type: 'string', required: false, description: 'Base64-encoded image of the document back. Required for drivers_license.' },
-          { name: 'selfie', type: 'string', required: true, description: 'Base64-encoded selfie photo for liveness detection.' },
-          { name: 'reference_id', type: 'string', required: false, description: 'Your internal user or session ID. Returned in all responses and webhook events.' },
+          { name: 'document_back', type: 'string', required: false, description: 'Base64-encoded image of the document back. Required for driving_licence.' },
+          { name: 'selfie', type: 'string', required: true, description: 'Base64-encoded selfie photo for face matching.' },
         ]}
       />
       <P><span style={{ color: '#f97316' }}>*</span> <span style={{ fontSize: '0.75rem' }}>Required field</span></P>
@@ -427,8 +423,7 @@ function SectionPostVerifications() {
   -d '{
     "document_type": "passport",
     "document_front": "<base64_image>",
-    "selfie": "<base64_image>",
-    "reference_id": "user_abc123"
+    "selfie": "<base64_image>"
   }'`,
           },
           {
@@ -441,7 +436,6 @@ const verification = await veridian.createVerification({
   documentType: 'passport',
   documentFront: imageBase64,
   selfie: selfieBase64,
-  referenceId: 'user_abc123',
 })
 
 console.log(verification.id)    // "ver_a1b2c3d4"
@@ -457,7 +451,6 @@ verification = client.create_verification(
     document_type="passport",
     document_front=image_base64,
     selfie=selfie_base64,
-    reference_id="user_abc123"
 )
 
 print(verification.id)     # "ver_a1b2c3d4"
@@ -472,7 +465,6 @@ print(verification.status) # "pending"`,
         code={`{
   "id": "ver_a1b2c3d4",
   "status": "pending",
-  "reference_id": "user_abc123",
   "document_type": "passport",
   "created_at": "2026-04-08T12:00:00Z"
 }`}
@@ -520,7 +512,6 @@ function SectionGetVerification() {
         code={`{
   "id": "ver_a1b2c3d4",
   "status": "approved",
-  "reference_id": "user_abc123",
   "document_type": "passport",
   "risk_score": 12,
   "sanctions_hit": false,
@@ -539,7 +530,7 @@ function SectionGetVerification() {
         params={[
           { name: 'pending', type: 'string', required: false, description: 'Verification is being processed. Poll again or wait for a webhook.' },
           { name: 'approved', type: 'string', required: false, description: 'Identity verified. No sanctions hits. Safe to onboard.' },
-          { name: 'rejected', type: 'string', required: false, description: 'Identity could not be verified. Document unreadable, liveness failed, or document expired.' },
+          { name: 'rejected', type: 'string', required: false, description: 'Identity could not be verified. Document unreadable, face match failed, or document expired.' },
           { name: 'review', type: 'string', required: false, description: 'Requires manual review. Veridian will notify you via webhook when complete.' },
           { name: 'expired', type: 'string', required: false, description: 'Verification was not completed within 30 minutes and has expired.' },
         ]}
@@ -554,7 +545,7 @@ function SectionPostSanctions() {
     <div>
       <SectionHeading id="post-sanctions" method="POST" path="/v1/sanctions/screen" />
       <P>
-        Screens a person against OFAC, UN, EU, and 50+ global watchlists.
+        Screens a person against the OFAC SDN database (18,698 records).
         Returns a match list with fuzzy match scores. All KYC verifications
         automatically include a sanctions check — this endpoint is for
         standalone screening without document verification.
@@ -708,7 +699,6 @@ const sandbox = new VeridianClient(process.env.VERIDIAN_TEST_KEY!)`}
   documentType: 'passport',
   documentFront: documentBase64,
   selfie: selfieBase64,
-  referenceId: userId,
 })
 
 // Poll for result
@@ -792,7 +782,6 @@ async_client = AsyncVeridianClient(os.environ["VERIDIAN_API_KEY"])`}
     document_type="passport",
     document_front=document_base64,
     selfie=selfie_base64,
-    reference_id=user_id,
 )
 
 # Poll for result
@@ -854,7 +843,6 @@ function SectionWebhooks() {
   "data": {
     "verification_id": "ver_a1b2c3d4",
     "status": "approved",
-    "reference_id": "user_abc123",
     "risk_score": 12,
     "sanctions_hit": false
   }
@@ -995,7 +983,7 @@ function SectionHostedFlow() {
       <H3>Step 3 — User completes verification</H3>
       <P>
         The user opens the link on any device, uploads their document and selfie,
-        and completes liveness detection. Veridian handles camera access, image
+        and completes face matching. Veridian handles camera access, image
         quality checks, and all UI — nothing to build or maintain.
       </P>
 
@@ -1156,7 +1144,7 @@ function SectionErrorHandling() {
           { name: 'invalid_api_key', type: '401', required: false, description: 'API key is missing, malformed, or has been revoked.' },
           { name: 'insufficient_funds', type: '402', required: false, description: 'Account has exhausted its monthly verification quota.' },
           { name: 'invalid_document', type: '422', required: false, description: 'Document image could not be read or classified.' },
-          { name: 'liveness_failed', type: '422', required: false, description: 'Selfie liveness check failed — possible spoof attempt.' },
+          { name: 'face_match_failed', type: '422', required: false, description: 'Selfie face matching failed — document face does not match selfie.' },
           { name: 'document_expired', type: '422', required: false, description: 'The submitted document has passed its expiry date.' },
           { name: 'unsupported_document', type: '422', required: false, description: 'Document type is not supported for the detected country.' },
           { name: 'rate_limit_exceeded', type: '429', required: false, description: 'Too many requests. Back off and retry after the Retry-After header value.' },

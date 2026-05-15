@@ -23,7 +23,7 @@ export default function PrivacyPage() {
   return (
     <LegalLayout title="Privacy Policy" lastUpdated="April 6, 2026">
       <p>
-        Veridian Technologies, Inc. (&ldquo;Veridian,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
+        Veridian (&ldquo;Veridian,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
         committed to protecting the privacy of our customers and the individuals
         whose data is processed through our platform. This Privacy Policy
         explains how we collect, use, disclose, and safeguard information in
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
 
       <Section title="1. Scope">
         <p>
-          This policy applies to (a) visitors to our website at veridian.io,
+          This policy applies to (a) visitors to our website at veridianapi.com,
           (b) customers who access our API and platform services, and (c)
           individuals whose personal data is submitted by our customers for
           identity verification or compliance purposes (&ldquo;end users&rdquo;).
@@ -56,9 +56,10 @@ export default function PrivacyPage() {
           monitoring.</p>
         <p><strong style={{ color: '#f0f4f3' }}>End-user verification data:</strong> When customers submit individuals&apos;
           data for KYC or sanctions screening, this may include names, dates of
-          birth, government ID images, addresses, and biometric liveness data.
+          birth, government ID images, and selfie photos.
           This data is processed strictly to deliver the verification result and
-          is not used for any other purpose.</p>
+          is not used for any other purpose. Document images and selfies are
+          deleted after verification completes.</p>
         <p><strong style={{ color: '#f0f4f3' }}>Website analytics:</strong> We collect anonymized usage data on our
           marketing website using privacy-preserving analytics tools. We do not
           use tracking cookies that require GDPR consent banners.</p>
@@ -96,7 +97,7 @@ export default function PrivacyPage() {
           We share personal data only in the following circumstances:
         </p>
         <ul className="list-disc list-inside space-y-1" style={{ color: '#a3b3ae' }}>
-          <li><strong style={{ color: '#f0f4f3' }}>Sub-processors:</strong> We use vetted third-party service providers for cloud infrastructure, document verification, biometric processing, and sanctions database access. A current list of sub-processors is available at veridian.io/sub-processors.</li>
+          <li><strong style={{ color: '#f0f4f3' }}>Sub-processors:</strong> We use vetted third-party service providers for cloud infrastructure (AWS eu-west-1, Ireland), payment processing, and sanctions database access. Contact us for a current list of sub-processors.</li>
           <li><strong style={{ color: '#f0f4f3' }}>Legal requirements:</strong> When required by applicable law, court order, or government authority</li>
           <li><strong style={{ color: '#f0f4f3' }}>Business transfers:</strong> In connection with a merger, acquisition, or sale of assets, with appropriate data protection obligations</li>
           <li><strong style={{ color: '#f0f4f3' }}>With your consent:</strong> For any other purpose with your explicit authorization</li>
@@ -106,36 +107,33 @@ export default function PrivacyPage() {
       <Section title="6. Data Retention">
         <p>
           We retain account and billing information for the duration of your
-          subscription plus 7 years for tax and financial record-keeping
-          purposes. API logs are retained for 90 days by default; customers on
-          paid plans may configure extended retention.
+          subscription and as required for tax and financial record-keeping.
+          API logs are retained for 90 days.
         </p>
         <p>
-          End-user verification data (identity documents, biometric templates,
-          and results) is retained for 12 months from the date of verification
-          by default, after which it is securely deleted. Customers may request
-          earlier deletion via the API or dashboard.
+          End-user document images and selfies are deleted after verification
+          completes. Verification results (status, risk score, extracted identity
+          fields) are retained for the duration of your subscription to allow
+          you to retrieve them via the API. You may request deletion at any time
+          via hello@veridianapi.com.
         </p>
       </Section>
 
       <Section title="7. International Data Transfers">
         <p>
-          Veridian is headquartered in the United States. If you are located
-          outside the US, your data may be transferred to and processed in the
-          US and other countries. For transfers from the EEA or UK, we rely on
-          Standard Contractual Clauses (SCCs) approved by the European Commission
-          and the UK ICO, incorporated by reference into our DPA.
+          Veridian&apos;s API infrastructure runs on AWS eu-west-1 (Ireland). Data
+          submitted through the API is stored and processed within the EU. For
+          customers in the EEA or UK, we are able to provide a Data Processing
+          Agreement (DPA) on request — contact hello@veridianapi.com.
         </p>
       </Section>
 
       <Section title="8. Security">
         <p>
-          We implement administrative, technical, and physical safeguards
-          appropriate to the sensitivity of the data we process. These include
-          AES-256 encryption at rest, TLS 1.3 in transit, SOC 2 Type II audit
-          in progress, role-based access controls, and automated vulnerability
-          scanning. We follow a responsible disclosure policy at
-          veridian.io/security.
+          We implement administrative and technical safeguards appropriate to
+          the sensitivity of the data we process. These include AES-256
+          encryption at rest, TLS 1.3 in transit, and role-based access
+          controls. To report a security concern, email hello@veridianapi.com.
         </p>
         <p>
           No system is perfectly secure. We will notify affected customers of
@@ -156,7 +154,7 @@ export default function PrivacyPage() {
           <li>Lodge a complaint with your local supervisory authority</li>
         </ul>
         <p>
-          To exercise these rights, contact us at privacy@veridian.io. We will
+          To exercise these rights, contact us at hello@veridianapi.com. We will
           respond within 30 days (or sooner as required by law).
         </p>
       </Section>
@@ -174,7 +172,7 @@ export default function PrivacyPage() {
           The Services are not directed to individuals under 18 years of age. We
           do not knowingly collect personal data from minors. If you believe we
           have inadvertently collected data from a minor, contact us immediately
-          at privacy@veridian.io.
+          at hello@veridianapi.com.
         </p>
       </Section>
 
@@ -190,10 +188,8 @@ export default function PrivacyPage() {
 
       <Section title="13. Contact">
         <p>
-          For privacy-related inquiries or to exercise your rights, contact our
-          Data Protection Officer at privacy@veridian.io or by mail at Veridian
-          Technologies, Inc., Attn: Privacy, 228 Park Ave S, PMB 70145, New
-          York, NY 10003.
+          For privacy-related inquiries or to exercise your rights, contact us
+          at hello@veridianapi.com.
         </p>
       </Section>
     </LegalLayout>

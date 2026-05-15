@@ -48,8 +48,7 @@ export default function TermsPage() {
         <p>
           Veridian provides a Compliance-as-a-Service API platform enabling
           businesses to perform KYC (Know Your Customer) identity verification,
-          KYB (Know Your Business) entity verification, sanctions screening, AML
-          (Anti-Money Laundering) monitoring, and related compliance workflows.
+          sanctions screening, and related compliance workflows.
         </p>
         <p>
           We reserve the right to modify, suspend, or discontinue any feature
@@ -63,7 +62,7 @@ export default function TermsPage() {
           You must provide accurate, current, and complete information when
           creating an account. You are responsible for safeguarding your API
           keys and credentials and for all activity that occurs under your
-          account. Notify us immediately at security@veridian.io of any
+          account. Notify us immediately at hello@veridianapi.com of any
           unauthorized access or suspected breach.
         </p>
         <p>
@@ -133,12 +132,10 @@ export default function TermsPage() {
 
       <Section title="8. Service Level and Uptime">
         <p>
-          Veridian targets 99.9% API uptime on the Scale plan and commercially
-          reasonable availability on Starter and Growth plans. Scheduled
-          maintenance will be communicated in advance via our status page at
-          status.veridian.io. Uptime commitments do not apply to downtime caused
-          by third-party data providers, force majeure events, or your own
-          systems.
+          Veridian targets commercially reasonable API availability across all
+          plans. Scheduled maintenance will be communicated in advance via email.
+          Uptime commitments do not apply to downtime caused by third-party data
+          providers, force majeure events, or your own systems.
         </p>
       </Section>
 
@@ -184,11 +181,9 @@ export default function TermsPage() {
 
       <Section title="12. Governing Law">
         <p>
-          These Terms shall be governed by and construed in accordance with the
-          laws of the State of Delaware, without regard to its conflict of law
-          principles. Any disputes shall be resolved through binding arbitration
-          in accordance with the JAMS rules, or in courts of competent
-          jurisdiction in Delaware if arbitration is not permitted by law.
+          These Terms shall be governed by applicable law. Any disputes will be
+          resolved in good faith. If you have a concern, please contact us at
+          hello@veridianapi.com before initiating any legal action.
         </p>
       </Section>
 
@@ -203,8 +198,7 @@ export default function TermsPage() {
 
       <Section title="14. Contact">
         <p>
-          For questions about these Terms, contact us at legal@veridian.io or by
-          mail at Veridian, 228 Park Ave S, PMB 70145, New York, NY 10003.
+          For questions about these Terms, contact us at hello@veridianapi.com.
         </p>
       </Section>
     </LegalLayout>
